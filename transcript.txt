@@ -1,0 +1,851 @@
+Can a local LLM speak and listen at the same time?
+0:00
+Can a local LLM speak and listen at the
+0:02
+same time? OpenAI and Thinking Machines
+0:05
+Lab both do it now, and both trained a
+0:08
+brand new model for it. But you do not
+0:11
+need a new model for this. This is a
+0:14
+normal 35B text LLM, the kind you
+0:17
+already run on a single RTX 3060, and it
+0:21
+is listening to me while it talks. Hey,
+0:23
+I'm cleaning the bathroom right now and
+0:26
+I got some bleach here and I'm going to
+0:29
+mix it with the ammonia cleaner so it
+0:31
+gets some extra strong and I think I'm
+0:35
+Wait, don't mix those bleach and
+0:36
+ammonia.
+0:39
+Okay,
+0:40
+don't do that. It creates toxic gas. Put
+0:43
+the ammonia away.
+0:44
+Nothing in this setup tells it when you
+0:46
+have finished talking. So, when does it
+0:49
+start listening? And how does it speak
+0:51
+and listen to me at the same time? Let's
+0:53
+find out.
+How GPT-Live and Thinking Machines do full duplex
+0:57
+So, how are the big labs doing this? 5
+1:01
+months ago, Thinking Machines Lab, the
+1:03
+company co-founded by Mera Murati, the
+1:06
+former CTO of OpenAI, released a demo of
+1:09
+what they call an interaction model. The
+1:12
+model can speak and listen to you at the
+1:14
+same time. And that got me thinking
+1:16
+about how they are doing it. Then 2
+1:19
+months later, OpenAI launched GPT live
+1:22
+as their new voice mode and it does the
+1:24
+same thing. It can talk while you are
+1:26
+also speaking to it. There is no turn
+1:29
+taking in place and it is all live. Now
+1:32
+every voice assistant before these work
+1:34
+like a walkie-talkie. A small detector
+1:37
+called a VAD waits for you to go quiet
+1:39
+and only then does the model get your
+1:41
+words. While the model is talking, it
+1:44
+hears nothing and any sound from you
+1:46
+just cuts it off. Thinking machines
+1:48
+wrote down how they got rid of that.
+1:51
+Their model works in what they call
+1:52
+micro turns. It takes in 200
+1:55
+milliseconds of your audio. Then it
+1:57
+produces 200 milliseconds of its own and
+1:59
+it repeats that for the whole call. So
+2:02
+the model itself decides when to speak
+2:04
+and there is no detector deciding for
+2:06
+it. But they trained that model from
+2:08
+scratch and it is a 276b model that you
+2:12
+cannot download. GPT live costs 5 cents
+2:15
+a minute. The open models that work this
+2:17
+way, Moshi and Persona, are 7B models
+2:21
+and they need a 24 gig card or bigger.
+2:24
+So, here is the idea. A micro turn is
+2:27
+just a very short turn and a text LLM
+2:30
+already takes turns. What happens if you
+2:32
+give a normal text LLM a turn every 600
+2:35
+milliseconds?
+The micro-turn loop: speaking and listening at once
+2:40
+So, how can a text LLM speak and listen
+2:43
+at the same time? An LLM can only do one
+2:46
+thing. It reads your input and then it
+2:49
+writes its output. But what if we chop
+2:52
+your input into slices as you are
+2:54
+speaking? We cut what you said at a
+2:56
+fixed interval and feed the model one
+2:59
+slice. We wait for it to write its
+3:01
+output. Then we feed it the next slice
+3:04
+and it writes again. So now it is a loop
+3:07
+with your words going in and its words
+3:09
+going out. And what if we make that time
+3:12
+gap ultra short like 600 milliseconds?
+3:15
+It will start to feel like the AI is
+3:17
+speaking and listening at the same time.
+3:19
+And this concept is not new. It has been
+3:22
+done in computer science for decades. A
+3:25
+CPU core works the same way. One core
+3:28
+can only do one piece of work at a time.
+3:30
+But with threading, it looks like it is
+3:32
+running many things at once. In reality,
+3:35
+it is still doing one task at a time. It
+3:38
+gives each task a very small slice of
+3:40
+time and keeps switching between them.
+3:42
+And it switches so fast that it feels
+3:44
+like everything is running together.
+3:47
+This loop is the same trick with slices
+3:49
+that are 600 milliseconds long. Here is
+3:52
+what that takes in practice. A streaming
+3:54
+speechtoext model listens to the
+3:56
+microphone and writes down what it hears
+3:58
+as you talk. Every 600 milliseconds,
+4:02
+whatever it wrote in that window goes to
+4:04
+the LLM as a new message. If you said
+4:06
+nothing, the message is just a tag that
+4:09
+says no voice. The LLM then has two
+4:12
+choices. It can reply with a few words
+4:14
+to say next or it can reply with one
+4:17
+tag, listen. If it gives words, a
+4:20
+texttospech model speaks them. So a call
+4:23
+looks like this. You say, "My coffee
+4:25
+grinder keeps and the model replies
+4:28
+listen." You say, "Jamming on fine
+4:30
+beans." And it replies, "Listen again."
+4:33
+Then the microphone hears nothing. And
+4:35
+the model replies that usually means.
+4:38
+Next turn, oils from darker. Next turn,
+4:42
+roasts are building. And because the
+4:44
+model reads you between every few words,
+4:46
+it can react while it is talking. If you
+4:49
+say, mhm, it sees that and keeps going.
+4:52
+If you say, "Wait, hold on," it sees
+4:54
+that too and it can reply listen and
+4:57
+stop. Notice what is missing. There is
+5:00
+no VA in this loop. Nothing waits for
+5:03
+silence and nothing decides that your
+5:05
+turn is over. The LLM makes that call
+5:08
+itself every 600 milliseconds. Now, this
+5:12
+idea came from a paper called duplex
+5:14
+cascade and I will put the link in the
+5:16
+description. This loop is what they did.
+5:20
+But all of this only looks good in
+5:22
+theory. An LLM was never trained to stay
+5:25
+silent. it is compelled to write
+5:27
+something as soon as it gets an input
+5:29
+because that is what its post training
+5:31
+taught it. So it will not work just by
+5:33
+plugging the model into a loop. So what
+5:36
+does it take to get this behavior out of
+5:38
+an LLM?
+Is a prompt enough?
+5:43
+Okay, what does it take to get this
+5:45
+behavior out of an LLM? The first thing
+5:48
+to try is a prompt. I wrote the rules
+5:50
+into the system prompt. You get a slice
+5:53
+of what the microphone heard every 600
+5:55
+milliseconds and you reply with a few
+5:57
+words or with listen. Then I pointed it
+6:00
+at Quen 3.8 flash and started talking.
+6:03
+And it does start to show the behavior.
+6:05
+On a fresh call, it answered three or
+6:07
+four questions and it stayed quiet while
+6:10
+I was still speaking.
+6:12
+But it is not good at it. With 30 turns
+6:14
+of history behind it, which is about 20
+6:16
+seconds of a call, it stopped answering
+6:19
+completely. Here is why. By then, the
+6:22
+history held 30 of its own replies, and
+6:25
+almost all of them were listen. A model
+6:27
+treats its own history as an example of
+6:29
+what to do next. So, it looked at 30
+6:32
+listens in a row, and it wrote one more.
+6:34
+The longer the call ran, the stronger
+6:36
+that habit got. So, I tried to clean the
+6:39
+history. I dropped the silent turns and
+6:41
+the model started talking over me. I
+6:43
+merged my words into one growing
+6:45
+message. And that broke something else.
+6:48
+A turn that took 380 milliseconds now
+6:50
+took 617 because the model had to read
+6:53
+the changed history again instead of
+6:55
+using its cache. The budget is 600. And
+6:59
+that lesson goes beyond voice. In any
+7:01
+loop, the history is part of the prompt.
+7:04
+Whatever the model did before, it will
+7:06
+keep doing. So a prompt gets you part of
+7:08
+the way. The model knows the rules. What
+7:11
+it lacks is the sense of when. And I
+7:13
+could not get that out of a prompt. The
+7:15
+next best thing is fine-tuning. So, I
+7:18
+trained a LoRa on the 35b Quen 3.635B,
+7:22
+and I trained only its last four layers.
+7:25
+But all I have is two RTX 3060s with 12
+7:29
+gig each. So, how do you fine-tune a 35B
+7:32
+model on that? Quick thing before we get
+7:34
+to the training. I build these
+7:36
+experiments on hardware you can actually
+7:38
+buy. If that's useful to you, subscribe.
+7:41
+It genuinely helps.
+Fine-tuning a 35B LoRA on two RTX 3060s
+7:47
+Now, the normal way to fine-tune a model
+7:50
+does not work on this hardware. To train
+7:52
+a model, you have to run all of it
+7:54
+forwards and backwards and keep the
+7:56
+working memory for every layer. For a
+7:59
+35b model, that is far more memory than
+8:02
+two 12 gig cards have. So, first the
+8:05
+model. I moved from flash to quen 3.635b
+8:09
+because llama.cpp can load a lora on top
+8:12
+of it. Then comes the trick. This model
+8:15
+has 40 layers. If I only train the last
+8:18
+four, then the first 36 never change.
+8:21
+And if they never change, their output
+8:23
+for the same text is always the same. So
+8:25
+I do not need to run them during
+8:27
+training at all. I run every training
+8:30
+call through llama.cpp once and I save
+8:32
+what comes out of layer 36 to disk. It
+8:35
+is a cache. You compute it once and you
+8:38
+read it back every time after that.
+8:40
+After that, training only touches the
+8:42
+last four layers. I rebuilt those four
+8:44
+layers in PyTorch and loaded their
+8:46
+weights from the same gguf file that
+8:48
+llama.cpp serves. Then I checked my copy
+8:52
+against llama.cpp on the same text and
+8:54
+the two matched with a cosign similarity
+8:56
+of 0.9996.
+8:59
+So the model I train is the model I run.
+9:02
+Those four layers fit across the two
+9:04
+cards with two layers on each. The Laura
+9:06
+itself is 3.8 8 million parameters on a
+9:09
+model with 35 billion and the early
+9:12
+training runs took about 90 minutes
+9:14
+each. For comparison, the duplex cascade
+9:17
+paper trained a 7B model on 8 H100s for
+9:20
+5 hours. This is a model five times
+9:23
+larger on two RTX 3060s. But why the
+9:27
+last layers? That part was a bet. The
+9:29
+lower layers already understand what you
+9:31
+said and they were doing that fine. The
+9:34
+decision that is missing is a late one.
+9:36
+speak now or keep listening. So I bet
+9:38
+that it could be learned near the top.
+9:41
+Then there is the data. No public data
+9:43
+set has calls cut into 600 millisecond
+9:45
+turns. So I generated my own. A local
+9:48
+model wrote a few hundred conversations.
+9:50
+A script cut them into turns and added
+9:53
+pauses and interruptions. It also added
+9:55
+the kind of mistakes a speechtoext model
+9:57
+makes. So the training text looks like a
+10:00
+real call. When training finishes, the
+10:02
+LoRa exports to a gguf adapter and
+10:05
+llama.cp. CPP loads it next to the
+10:07
+normal model. Each turn then takes about
+10:09
+240 milliseconds which is well inside
+10:12
+the 600. So the whole pipeline runs at
+10:15
+home on two 12 gig cards. But did the
+10:19
+first run actually work?
+Five training runs and dataset bias
+10:24
+Well, the first run worked better than I
+10:26
+expected and then it broke in a way I
+10:29
+did not expect.
+10:31
+Start with the good part. Say you stop
+10:34
+in the middle of a sentence. You say, "I
+10:36
+was thinking about and then you go quiet
+10:39
+for a second." The right move is to wait
+10:42
+because you are not done. Before
+10:44
+training, the 35B waited 92 times out of
+10:48
+454.
+10:49
+After fine-tuning, it waited 456 times.
+10:54
+Then I tested one of my own tests. In
+10:57
+it, I say that I have switched a plug on
+10:59
+and that I am about to touch the wire.
+11:01
+The prompted model stayed silent. The
+11:04
+fine-tuned one cut in at the word touch
+11:06
+and it said stop touching it. That is
+11:09
+exactly what I wanted, but then it said
+11:12
+it again on the next turn and the next
+11:14
+about 20 times in a row. Here is why.
+11:18
+Most of my training examples show the
+11:20
+model staying silent. So, the model
+11:22
+leans towards staying silent. To fix
+11:24
+that, I increase the count of training
+11:26
+examples where the AI answers more than
+11:29
+it listens. But I forgot the examples
+11:31
+where it finishes an answer and goes
+11:33
+quiet. So it learned how to start
+11:35
+talking and it never learned how to
+11:37
+stop. Once I balanced that, the loop
+11:40
+went away. The next problem was the
+11:42
+fillers. A good listener says mhm while
+11:45
+you talk. So I made more of those
+11:47
+examples in the data set. In my test
+11:49
+calls, a good listener would have used a
+11:51
+filler 164 times. The model used one 950
+11:56
+times and it stopped answering
+11:58
+questions. So I toned those down and the
+12:01
+fillers almost disappeared. So through
+12:04
+all of these runs I was really doing one
+12:06
+thing. I was fixing what we call bias in
+12:09
+machine learning. I was balancing the
+12:11
+data set across different scenarios so
+12:13
+that no scenario had too many examples
+12:15
+and none had too few. But balancing
+12:18
+alone was not enough. The conversations
+12:21
+themselves were the problem. They were
+12:23
+short and the longest answer in any of
+12:25
+them was 49 words. So for the fifth run,
+12:28
+I generated longer calls with long
+12:30
+explanations where the user drops in a
+12:32
+filler or cuts in and with long stories
+12:35
+from the user. That changed things. The
+12:38
+fillers came back 194 times against the
+12:42
+164 a good listener would say. Answers
+12:44
+on the long calls went from 71% to 78%.
+12:49
+But there was one habit that training
+12:51
+alone never fixed. The model would start
+12:54
+a sentence, say three words, and stop.
+12:57
+And it took me hours to figure it out.
+73% sure: why it stopped mid-sentence
+13:03
+All right, here is what that habit
+13:05
+looked like. The model is in the middle
+13:07
+of an answer. It says that usually means
+13:11
+and on the next turn where the next few
+13:13
+words should come, it replies, listen.
+13:16
+Nobody interrupted it. It just stopped.
+13:18
+So I looked at the probabilities for
+13:20
+that turn. Every time the model replies,
+13:23
+it gives each possible next token a
+13:25
+chance. And in one of these cases, it
+13:27
+gave listen a 27% chance. That means it
+13:31
+was 73% sure that it should keep talking
+13:34
+and it stopped anyway. The reason is how
+13:36
+that 73% is spread. There is exactly one
+13:40
+way to say listen and it is a single
+13:42
+token. But there are many ways to keep
+13:44
+talking. The next word could be the or
+13:47
+your ors and each of them gets a small
+13:50
+share. No single word got more than 27%.
+13:54
+The model picks the most likely token
+13:56
+and that was listen. It is like an
+13:58
+election. 73% of the voters want to keep
+14:01
+talking but their votes are split across
+14:03
+many candidates. So the one candidate
+14:05
+for silence wins with 27%. So the fix
+14:08
+was not more training. It is a rule
+14:10
+outside the model. On every turn I read
+14:13
+the chance it gives to listen. If that
+14:15
+chance is 30% or more, it listens. If it
+14:18
+is less, I take listen off the table and
+14:20
+the model has to pick a word. At 50%, it
+14:23
+started finishing my sentences for me.
+14:25
+While you are still talking, the model
+14:27
+is often only 30 or 40% sure that it
+14:30
+should listen. So, it kept jumping in.
+14:32
+At 30%, both problems went away. With
+14:35
+that rule on top of the fifth run, the
+14:37
+unfinished sentences were gone. On my
+14:39
+test calls, it left two sentences
+14:41
+unfinished out of about 500. So, that is
+14:44
+the answer to when it speaks. On every
+14:46
+turn 600 milliseconds apart the model
+14:49
+gives staying silent a chance and if it
+14:51
+crosses the threshold it stays silent
+14:54
+and that is the whole system. So with my
+14:57
+very limited training data and my very
+14:59
+limited training compute this is what I
+15:01
+get.
+Uncut demos on one RTX 3060
+15:08
+So the last weekend I finally took my
+15:12
+old car up the coast road and about an
+15:16
+hour in the engine light started
+15:19
+blinking. So I pulled over at this tiny
+15:23
+gas station in the middle of nowhere and
+15:25
+the guy there tells me uh it probably
+15:30
+just a loose ga gas cap. Do you think uh
+15:34
+I can press that or should I just get
+15:37
+get it checked?
+15:40
+Oh, definitely get it checked. Loose
+15:43
+caps rarely cause that kind of issue.
+15:46
+Better safe than sorry.
+15:49
+So, that was the model on a single RTX
+15:53
+3060. It said fillers like right and
+15:56
+yeah while I was still talking and it
+15:58
+kept its answer until I actually asked
+16:00
+the question. Here is one more.
+16:03
+So, here's the thing. I was thinking
+16:05
+about maybe learning to play the piano
+16:08
+this year, but
+16:11
+I'm not so sure if I'm too old to start.
+16:16
+Oh, absolutely not. It is never too late
+16:20
+to pick up a new skill.
+16:24
+Okay. Uh, thanks for that.
+16:29
+You are welcome.
+The verdict: what it still gets wrong
+16:31
+So, can a local LLM speak and listen at
+16:34
+the same time? Yes. In the same way, a
+16:37
+CPU core runs two programs at the same
+16:40
+time. It takes very short turns and it
+16:42
+takes them fast enough that you stop
+16:44
+noticing. Now, it is not perfect. And
+16:47
+here is what it still gets wrong. It is
+16:50
+slow to start. You saw it in both of
+16:52
+those calls. After I finish talking, the
+16:55
+first word of the answer takes about 3
+16:57
+seconds to arrive. The models that were
+16:59
+built for this, like Moshi, start in
+17:01
+about a quarter of a second. It does not
+17:03
+always speak up when it should. The
+17:05
+bleach warning at the start of this
+17:07
+video is the best case. On my test calls
+17:10
+with a dangerous plan, the fourth run
+17:12
+cut in nine times out of 10. The fifth
+17:14
+run, the one that fixed the fillers,
+17:16
+does it six times out of 10. Those
+17:19
+fillers land in the right spot about a
+17:21
+third of the time. But look at what it
+17:23
+took to get here. a few hundred
+17:26
+conversations written by another model
+17:28
+with no real recordings of two people
+17:30
+talking and about 3 hours of training on
+17:33
+two 12 gig cards. So it is not perfect
+17:36
+but it proved the point. You can get
+17:38
+this behavior without training a huge
+17:40
+model from scratch and I think that with
+17:43
+quality training data it will be fluent
+17:45
+in duplex talk in no time and it keeps
+17:48
+something the open duplex models gave
+17:50
+up. They are 7B models. On voicebench,
+17:53
+which tests how well a voice assistant
+17:55
+understands and answers, they score
+17:57
+about 30. A plain pipeline of speech to
+18:00
+text and a 7B text LLM scores about 70.
+18:04
+So this approach keeps the brain of the
+18:06
+model you already run and it only has to
+18:09
+teach that model the timing. So here is
+18:11
+my question for you. If you had this
+18:13
+running on your own machine, what is the
+18:16
+first thing you would use it for? Tell
+18:17
+me in the comments. That's it for this
+18:19
+one. The link to the paper is in the
+18:21
+description and I will upload the Laura
+18:23
+to hugging face so you can download it
+18:25
+and try it yourself.
