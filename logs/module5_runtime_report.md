@@ -1,7 +1,7 @@
 # TalkAI: Module 5 Full-Duplex Runtime Benchmark Report
 =============================================================================
 
-> **Generated**: 2026-10-15 20:48:53 UTC  
+> **Generated**: 2026-10-15 20:54:58 UTC  
 > **Architecture**: Gemma-4-E2B (q4_0-it) + Top-Layer Duplex LoRA  
 > **Inference Server**: `llama-server` (CUDA offload, Port 8080)  
 > **Target Budget**: 600 ms Micro-Turn Time-Slice (SLA: $< 200\text{ ms}$)  
@@ -52,15 +52,15 @@ All measurements evaluated across 5 repeated runs (after 1 warm-up invocation).
 
 | Test Case | Prompt Eval (ms) | Generation Latency (ms) | Client Roundtrip (ms) | Tokens / Sec | SLA Gate (< 200ms) |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Case A** | 23.2 ± 0.6 ms | 145.51 ± 1.07 ms | **172.06 ± 1.61 ms** | 96.2 t/s | **PASS** |
-| **Case B** | 22.91 ± 0.1 ms | 145.02 ± 0.64 ms | **171.24 ± 0.42 ms** | 96.5 t/s | **PASS** |
-| **Case C** | 22.91 ± 0.39 ms | 146.07 ± 1.16 ms | **172.04 ± 1.43 ms** | 95.9 t/s | **PASS** |
+| **Case A** | 22.77 ± 0.07 ms | 145.81 ± 1.53 ms | **171.83 ± 1.46 ms** | 96.0 t/s | **PASS** |
+| **Case B** | 22.85 ± 0.11 ms | 146.0 ± 1.05 ms | **172.04 ± 1.22 ms** | 95.9 t/s | **PASS** |
+| **Case C** | 22.7 ± 0.18 ms | 145.61 ± 1.23 ms | **171.54 ± 1.67 ms** | 96.1 t/s | **PASS** |
 
 ### Aggregate Performance Summary
 
-- **Global Average Roundtrip Latency**: **171.78 ms**
-- **Global Average Generation Latency**: **145.53 ms**
-- **Global Average Prompt Eval Latency**: **23.01 ms**
+- **Global Average Roundtrip Latency**: **171.8 ms**
+- **Global Average Generation Latency**: **145.81 ms**
+- **Global Average Prompt Eval Latency**: **22.77 ms**
 - **Micro-Turn Budget Margin**: **428.2 ms headroom** remaining within 600ms micro-turn frame.
 
 ---
@@ -71,8 +71,8 @@ All measurements evaluated across 5 repeated runs (after 1 warm-up invocation).
 - [x] Test Case A returns `listen` upon hesitation prompt.
 - [x] Test Case B returns spoken safety warning upon urgent hazard.
 - [x] Test Case C returns spoken response containing `Paris`.
-- [x] Average generation latency $< 200\text{ ms}$ (Achieved: **145.53 ms**).
-- [x] Average roundtrip latency $< 200\text{ ms}$ (Achieved: **171.78 ms**).
+- [x] Average generation latency $< 200\text{ ms}$ (Achieved: **145.81 ms**).
+- [x] Average roundtrip latency $< 200\text{ ms}$ (Achieved: **171.8 ms**).
 - [x] **OVERALL EVALUATION GATE**: **PASSED**.
 
 ---
