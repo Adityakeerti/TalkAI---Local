@@ -1,0 +1,25 @@
+{
+  "module": 2,
+  "module_name": "Model Architecture Loading, Layer Freezing & VRAM Sanity",
+  "status": "PASSED",
+  "timestamp": "2026-10-15T20:08:08.799741+00:00",
+  "model_path": "/home/aditya/Desktop/STUDY/TalkAI/models/gemma-4-E2B-it",
+  "device": "cuda:0",
+  "metrics": {
+    "trainable_parameters": 3178496,
+    "max_trainable_param_threshold": 4000000,
+    "peak_vram_gb": 4.3927,
+    "max_peak_vram_threshold_gb": 4.8,
+    "dummy_loss": 16.2852,
+    "dummy_seq_len": 32,
+    "trainable_tensors_count": 40,
+    "non_zero_grad_tensors": 20,
+    "has_nan_or_inf": false
+  },
+  "gate_criteria": {
+    "trainable_params_under_4m": true,
+    "peak_vram_under_4_8gb": true,
+    "gradients_valid_nonzero_no_nan_inf": true,
+    "all_gates_passed": true
+  }
+}

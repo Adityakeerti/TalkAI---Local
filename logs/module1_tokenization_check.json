@@ -1,0 +1,48 @@
+{
+  "module": 1,
+  "module_name": "Tokenizer & Loss Masking Verification",
+  "status": "PASSED",
+  "timestamp": "2026-10-15T19:38:06.454885+00:00",
+  "model_path": "/home/aditya/Desktop/STUDY/TalkAI/models/gemma-4-E2B-it",
+  "tokenizer_vocab_size": 262144,
+  "listen_token_id": 20923,
+  "listen_token_verified": true,
+  "sample_a_listen": {
+    "conversation_id": "test_sample_listen",
+    "sequence_length": 42,
+    "active_loss_tokens": 1,
+    "assistant_tokens": 1,
+    "loss_masking_valid": true
+  },
+  "sample_b_speech": {
+    "conversation_id": "test_sample_speech",
+    "sequence_length": 48,
+    "active_loss_tokens": 5,
+    "assistant_tokens": 5,
+    "spoken_token_ids": [
+      6294,
+      711,
+      6374,
+      625,
+      236761
+    ],
+    "loss_masking_valid": true
+  },
+  "dataset_validation": {
+    "path": "/home/aditya/Desktop/STUDY/TalkAI/data/duplexcascade_synthetic/micro_turns_train.jsonl",
+    "total_conversations": 480,
+    "max_sequence_length": 336,
+    "bounded_under_512": true,
+    "total_active_loss_tokens": 14713,
+    "total_assistant_tokens": 14713,
+    "mismatch_count": 0
+  },
+  "gate_criteria": {
+    "listen_token_is_20923": true,
+    "user_tokens_masked_neg100": true,
+    "assistant_tokens_active_in_labels": true,
+    "sequence_length_bounded_512": true,
+    "active_tokens_equal_assistant_tokens": true,
+    "all_gates_passed": true
+  }
+}
