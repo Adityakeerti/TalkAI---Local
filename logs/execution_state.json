@@ -23,8 +23,8 @@
     },
     "5": {
       "name": "GGUF Adapter Conversion & Runtime Benchmark",
-      "status": "NOT_STARTED",
-      "report": null
+      "status": "PASSED",
+      "report": "logs/module_5_report.json"
     }
   }
 }
