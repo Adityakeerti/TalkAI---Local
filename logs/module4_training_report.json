@@ -1,0 +1,95 @@
+{
+  "module": 4,
+  "module_name": "Full Dataset Training & PEFT Checkpoint Validation",
+  "status": "PASSED",
+  "timestamp": "2026-10-15T20:26:20.127366+00:00",
+  "model_path": "/home/aditya/Desktop/STUDY/TalkAI/models/gemma-4-E2B-it",
+  "train_dataset_path": "/home/aditya/Desktop/STUDY/TalkAI/data/duplexcascade_synthetic/micro_turns_train.jsonl",
+  "val_dataset_path": "/home/aditya/Desktop/STUDY/TalkAI/data/duplexcascade_synthetic/micro_turns_val.jsonl",
+  "adapter_dir": "/tmp/test_dry_run_lora",
+  "device": "cuda:0",
+  "hyperparameters": {
+    "optimizer": "AdamW",
+    "learning_rate": 0.0005,
+    "weight_decay": 0.01,
+    "batch_size": 1,
+    "gradient_accumulation_steps": 8,
+    "effective_batch_size": 8,
+    "epochs": 1,
+    "total_samples_trained": 16,
+    "total_optimizer_steps": 2,
+    "warmup_steps": 1,
+    "eval_interval": 1,
+    "max_grad_norm_cap": 1.0,
+    "gate_grad_norm_limit": 2.0,
+    "gate_target_train_loss": 0.8,
+    "max_peak_vram_threshold_gb": 5.0
+  },
+  "metrics": {
+    "step_1_loss": 8.6263,
+    "final_step_loss": 8.0237,
+    "min_train_loss": 8.0237,
+    "final_window_avg_loss": 8.325,
+    "initial_val_loss": 6.9426,
+    "final_val_loss": 6.3872,
+    "min_val_loss": 6.3872,
+    "val_loss_reduction": 0.5553,
+    "peak_vram_gb": 4.4701,
+    "peak_vram_bytes": 4799734272,
+    "max_unclipped_grad_norm": 4.786,
+    "max_clipped_grad_norm": 1.0,
+    "has_nan_or_inf_grad": false,
+    "total_duration_seconds": 9.01,
+    "adapter_safetensors_bytes": 12719880,
+    "adapter_safetensors_mb": 12.13,
+    "val_history": [
+      {
+        "step": 0,
+        "epoch": 0,
+        "val_loss": 6.9426
+      },
+      {
+        "step": 1,
+        "epoch": 1,
+        "val_loss": 6.9426
+      },
+      {
+        "step": 2,
+        "epoch": 1,
+        "val_loss": 6.3872
+      }
+    ],
+    "step_records": [
+      {
+        "step": 1,
+        "epoch": 1,
+        "sample_idx": 8,
+        "loss": 8.6263,
+        "lr": 0.0005,
+        "unclipped_grad_norm": 4.786,
+        "clipped_grad_norm": 1.0,
+        "peak_vram_gb": 4.4304,
+        "has_nan_or_inf": false
+      },
+      {
+        "step": 2,
+        "epoch": 1,
+        "sample_idx": 16,
+        "loss": 8.0237,
+        "lr": 0.0,
+        "unclipped_grad_norm": 4.0591,
+        "clipped_grad_norm": 1.0,
+        "peak_vram_gb": 4.4701,
+        "has_nan_or_inf": false
+      }
+    ]
+  },
+  "gate_criteria": {
+    "train_loss_converged_below_threshold": true,
+    "val_loss_dropped_without_divergence": true,
+    "adapter_files_exist_and_sized_properly": true,
+    "peak_vram_under_5gb": true,
+    "grad_norms_bounded_no_nan": true,
+    "all_gates_passed": true
+  }
+}
