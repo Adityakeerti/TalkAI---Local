@@ -2,11 +2,11 @@
   "module": 4,
   "module_name": "Full Dataset Training & PEFT Checkpoint Validation",
   "status": "PASSED",
-  "timestamp": "2026-10-15T20:26:20.127366+00:00",
+  "timestamp": "2026-10-15T20:29:45.445269+00:00",
   "model_path": "/home/aditya/Desktop/STUDY/TalkAI/models/gemma-4-E2B-it",
   "train_dataset_path": "/home/aditya/Desktop/STUDY/TalkAI/data/duplexcascade_synthetic/micro_turns_train.jsonl",
   "val_dataset_path": "/home/aditya/Desktop/STUDY/TalkAI/data/duplexcascade_synthetic/micro_turns_val.jsonl",
-  "adapter_dir": "/tmp/test_dry_run_lora",
+  "adapter_dir": "/tmp/test_lora_dryrun",
   "device": "cuda:0",
   "hyperparameters": {
     "optimizer": "AdamW",
@@ -31,15 +31,15 @@
     "min_train_loss": 8.0237,
     "final_window_avg_loss": 8.325,
     "initial_val_loss": 6.9426,
-    "final_val_loss": 6.3872,
-    "min_val_loss": 6.3872,
-    "val_loss_reduction": 0.5553,
+    "final_val_loss": 6.3944,
+    "min_val_loss": 6.3944,
+    "val_loss_reduction": 0.5482,
     "peak_vram_gb": 4.4701,
     "peak_vram_bytes": 4799734272,
     "max_unclipped_grad_norm": 4.786,
     "max_clipped_grad_norm": 1.0,
     "has_nan_or_inf_grad": false,
-    "total_duration_seconds": 9.01,
+    "total_duration_seconds": 8.67,
     "adapter_safetensors_bytes": 12719880,
     "adapter_safetensors_mb": 12.13,
     "val_history": [
@@ -56,7 +56,7 @@
       {
         "step": 2,
         "epoch": 1,
-        "val_loss": 6.3872
+        "val_loss": 6.3944
       }
     ],
     "step_records": [
