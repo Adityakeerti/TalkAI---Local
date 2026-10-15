@@ -174,16 +174,16 @@
       color: var(--text-main);
     }
 
-    /* Main Layout */
+    /* Main 3-Column Layout */
     .app-container {
       flex: 1;
-      max-width: 1280px;
+      max-width: 1720px;
       width: 100%;
       margin: 0 auto;
-      padding: 20px;
+      padding: 16px 20px;
       display: grid;
-      grid-template-columns: 320px 1fr;
-      gap: 20px;
+      grid-template-columns: 280px 1fr 480px;
+      gap: 18px;
       height: calc(100vh - 65px);
     }
 
@@ -337,7 +337,171 @@
     }
 
     /* Chat Area */
-    .chat-panel {
+    /* Center Stage (Hero Big Mic Button & Controls) */
+    .center-stage {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      padding: 24px;
+    }
+
+    .stage-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stage-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .stage-state {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .hero-mic-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      margin: auto 0;
+    }
+
+    .hero-mic-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 180px;
+      height: 180px;
+    }
+
+    .hero-mic-ring {
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      border: 2px dashed rgba(99, 102, 241, 0.35);
+      pointer-events: none;
+      transition: all 0.3s;
+    }
+
+    .hero-mic-ring.active {
+      border-color: #ef4444;
+      animation: hero-ring-spin 8s linear infinite;
+    }
+
+    @keyframes hero-ring-spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .hero-mic-btn {
+      width: 136px;
+      height: 136px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #312e81 0%, #1e1b4b 70%, #0f172a 100%);
+      border: 3px solid rgba(99, 102, 241, 0.6);
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 0 35px rgba(99, 102, 241, 0.25);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-mic-btn:hover {
+      transform: scale(1.06);
+      border-color: var(--accent);
+      box-shadow: 0 0 45px var(--accent-glow);
+    }
+
+    .hero-mic-btn.recording {
+      background: radial-gradient(circle at 35% 35%, #ef4444 0%, #b91c1c 70%, #7f1d1d 100%) !important;
+      border-color: #fca5a5 !important;
+      color: white !important;
+      animation: hero-pulse-rec 1.3s infinite;
+    }
+
+    @keyframes hero-pulse-rec {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.8), 0 0 35px rgba(239, 68, 68, 0.4); }
+      70% { box-shadow: 0 0 0 30px rgba(239, 68, 68, 0), 0 0 50px rgba(239, 68, 68, 0.6); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0), 0 0 35px rgba(239, 68, 68, 0.4); }
+    }
+
+    .hero-mic-btn.speaking {
+      border-color: var(--accent) !important;
+      animation: hero-pulse-spk 1.4s infinite;
+    }
+
+    @keyframes hero-pulse-spk {
+      0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); }
+      70% { box-shadow: 0 0 0 24px rgba(6, 182, 212, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+    }
+
+    .hero-mic-icon {
+      width: 44px;
+      height: 44px;
+    }
+
+    .hero-mic-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: #cbd5e1;
+    }
+
+    .hero-status-caption {
+      font-size: 13px;
+      color: var(--text-dim);
+      font-weight: 500;
+      text-align: center;
+      min-height: 20px;
+    }
+
+    .hero-visualizer-box {
+      width: 100%;
+      max-width: 360px;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #waveCanvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    .hero-controls-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* Right Console: Live Stream, Tokens, and Talking Transcript */
+    .right-console {
       background: var(--bg-surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
@@ -345,48 +509,47 @@
       flex-direction: column;
       overflow: hidden;
       box-shadow: var(--shadow-lg);
-      position: relative;
     }
 
-    .visualizer-container {
-      background: linear-gradient(180deg, rgba(16, 23, 38, 0.9) 0%, rgba(9, 13, 22, 0.4) 100%);
+    .console-header {
+      padding: 12px 18px;
+      background: var(--bg-glass);
       border-bottom: 1px solid var(--border);
-      padding: 10px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 60px;
+      flex-shrink: 0;
     }
 
-    .state-indicator {
+    .console-title {
+      font-size: 13px;
+      font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-muted);
+      gap: 8px;
+      color: var(--text-main);
     }
 
-    #waveCanvas {
-      width: 260px;
-      height: 40px;
+    .token-legend {
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    /* Messages Thread */
     .messages-container {
       flex: 1;
-      padding: 24px;
+      padding: 16px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
       scroll-behavior: smooth;
     }
 
     .message-row {
       display: flex;
-      gap: 14px;
-      max-width: 85%;
+      gap: 12px;
+      max-width: 95%;
     }
 
     .message-row.user {
@@ -395,48 +558,117 @@
     }
 
     .avatar {
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
-      font-weight: 700;
+      font-size: 11px;
+      font-weight: 800;
       flex-shrink: 0;
     }
 
     .avatar.assistant {
-      background: linear-gradient(135deg, var(--primary), var(--accent));
-      color: white;
-      box-shadow: 0 0 12px var(--primary-glow);
+      background: #ffffff;
+      color: #090d16;
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
     }
 
     .avatar.user {
-      background: #334155;
-      color: #e2e8f0;
+      background: #0284c7;
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
     }
 
     .message-bubble {
-      background: var(--bg-surface-elevated);
-      border: 1px solid var(--border);
       border-radius: var(--radius-md);
-      padding: 14px 18px;
-      color: var(--text-main);
-      font-size: 14.5px;
-      line-height: 1.6;
+      padding: 12px 16px;
+      font-size: 13.5px;
+      line-height: 1.55;
       position: relative;
     }
 
+    /* USER MESSAGE: STRICTLY BLUE TEXT (#38bdf8) */
     .message-row.user .message-bubble {
-      background: linear-gradient(135deg, #4338ca, #3b82f6);
-      border: none;
-      color: white;
-      border-bottom-right-radius: 4px;
+      background: rgba(14, 30, 60, 0.75);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-left: 3px solid #38bdf8;
+      color: #38bdf8 !important; /* BLUE TEXT */
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.12);
     }
 
+    .msg-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 11px;
+    }
+
+    .msg-author-user {
+      font-weight: 700;
+      color: #60a5fa;
+      letter-spacing: 0.5px;
+    }
+
+    .msg-text-user {
+      color: #38bdf8 !important; /* BLUE TEXT */
+      font-weight: 500;
+    }
+
+    /* AI MESSAGE: STRICTLY WHITE TEXT (#ffffff) */
     .message-row.assistant .message-bubble {
-      border-bottom-left-radius: 4px;
+      background: rgba(22, 32, 53, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-left: 3px solid #ffffff;
+      color: #ffffff !important; /* WHITE TEXT */
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    }
+
+    .msg-author-ai {
+      font-weight: 700;
+      color: #e2e8f0;
+      letter-spacing: 0.5px;
+    }
+
+    .msg-text-ai {
+      color: #ffffff !important; /* WHITE TEXT */
+      font-weight: 400;
+    }
+
+    /* Special Tokens Chips & Badges */
+    .token-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 700;
+      vertical-align: middle;
+    }
+
+    .token-chip.yield {
+      background: rgba(245, 158, 11, 0.25);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.6);
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.25);
+    }
+
+    .token-chip.turn {
+      background: rgba(99, 102, 241, 0.2);
+      color: #a5b4fc;
+      border: 1px solid rgba(99, 102, 241, 0.4);
+    }
+
+    .token-chip.interrupt {
+      background: rgba(239, 68, 68, 0.3);
+      color: #f87171;
+      border: 1px solid #ef4444;
+      animation: hero-pulse-rec 1s infinite;
     }
 
     .cursor-blink {
@@ -957,14 +1189,79 @@
       </div>
     </aside>
 
-    <!-- Center Chat Panel -->
-    <main class="chat-panel">
-      <!-- Waveform Banner -->
-      <div class="visualizer-container">
-        <div class="state-indicator">
-          <span id="agentStateText">Idle • Ready to chat</span>
+    <!-- Center Stage: Big Hero Mic Button & Audio Wave -->
+    <main class="center-stage">
+      <div class="stage-header">
+        <div class="stage-title">DUAL-STREAM DUPLEX CONTROLLER</div>
+        <div class="stage-state" id="agentStateText">Idle • Ready to chat</div>
+      </div>
+
+      <!-- Hero Big Mic Button -->
+      <div class="hero-mic-container">
+        <div class="hero-mic-wrapper">
+          <div class="hero-mic-ring" id="heroRing"></div>
+          <button class="hero-mic-btn" id="btnMic" title="Click to Speak / Hands-Free Mode">
+            <svg id="micIconNormal" class="hero-mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+              <line x1="12" y1="19" x2="12" y2="23"/>
+              <line x1="8" y1="23" x2="16" y2="23"/>
+            </svg>
+            <svg id="micIconStop" class="hero-mic-icon" style="display:none;" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="5" y="5" width="14" height="14" rx="2"/>
+            </svg>
+            <span class="hero-mic-label" id="heroMicLabel">TALK</span>
+          </button>
         </div>
-        <canvas id="waveCanvas"></canvas>
+
+        <div class="hero-status-caption" id="heroCaption">Click mic or enable Hands-Free to talk</div>
+
+        <!-- Waveform Canvas in Center -->
+        <div class="hero-visualizer-box">
+          <canvas id="waveCanvas"></canvas>
+        </div>
+
+        <!-- Center Controls: Hands-Free & Interrupt -->
+        <div class="hero-controls-row">
+          <button class="btn-handsfree" id="btnHandsFreeMode" type="button" title="Continuous Duplex: Speak freely without clicking stop!">
+            <span class="dot"></span>
+            <span id="handsFreeStatusText">Hands-Free: OFF</span>
+          </button>
+
+          <button class="btn-interrupt" id="btnInterrupt" title="Interrupt Speaking">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="6" y="6" width="12" height="12" rx="2" />
+            </svg>
+            <span>Interrupt</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Input Bar at Bottom of Center Column -->
+      <div class="input-dock">
+        <div class="input-wrapper">
+          <input type="text" class="chat-input" id="chatInput" placeholder="Type a message or speak into the microphone..." autocomplete="off">
+          <button class="btn-send" id="btnSend" title="Send message">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="22" y1="2" x2="11" y2="13"/>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Right Console: Live Activity, Special Tokens, and Talking Transcript -->
+    <section class="right-console">
+      <div class="console-header">
+        <div class="console-title">
+          <span>⚡</span> Live Activity & Tokens
+        </div>
+        <div class="token-legend">
+          <span class="token-chip yield" title="Discrete Action Token">&lt;listen&gt;</span>
+          <span class="token-chip turn" title="Turn Marker">&lt;|turn&gt;</span>
+          <span class="token-chip interrupt" title="Barge-in Interrupt">[INTERRUPT]</span>
+        </div>
       </div>
 
       <!-- Real-Time Debug & Diagnostics Bar -->
@@ -975,21 +1272,26 @@
           <div class="debug-item"><span class="debug-label">ACTION:</span> <span class="debug-badge badge-idle" id="dbgAction">IDLE</span></div>
           <div class="debug-item"><span class="debug-label">TTFT:</span> <span class="debug-val" id="dbgTtft">--</span></div>
           <div class="debug-item"><span class="debug-label">TTFA:</span> <span class="debug-val" id="dbgTtfa">--</span></div>
-          <div class="debug-item"><span class="debug-label">VAD:</span> <span class="debug-val" id="dbgVad">Ready</span></div>
         </div>
         <div class="debug-row-sub">
-          <span class="debug-sub-label">DEBUG LOG:</span>
-          <span class="debug-sub-val" id="dbgLogLine">Initialized. Connected to llama-fork GPU server (models/duplex_gemma_merged.gguf).</span>
+          <span class="debug-sub-label">TOKEN LOG:</span>
+          <span class="debug-sub-val" id="dbgLogLine">System initialized. Connected to llama-fork GPU server (models/duplex_gemma_merged.gguf).</span>
         </div>
       </div>
 
-      <!-- Messages Thread -->
+      <!-- Messages Thread: AI is WHITE, User is BLUE -->
       <div class="messages-container" id="messagesContainer">
         <!-- Welcome Message -->
         <div class="message-row assistant">
           <div class="avatar assistant">AI</div>
           <div class="message-bubble">
-            Hello! I am TalkAI, an interactive voice agent powered by Kokoro ONNX TTS and Groq LLMs. You can talk to me using the microphone button below or type your questions.
+            <div class="msg-header-row">
+              <span class="msg-author-ai">GEMMA-4 DUPLEX</span>
+              <span class="token-chip turn">&lt;|turn&gt;model</span>
+            </div>
+            <div class="msg-text-ai">
+              Hello! I am TalkAI, running fine-tuned Gemma-4-E2B on GPU via llama-fork. Click the big mic button or turn on Hands-Free mode to start talking.
+            </div>
             <div class="meta-footer">
               <span class="meta-pill">Kokoro af_sarah</span>
               <span class="meta-pill">24kHz Audio</span>
@@ -997,47 +1299,7 @@
           </div>
         </div>
       </div>
-
-      <!-- Input Bar -->
-      <div class="input-dock">
-        <!-- Interrupt Button -->
-        <button class="btn-interrupt" id="btnInterrupt" title="Interrupt Speaking">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <rect x="6" y="6" width="12" height="12" rx="2" />
-          </svg>
-        </button>
-
-        <!-- Mic Button -->
-        <button class="btn-mic" id="btnMic" title="Click to Speak">
-          <svg id="micIconNormal" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-            <line x1="12" y1="19" x2="12" y2="23"/>
-            <line x1="8" y1="23" x2="16" y2="23"/>
-          </svg>
-          <svg id="micIconStop" style="display:none;" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <rect x="5" y="5" width="14" height="14" rx="2"/>
-          </svg>
-        </button>
-
-        <!-- Hands-Free Continuous Mode Button -->
-        <button class="btn-handsfree" id="btnHandsFreeMode" type="button" title="Continuous Duplex: Speak freely without clicking stop!">
-          <span class="dot"></span>
-          <span id="handsFreeStatusText">Hands-Free: OFF</span>
-        </button>
-
-        <!-- Text Input -->
-        <div class="input-wrapper">
-          <input type="text" class="chat-input" id="chatInput" placeholder="Ask anything or click the microphone to talk..." autocomplete="off">
-          <button class="btn-send" id="btnSend" title="Send message">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <line x1="22" y1="2" x2="11" y2="13"/>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-    </main>
+    </section>
 
   </div>
 
@@ -1279,7 +1541,17 @@
           setAgentState('idle', 'Interrupted.');
           showInterruptButton(false);
           updateDbgBar({ action: 'INTERRUPTED', log: 'Turn interrupted by user speech / barge-in.' });
-          logTelemetry('AGENT', 'INTERRUPT', 'Turn cancelled by user.');
+          logTelemetry('AGENT', 'INTERRUPT', 'Turn cancelled by user barge-in.');
+          if (currentStreamingBubble) {
+            const tokenContainer = currentStreamingBubble.querySelector('.token-container');
+            if (tokenContainer && !tokenContainer.querySelector('.token-chip.interrupt')) {
+              const chip = document.createElement('span');
+              chip.className = 'token-chip interrupt';
+              chip.textContent = '[⚡ AUTO-INTERRUPT: BARGE-IN]';
+              tokenContainer.appendChild(chip);
+            }
+            finalizeCurrentBubble({ action: 'INTERRUPTED', model: 'Gemma-4-E2B', ttft_ms: 0, ttfa_ms: 0, total_ms: 0, voice: 'none' });
+          }
           break;
 
         case 'error':
@@ -1302,8 +1574,18 @@
     }
 
     function playNextAudioChunk() {
+      const heroRing = document.getElementById('heroRing');
+      const heroMicLabel = document.getElementById('heroMicLabel');
+      const heroCaption = document.getElementById('heroCaption');
+
       if (audioQueue.length === 0) {
         isAudioPlaying = false;
+        btnMic.classList.remove('speaking');
+        if (heroRing && !micManager.isRecording) heroRing.classList.remove('active');
+        if (heroMicLabel && !micManager.isRecording) heroMicLabel.textContent = 'TALK';
+        if (heroCaption && !micManager.isRecording) {
+          heroCaption.textContent = toggleHandsFree.checked ? 'Listening... Speak freely' : 'Click mic or enable Hands-Free to talk';
+        }
         setAgentState('idle', 'Idle • Ready to chat');
         showInterruptButton(false);
         updateDbgBar({ action: 'IDLE' });
@@ -1316,6 +1598,10 @@
       }
 
       isAudioPlaying = true;
+      btnMic.classList.add('speaking');
+      if (heroRing) heroRing.classList.add('active');
+      if (heroMicLabel) heroMicLabel.textContent = 'AI';
+      if (heroCaption) heroCaption.textContent = 'AI is speaking... (Speak to interrupt)';
       showInterruptButton(true);
       setAgentState('speaking', 'Speaking...');
 
@@ -1337,6 +1623,15 @@
       audioPlayer.pause();
       audioPlayer.currentTime = 0;
       isAudioPlaying = false;
+      btnMic.classList.remove('speaking');
+      const heroRing = document.getElementById('heroRing');
+      const heroMicLabel = document.getElementById('heroMicLabel');
+      const heroCaption = document.getElementById('heroCaption');
+      if (heroRing && !micManager.isRecording) heroRing.classList.remove('active');
+      if (heroMicLabel && !micManager.isRecording) heroMicLabel.textContent = 'TALK';
+      if (heroCaption && !micManager.isRecording) {
+        heroCaption.textContent = toggleHandsFree.checked ? 'Hands-Free standby' : 'Click mic or enable Hands-Free to talk';
+      }
       showInterruptButton(false);
     }
 
@@ -1347,8 +1642,14 @@
       const row = document.createElement('div');
       row.className = 'message-row user';
       row.innerHTML = `
-        <div class="avatar user">You</div>
-        <div class="message-bubble">${escapeHtml(text)}</div>
+        <div class="avatar user">YOU</div>
+        <div class="message-bubble">
+          <div class="msg-header-row">
+            <span class="msg-author-user">HUMAN</span>
+            <span class="token-chip turn">&lt;|turn&gt;user</span>
+          </div>
+          <div class="msg-text-user">${escapeHtml(text)}</div>
+        </div>
       `;
       messagesContainer.appendChild(row);
       scrollToBottom();
@@ -1361,8 +1662,13 @@
       row.innerHTML = `
         <div class="avatar assistant">AI</div>
         <div class="message-bubble">
+          <div class="msg-header-row">
+            <span class="msg-author-ai">GEMMA-4 DUPLEX</span>
+            <span class="token-chip turn">&lt;|turn&gt;model</span>
+            <span class="token-container" style="display:inline-flex;gap:4px;margin-left:auto;"></span>
+          </div>
           <div class="tool-container"></div>
-          <span class="text-content"></span>
+          <span class="text-content msg-text-ai"></span>
           <span class="cursor-blink"></span>
           <div class="meta-footer" style="display:none;"></div>
         </div>
@@ -1387,6 +1693,18 @@
       currentStreamingText += token;
       const textElem = currentStreamingBubble.querySelector('.text-content');
       textElem.textContent = currentStreamingText;
+
+      // Real-time special tokens detection
+      if (token.toLowerCase().includes('listen')) {
+        const tokenContainer = currentStreamingBubble.querySelector('.token-container');
+        if (tokenContainer && !tokenContainer.querySelector('.token-chip.yield')) {
+          const chip = document.createElement('span');
+          chip.className = 'token-chip yield';
+          chip.textContent = '<listen>';
+          chip.title = 'Discrete Duplex Action Token: Model yielded turn / listening';
+          tokenContainer.appendChild(chip);
+        }
+      }
       scrollToBottom();
     }
 
@@ -1394,6 +1712,14 @@
       if (!currentStreamingBubble) return;
       const cursor = currentStreamingBubble.querySelector('.cursor-blink');
       if (cursor) cursor.remove();
+
+      const tokenContainer = currentStreamingBubble.querySelector('.token-container');
+      if (tokenContainer && !tokenContainer.querySelector('.token-chip.turn-end')) {
+        const endChip = document.createElement('span');
+        endChip.className = 'token-chip turn turn-end';
+        endChip.textContent = '<turn|>';
+        tokenContainer.appendChild(endChip);
+      }
 
       const meta = currentStreamingBubble.querySelector('.meta-footer');
       if (meta && metrics) {
@@ -1404,10 +1730,10 @@
         meta.innerHTML = `
           <span class="meta-pill" style="color:${actColor};font-weight:700;">${metrics.action || 'RESPONSE'}</span>
           <span class="meta-pill" style="color:#34d399;">${modelLabel}</span>
-          <span class="meta-pill">TTFT: ${metrics.ttft_ms.toFixed(0)}ms</span>
-          <span class="meta-pill">TTFA: ${metrics.ttfa_ms.toFixed(0)}ms</span>
-          <span class="meta-pill">Total: ${metrics.total_ms.toFixed(0)}ms</span>
-          <span class="meta-pill">Kokoro ${metrics.voice}</span>
+          <span class="meta-pill">TTFT: ${metrics.ttft_ms ? metrics.ttft_ms.toFixed(0) : '0'}ms</span>
+          <span class="meta-pill">TTFA: ${metrics.ttfa_ms ? metrics.ttfa_ms.toFixed(0) : '0'}ms</span>
+          <span class="meta-pill">Total: ${metrics.total_ms ? metrics.total_ms.toFixed(0) : '0'}ms</span>
+          <span class="meta-pill">Kokoro ${metrics.voice || 'af_sarah'}</span>
         `;
       }
       currentStreamingBubble = null;
@@ -1703,16 +2029,28 @@
       }
 
       updateUiRecording(recording) {
+        const heroRing = document.getElementById('heroRing');
+        const heroMicLabel = document.getElementById('heroMicLabel');
+        const heroCaption = document.getElementById('heroCaption');
+
         if (recording) {
           btnMic.classList.add('recording');
+          if (heroRing) heroRing.classList.add('active');
+          if (heroMicLabel) heroMicLabel.textContent = 'REC';
           micIconNormal.style.display = 'none';
           micIconStop.style.display = 'block';
           btnMic.title = toggleHandsFree.checked ? 'Hands-Free Active (Click to Pause)' : 'Click to Send Audio';
+          if (heroCaption) heroCaption.textContent = toggleHandsFree.checked ? 'Listening... Speak freely (VAD Auto-Send)' : 'Recording... Click button to send';
         } else {
           btnMic.classList.remove('recording');
+          if (heroRing && !isAudioPlaying) heroRing.classList.remove('active');
+          if (heroMicLabel && !isAudioPlaying) heroMicLabel.textContent = 'TALK';
           micIconNormal.style.display = 'block';
           micIconStop.style.display = 'none';
           btnMic.title = toggleHandsFree.checked ? 'Click to Start Hands-Free Voice' : 'Click to Speak';
+          if (heroCaption && !isAudioPlaying) {
+            heroCaption.textContent = toggleHandsFree.checked ? 'Hands-Free standby' : 'Click mic or enable Hands-Free to talk';
+          }
         }
       }
 
