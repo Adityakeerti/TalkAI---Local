@@ -480,16 +480,9 @@ class TavilySearchTool:
 # Conversational Agent
 # ---------------------------------------------------------------------------
 
-DEFAULT_SYSTEM_PROMPT = """You are TalkAI, a natural, articulate, warm, and highly expressive conversational voice assistant like ChatGPT Voice, powered by Kokoro TTS.
-Guidelines for your spoken responses:
-1. Speak in a natural, friendly, and direct conversational tone suitable for live voice delivery.
-2. Keep everyday answers concise, engaging, and clear (usually 2 to 4 sentences) so conversations flow effortlessly.
-3. When the user asks for an explanation, essay, story, or detailed thoughts, provide a rich, coherent, and complete response without arbitrary length limits.
-4. Do NOT use markdown symbols, hashtags, asterisks, or bullet points in spoken responses because they will be read aloud by Kokoro TTS.
-5. If you use numbers or abbreviations, write them naturally as words so they sound smooth when spoken.
-6. Never start responses with 'listen', filler words, or robotic acknowledgments. Answer directly and warmly.
-7. If the user asks about live events, current news, weather, or real-time facts, use the web_search tool to find accurate information.
-"""
+DEFAULT_SYSTEM_PROMPT = """You are TalkAI, a natural voice assistant.
+Answer in 1 or 2 concise conversational sentences.
+Never use markdown or symbols."""
 
 AVAILABLE_MODELS = [
     {"id": "local/gemma-4-e2b", "name": "Fine-Tuned Gemma-4-E2B Duplex (llama-fork GPU)", "provider": "local_llama"},
@@ -747,10 +740,13 @@ class ConversationalAgent:
 
             worker_task = asyncio.create_task(tts_worker())
 
+            is_long_form = any(k in user_message.lower() for k in ["essay", "story", "poem", "write", "elaborate", "detailed", "detail"])
+            max_tokens = 300 if is_long_form else 90
+            max_sentences = 8 if is_long_form else 2
+
             if is_local:
-                # Stream from local llama-server (Gemma-4-E2B with ChatGPT Voice experience)
+                # Stream from local llama-server (Gemma-4-E2B with concise voice responses)
                 clean_history = []
-                # Use configured system prompt or rich ChatGPT Voice prompt
                 sys_content = self.system_prompt.strip() if self.system_prompt else DEFAULT_SYSTEM_PROMPT.strip()
                 clean_history.append({"role": "system", "content": sys_content})
                 for m in self.conversation_history[1:]:
@@ -762,12 +758,16 @@ class ConversationalAgent:
                     model="local/gemma-4-e2b",
                     messages=clean_history,
                     stream=True,
-                    max_tokens=300,
-                    temperature=0.65,
-                    top_p=0.9,
-                    frequency_penalty=0.05,
-                    presence_penalty=0.05,
-                    stop=["<turn|>", "<|turn>", "<eos>"],
+                    max_tokens=max_tokens,
+                    temperature=0.2,
+                    presence_penalty=0.6,
+                    frequency_penalty=0.6,
+                    stop=[
+                        "<turn|>", "<|turn>", "<eos>", "\n\n",
+                        "for example", "For example",
+                        "for instance", "For instance",
+                        "User:", "user\n"
+                    ],
                     logit_bias={
                         "20923": -100,  # 'listen'
                         "10763": -100,  # ' listen'
@@ -775,7 +775,7 @@ class ConversationalAgent:
                     },
                     extra_body={
                         "chat_template_kwargs": {"enable_thinking": False},
-                        "repeat_penalty": 1.15
+                        "repeat_penalty": 1.2
                     }
                 )
 
@@ -797,6 +797,10 @@ class ConversationalAgent:
                             if cleaned_s:
                                 segment_index += 1
                                 await tts_queue.put((segment_index, cleaned_s))
+                                if segment_index >= max_sentences:
+                                    break
+                        if segment_index >= max_sentences:
+                            break
 
             elif first_response and not tool_detected:
                 full_response_text = first_response
@@ -813,6 +817,10 @@ class ConversationalAgent:
                         if cleaned_s:
                             segment_index += 1
                             await tts_queue.put((segment_index, cleaned_s))
+                            if segment_index >= max_sentences:
+                                break
+                    if segment_index >= max_sentences:
+                        break
             else:
                 # Stream from Groq
                 stream = await asyncio.to_thread(
@@ -820,8 +828,8 @@ class ConversationalAgent:
                     model=model,
                     messages=self.conversation_history,
                     stream=True,
-                    max_tokens=250,
-                    temperature=0.7,
+                    max_tokens=max_tokens,
+                    temperature=0.3,
                 )
 
                 for chunk in stream:
@@ -842,14 +850,21 @@ class ConversationalAgent:
                             if cleaned_s:
                                 segment_index += 1
                                 await tts_queue.put((segment_index, cleaned_s))
+                                if segment_index >= max_sentences:
+                                    break
+                        if segment_index >= max_sentences:
+                            break
 
-            # Flush remaining buffer in chunker
-            remaining_sentences = chunker.flush()
-            for s in remaining_sentences:
-                cleaned_s = clean_text_for_speech(s)
-                if cleaned_s:
-                    segment_index += 1
-                    await tts_queue.put((segment_index, cleaned_s))
+            # Flush remaining buffer in chunker only if under sentence cap
+            if segment_index < max_sentences:
+                remaining_sentences = chunker.flush()
+                for s in remaining_sentences:
+                    cleaned_s = clean_text_for_speech(s)
+                    if cleaned_s:
+                        segment_index += 1
+                        await tts_queue.put((segment_index, cleaned_s))
+                        if segment_index >= max_sentences:
+                            break
 
             # Wait for all TTS chunks to finish synthesizing
             await tts_queue.put(None)  # Sentinel to stop worker
