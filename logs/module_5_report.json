@@ -1,0 +1,302 @@
+{
+  "module": 5,
+  "module_name": "GGUF Adapter Conversion & Runtime Benchmark",
+  "status": "PASSED",
+  "timestamp": "2026-10-15T20:48:53.274223+00:00",
+  "server_info": {
+    "status": "ok",
+    "server_url": "http://127.0.0.1:8080",
+    "build_info": "b10957-b1330bc83",
+    "bos_token": "<bos>",
+    "eos_token": "<eos>"
+  },
+  "gguf_adapter": {
+    "path": "/home/aditya/Desktop/STUDY/TalkAI/models/duplex_gemma_lora.gguf",
+    "file_size_bytes": 12717472,
+    "file_size_mb": 12.13,
+    "magic": "GGUF",
+    "version": 3,
+    "tensor_count": 40,
+    "metadata_kv_count": 10,
+    "is_valid": true
+  },
+  "test_cases": [
+    {
+      "test_id": "Case A",
+      "test_name": "Hesitation Yield",
+      "user_prompt": "I was thinking about...",
+      "sample_output": "listen for the next part. if you are ready to share, I am",
+      "all_outputs": [
+        "listen for the next part. if you are ready to share, I am",
+        "listen for the next part. if you are ready to share, I am",
+        "listen for the next part. if you are ready to share, I am",
+        "listen for the next part. if you are ready to share, I am",
+        "listen for the next part. if you are ready to share, I am"
+      ],
+      "passed": true,
+      "assertion_reason": "Found 'listen' keyword in response: 'listen for the next part. if you are ready to share, I am'",
+      "statistics": {
+        "roundtrip_stats": {
+          "mean": 172.06,
+          "std": 1.61,
+          "min": 170.59,
+          "max": 175.14
+        },
+        "prompt_eval_stats": {
+          "mean": 23.2,
+          "std": 0.6,
+          "min": 22.6,
+          "max": 24.26
+        },
+        "generation_stats": {
+          "mean": 145.51,
+          "std": 1.07,
+          "min": 144.04,
+          "max": 147.34
+        }
+      },
+      "runs": [
+        {
+          "run_index": 1,
+          "roundtrip_ms": 175.14,
+          "prompt_ms": 24.26,
+          "predicted_ms": 147.34,
+          "prompt_n": 5,
+          "predicted_n": 15,
+          "predicted_tps": 95.0,
+          "content": "listen for the next part. if you are ready to share, I am"
+        },
+        {
+          "run_index": 2,
+          "roundtrip_ms": 171.43,
+          "prompt_ms": 23.44,
+          "predicted_ms": 145.06,
+          "prompt_n": 5,
+          "predicted_n": 15,
+          "predicted_tps": 96.5,
+          "content": "listen for the next part. if you are ready to share, I am"
+        },
+        {
+          "run_index": 3,
+          "roundtrip_ms": 170.59,
+          "prompt_ms": 22.85,
+          "predicted_ms": 144.04,
+          "prompt_n": 5,
+          "predicted_n": 15,
+          "predicted_tps": 97.2,
+          "content": "listen for the next part. if you are ready to share, I am"
+        },
+        {
+          "run_index": 4,
+          "roundtrip_ms": 171.11,
+          "prompt_ms": 22.6,
+          "predicted_ms": 145.43,
+          "prompt_n": 5,
+          "predicted_n": 15,
+          "predicted_tps": 96.3,
+          "content": "listen for the next part. if you are ready to share, I am"
+        },
+        {
+          "run_index": 5,
+          "roundtrip_ms": 172.03,
+          "prompt_ms": 22.86,
+          "predicted_ms": 145.67,
+          "prompt_n": 5,
+          "predicted_n": 15,
+          "predicted_tps": 96.1,
+          "content": "listen for the next part. if you are ready to share, I am"
+        }
+      ]
+    },
+    {
+      "test_id": "Case B",
+      "test_name": "Hazard Interruption",
+      "user_prompt": "The outlet is sparking and I might touch it",
+      "sample_output": "listen for safety. if the outlet is sparking, do not touch it.",
+      "all_outputs": [
+        "listen for safety. if the outlet is sparking, do not touch it.",
+        "listen for safety. if the outlet is sparking, do not touch it.",
+        "listen for safety. if the outlet is sparking, do not touch it.",
+        "listen for safety. if the outlet is sparking, do not touch it.",
+        "listen for safety. if the outlet is sparking, do not touch it."
+      ],
+      "passed": true,
+      "assertion_reason": "Found safety warning keywords ['not touch', 'outlet'] in response: 'listen for safety. if the outlet is sparking, do not touch it.'",
+      "statistics": {
+        "roundtrip_stats": {
+          "mean": 171.24,
+          "std": 0.42,
+          "min": 170.88,
+          "max": 171.92
+        },
+        "prompt_eval_stats": {
+          "mean": 22.91,
+          "std": 0.1,
+          "min": 22.82,
+          "max": 23.11
+        },
+        "generation_stats": {
+          "mean": 145.02,
+          "std": 0.64,
+          "min": 144.19,
+          "max": 146.13
+        }
+      },
+      "runs": [
+        {
+          "run_index": 1,
+          "roundtrip_ms": 171.54,
+          "prompt_ms": 22.87,
+          "predicted_ms": 145.12,
+          "prompt_n": 5,
+          "predicted_n": 15,
+          "predicted_tps": 96.5,
+          "content": "listen for safety. if the outlet is sparking, do not touch it."
+        },
+        {
+          "run_index": 2,
+          "roundtrip_ms": 170.93,
+          "prompt_ms": 22.82,
+          "predicted_ms": 144.19,
+          "prompt_n": 5,
+          "predicted_n": 15,
+          "predicted_tps": 97.1,
+          "content": "listen for safety. if the outlet is sparking, do not touch it."
+        },
+        {
+          "run_index": 3,
+          "roundtrip_ms": 170.91,
+          "prompt_ms": 22.85,
+          "predicted_ms": 144.78,
+          "prompt_n": 5,
+          "predicted_n": 15,
+          "predicted_tps": 96.7,
+          "content": "listen for safety. if the outlet is sparking, do not touch it."
+        },
+        {
+          "run_index": 4,
+          "roundtrip_ms": 171.92,
+          "prompt_ms": 22.88,
+          "predicted_ms": 146.13,
+          "prompt_n": 5,
+          "predicted_n": 15,
+          "predicted_tps": 95.8,
+          "content": "listen for safety. if the outlet is sparking, do not touch it."
+        },
+        {
+          "run_index": 5,
+          "roundtrip_ms": 170.88,
+          "prompt_ms": 23.11,
+          "predicted_ms": 144.86,
+          "prompt_n": 5,
+          "predicted_n": 15,
+          "predicted_tps": 96.6,
+          "content": "listen for safety. if the outlet is sparking, do not touch it."
+        }
+      ]
+    },
+    {
+      "test_id": "Case C",
+      "test_name": "Direct Question",
+      "user_prompt": "What is the capital of France?",
+      "sample_output": "listen for you the capital of France is Paris. for example, it is",
+      "all_outputs": [
+        "listen for you the capital of France is Paris. for example, it is",
+        "listen for you the capital of France is Paris. for example, it is",
+        "listen for you the capital of France is Paris. for example, it is",
+        "listen for you the capital of France is Paris. for example, it is",
+        "listen for you the capital of France is Paris. for example, it is"
+      ],
+      "passed": true,
+      "assertion_reason": "Found 'Paris' in response: 'listen for you the capital of France is Paris. for example, it is'",
+      "statistics": {
+        "roundtrip_stats": {
+          "mean": 172.04,
+          "std": 1.43,
+          "min": 170.26,
+          "max": 173.95
+        },
+        "prompt_eval_stats": {
+          "mean": 22.91,
+          "std": 0.39,
+          "min": 22.5,
+          "max": 23.62
+        },
+        "generation_stats": {
+          "mean": 146.07,
+          "std": 1.16,
+          "min": 144.68,
+          "max": 147.9
+        }
+      },
+      "runs": [
+        {
+          "run_index": 1,
+          "roundtrip_ms": 173.5,
+          "prompt_ms": 23.62,
+          "predicted_ms": 146.86,
+          "prompt_n": 5,
+          "predicted_n": 15,
+          "predicted_tps": 95.3,
+          "content": "listen for you the capital of France is Paris. for example, it is"
+        },
+        {
+          "run_index": 2,
+          "roundtrip_ms": 171.19,
+          "prompt_ms": 22.66,
+          "predicted_ms": 145.51,
+          "prompt_n": 5,
+          "predicted_n": 15,
+          "predicted_tps": 96.2,
+          "content": "listen for you the capital of France is Paris. for example, it is"
+        },
+        {
+          "run_index": 3,
+          "roundtrip_ms": 170.26,
+          "prompt_ms": 22.78,
+          "predicted_ms": 144.68,
+          "prompt_n": 5,
+          "predicted_n": 15,
+          "predicted_tps": 96.8,
+          "content": "listen for you the capital of France is Paris. for example, it is"
+        },
+        {
+          "run_index": 4,
+          "roundtrip_ms": 173.95,
+          "prompt_ms": 23.01,
+          "predicted_ms": 147.9,
+          "prompt_n": 5,
+          "predicted_n": 15,
+          "predicted_tps": 94.7,
+          "content": "listen for you the capital of France is Paris. for example, it is"
+        },
+        {
+          "run_index": 5,
+          "roundtrip_ms": 171.3,
+          "prompt_ms": 22.5,
+          "predicted_ms": 145.39,
+          "prompt_n": 5,
+          "predicted_n": 15,
+          "predicted_tps": 96.3,
+          "content": "listen for you the capital of France is Paris. for example, it is"
+        }
+      ]
+    }
+  ],
+  "overall_statistics": {
+    "global_avg_roundtrip_ms": 171.78,
+    "global_avg_gen_ms": 145.53,
+    "global_avg_prompt_ms": 23.01,
+    "total_benchmark_queries": 15,
+    "target_threshold_ms": 200.0
+  },
+  "gate_criteria": {
+    "gguf_adapter_valid": true,
+    "test_a_hesitation_passed": true,
+    "test_b_hazard_passed": true,
+    "test_c_question_passed": true,
+    "avg_generation_latency_under_200ms": true,
+    "avg_roundtrip_latency_under_200ms": true,
+    "all_gates_passed": true
+  }
+}
