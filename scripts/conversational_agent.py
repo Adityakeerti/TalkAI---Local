@@ -1004,6 +1004,7 @@ def main():
     parser.add_argument("--voice", default="af_sarah", help="Default Kokoro voice ID (e.g. af_sarah, am_adam, bf_emma)")
     parser.add_argument("--speed", type=float, default=1.0, help="Speech speed multiplier (default: 1.0)")
     parser.add_argument("--model", default="local/gemma-4-e2b", help="Default LLM model (default: local/gemma-4-e2b)")
+    parser.add_argument("--web", action="store_true", help="Run web server (default)")
     parser.add_argument("--cli", action="store_true", help="Run interactive terminal CLI with speaker output instead of server")
     args = parser.parse_args()
 
