@@ -1,5 +1,5 @@
 {
-  "current_module": 4,
+  "current_module": 5,
   "modules": {
     "1": {
       "name": "Tokenizer & Loss Masking Verification",
@@ -18,8 +18,8 @@
     },
     "4": {
       "name": "Full Dataset Training & PEFT Checkpoint Validation",
-      "status": "NOT_STARTED",
-      "report": null
+      "status": "PASSED",
+      "report": "logs/module_4_report.json"
     },
     "5": {
       "name": "GGUF Adapter Conversion & Runtime Benchmark",
