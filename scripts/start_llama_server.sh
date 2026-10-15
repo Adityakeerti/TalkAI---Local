@@ -20,6 +20,13 @@ echo "Starting llama-server for Gemma-4-E2B (Apache 2.0)"
 echo "Binary:  $LLAMA_SERVER"
 echo "Model:   $MODEL"
 echo "MMProj:  $MMPROJ"
+LORA="/home/aditya/Desktop/STUDY/TalkAI/models/duplex_gemma_lora.gguf"
+LORA_ARGS=""
+if [ -f "$LORA" ]; then
+    echo "LoRA:    $LORA"
+    LORA_ARGS="--lora $LORA"
+fi
+
 echo "Port:    8080 (http://127.0.0.1:8080)"
 echo "GPU offload: Full layers (-ngl 99)"
 echo "========================================================"
@@ -27,6 +34,7 @@ echo "========================================================"
 exec "$LLAMA_SERVER" \
   -m "$MODEL" \
   --mmproj "$MMPROJ" \
+  $LORA_ARGS \
   -ngl 99 \
   --ctx-size 4096 \
   --host 0.0.0.0 \
