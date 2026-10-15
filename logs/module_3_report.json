@@ -1,0 +1,139 @@
+{
+  "module": 3,
+  "module_name": "10-Sample Micro-Overfit Test",
+  "status": "PASSED",
+  "timestamp": "2026-10-15T20:17:41.165671+00:00",
+  "model_path": "/home/aditya/Desktop/STUDY/TalkAI/models/gemma-4-E2B-it",
+  "dataset_path": "/home/aditya/Desktop/STUDY/TalkAI/data/duplexcascade_synthetic/micro_turns_train.jsonl",
+  "device": "cuda:0",
+  "hyperparameters": {
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "batch_size": 1,
+    "gradient_accumulation_steps": 2,
+    "num_samples": 10,
+    "max_steps": 20,
+    "target_loss_threshold": 1.2,
+    "max_grad_norm_cap": 2.0,
+    "max_peak_vram_threshold_gb": 4.8
+  },
+  "metrics": {
+    "step_1_loss": 6.2445,
+    "final_loss": 0.8618,
+    "final_step": 11,
+    "total_epochs": 3,
+    "peak_vram_gb": 4.4359,
+    "peak_vram_bytes": 4763041280,
+    "max_unclipped_grad_norm": 10.6878,
+    "max_clipped_grad_norm": 2.0,
+    "has_nan_or_inf_grad": false,
+    "step_records": [
+      {
+        "step": 1,
+        "epoch": 1,
+        "loss": 6.2445,
+        "unclipped_grad_norm": 5.66,
+        "clipped_grad_norm": 2.0,
+        "peak_vram_gb": 4.4043,
+        "has_nan_or_inf": false
+      },
+      {
+        "step": 2,
+        "epoch": 1,
+        "loss": 6.9056,
+        "unclipped_grad_norm": 10.6878,
+        "clipped_grad_norm": 2.0,
+        "peak_vram_gb": 4.4339,
+        "has_nan_or_inf": false
+      },
+      {
+        "step": 3,
+        "epoch": 1,
+        "loss": 5.4789,
+        "unclipped_grad_norm": 5.9829,
+        "clipped_grad_norm": 2.0,
+        "peak_vram_gb": 4.4339,
+        "has_nan_or_inf": false
+      },
+      {
+        "step": 4,
+        "epoch": 1,
+        "loss": 5.3841,
+        "unclipped_grad_norm": 5.9223,
+        "clipped_grad_norm": 2.0,
+        "peak_vram_gb": 4.4339,
+        "has_nan_or_inf": false
+      },
+      {
+        "step": 5,
+        "epoch": 1,
+        "loss": 3.9755,
+        "unclipped_grad_norm": 5.2949,
+        "clipped_grad_norm": 2.0,
+        "peak_vram_gb": 4.4339,
+        "has_nan_or_inf": false
+      },
+      {
+        "step": 6,
+        "epoch": 2,
+        "loss": 1.5626,
+        "unclipped_grad_norm": 2.8378,
+        "clipped_grad_norm": 2.0,
+        "peak_vram_gb": 4.4359,
+        "has_nan_or_inf": false
+      },
+      {
+        "step": 7,
+        "epoch": 2,
+        "loss": 3.0033,
+        "unclipped_grad_norm": 10.5171,
+        "clipped_grad_norm": 2.0,
+        "peak_vram_gb": 4.4359,
+        "has_nan_or_inf": false
+      },
+      {
+        "step": 8,
+        "epoch": 2,
+        "loss": 2.5396,
+        "unclipped_grad_norm": 7.5679,
+        "clipped_grad_norm": 2.0,
+        "peak_vram_gb": 4.4359,
+        "has_nan_or_inf": false
+      },
+      {
+        "step": 9,
+        "epoch": 2,
+        "loss": 2.689,
+        "unclipped_grad_norm": 4.9751,
+        "clipped_grad_norm": 2.0,
+        "peak_vram_gb": 4.4359,
+        "has_nan_or_inf": false
+      },
+      {
+        "step": 10,
+        "epoch": 2,
+        "loss": 1.6069,
+        "unclipped_grad_norm": 3.3123,
+        "clipped_grad_norm": 2.0,
+        "peak_vram_gb": 4.4359,
+        "has_nan_or_inf": false
+      },
+      {
+        "step": 11,
+        "epoch": 3,
+        "loss": 0.8618,
+        "unclipped_grad_norm": 2.5957,
+        "clipped_grad_norm": 2.0,
+        "peak_vram_gb": 4.4359,
+        "has_nan_or_inf": false
+      }
+    ]
+  },
+  "gate_criteria": {
+    "step_1_loss_recorded": true,
+    "final_loss_under_threshold": true,
+    "grad_norm_bounded_under_cap": true,
+    "peak_vram_under_4_8gb": true,
+    "all_gates_passed": true
+  }
+}
