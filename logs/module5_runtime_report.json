@@ -2,7 +2,7 @@
   "module": 5,
   "module_name": "GGUF Adapter Conversion & Runtime Benchmark",
   "status": "PASSED",
-  "timestamp": "2026-10-15T20:54:58.242941+00:00",
+  "timestamp": "2026-10-15T21:00:44.063354+00:00",
   "server_info": {
     "status": "ok",
     "server_url": "http://127.0.0.1:8080",
@@ -37,73 +37,73 @@
       "assertion_reason": "Found 'listen' keyword in response: 'listen for the next part. if you are ready to share, I am'",
       "statistics": {
         "roundtrip_stats": {
-          "mean": 171.83,
-          "std": 1.46,
-          "min": 170.55,
-          "max": 174.25
+          "mean": 175.49,
+          "std": 2.04,
+          "min": 172.56,
+          "max": 178.75
         },
         "prompt_eval_stats": {
-          "mean": 22.77,
-          "std": 0.07,
-          "min": 22.65,
-          "max": 22.86
+          "mean": 23.12,
+          "std": 0.22,
+          "min": 22.88,
+          "max": 23.5
         },
         "generation_stats": {
-          "mean": 145.81,
-          "std": 1.53,
-          "min": 144.57,
-          "max": 148.56
+          "mean": 149.33,
+          "std": 2.12,
+          "min": 146.22,
+          "max": 152.7
         }
       },
       "runs": [
         {
           "run_index": 1,
-          "roundtrip_ms": 172.77,
-          "prompt_ms": 22.73,
-          "predicted_ms": 146.41,
+          "roundtrip_ms": 178.75,
+          "prompt_ms": 23.05,
+          "predicted_ms": 152.7,
           "prompt_n": 5,
           "predicted_n": 15,
-          "predicted_tps": 95.6,
+          "predicted_tps": 91.7,
           "content": "listen for the next part. if you are ready to share, I am"
         },
         {
           "run_index": 2,
-          "roundtrip_ms": 170.55,
-          "prompt_ms": 22.65,
-          "predicted_ms": 144.57,
+          "roundtrip_ms": 172.56,
+          "prompt_ms": 23.5,
+          "predicted_ms": 146.22,
           "prompt_n": 5,
           "predicted_n": 15,
-          "predicted_tps": 96.8,
+          "predicted_tps": 95.7,
           "content": "listen for the next part. if you are ready to share, I am"
         },
         {
           "run_index": 3,
-          "roundtrip_ms": 174.25,
-          "prompt_ms": 22.8,
-          "predicted_ms": 148.56,
+          "roundtrip_ms": 175.8,
+          "prompt_ms": 23.24,
+          "predicted_ms": 149.41,
           "prompt_n": 5,
           "predicted_n": 15,
-          "predicted_tps": 94.2,
+          "predicted_tps": 93.7,
           "content": "listen for the next part. if you are ready to share, I am"
         },
         {
           "run_index": 4,
-          "roundtrip_ms": 170.56,
-          "prompt_ms": 22.81,
-          "predicted_ms": 144.6,
+          "roundtrip_ms": 174.4,
+          "prompt_ms": 22.88,
+          "predicted_ms": 148.34,
           "prompt_n": 5,
           "predicted_n": 15,
-          "predicted_tps": 96.8,
+          "predicted_tps": 94.4,
           "content": "listen for the next part. if you are ready to share, I am"
         },
         {
           "run_index": 5,
-          "roundtrip_ms": 171.0,
-          "prompt_ms": 22.86,
-          "predicted_ms": 144.89,
+          "roundtrip_ms": 175.95,
+          "prompt_ms": 22.95,
+          "predicted_ms": 149.96,
           "prompt_n": 5,
           "predicted_n": 15,
-          "predicted_tps": 96.6,
+          "predicted_tps": 93.4,
           "content": "listen for the next part. if you are ready to share, I am"
         }
       ]
@@ -124,73 +124,73 @@
       "assertion_reason": "Found safety warning keywords ['not touch', 'outlet'] in response: 'listen for safety. if the outlet is sparking, do not touch it.'",
       "statistics": {
         "roundtrip_stats": {
-          "mean": 172.04,
-          "std": 1.22,
-          "min": 170.35,
-          "max": 173.67
+          "mean": 174.65,
+          "std": 1.16,
+          "min": 173.01,
+          "max": 176.04
         },
         "prompt_eval_stats": {
-          "mean": 22.85,
-          "std": 0.11,
-          "min": 22.7,
-          "max": 23.01
+          "mean": 23.24,
+          "std": 0.57,
+          "min": 22.77,
+          "max": 24.29
         },
         "generation_stats": {
-          "mean": 146.0,
-          "std": 1.05,
-          "min": 144.72,
-          "max": 147.68
+          "mean": 148.15,
+          "std": 1.03,
+          "min": 146.48,
+          "max": 149.25
         }
       },
       "runs": [
         {
           "run_index": 1,
-          "roundtrip_ms": 173.12,
-          "prompt_ms": 22.92,
-          "predicted_ms": 146.63,
+          "roundtrip_ms": 175.52,
+          "prompt_ms": 23.34,
+          "predicted_ms": 148.9,
           "prompt_n": 5,
           "predicted_n": 15,
-          "predicted_tps": 95.5,
+          "predicted_tps": 94.0,
           "content": "listen for safety. if the outlet is sparking, do not touch it."
         },
         {
           "run_index": 2,
-          "roundtrip_ms": 171.81,
-          "prompt_ms": 22.76,
-          "predicted_ms": 145.76,
+          "roundtrip_ms": 173.56,
+          "prompt_ms": 22.77,
+          "predicted_ms": 147.48,
           "prompt_n": 5,
           "predicted_n": 15,
-          "predicted_tps": 96.0,
+          "predicted_tps": 94.9,
           "content": "listen for safety. if the outlet is sparking, do not touch it."
         },
         {
           "run_index": 3,
-          "roundtrip_ms": 171.23,
-          "prompt_ms": 22.7,
-          "predicted_ms": 145.2,
+          "roundtrip_ms": 175.11,
+          "prompt_ms": 22.98,
+          "predicted_ms": 149.25,
           "prompt_n": 5,
           "predicted_n": 15,
-          "predicted_tps": 96.4,
+          "predicted_tps": 93.8,
           "content": "listen for safety. if the outlet is sparking, do not touch it."
         },
         {
           "run_index": 4,
-          "roundtrip_ms": 173.67,
-          "prompt_ms": 23.01,
-          "predicted_ms": 147.68,
+          "roundtrip_ms": 176.04,
+          "prompt_ms": 24.29,
+          "predicted_ms": 148.64,
           "prompt_n": 5,
           "predicted_n": 15,
-          "predicted_tps": 94.8,
+          "predicted_tps": 94.2,
           "content": "listen for safety. if the outlet is sparking, do not touch it."
         },
         {
           "run_index": 5,
-          "roundtrip_ms": 170.35,
-          "prompt_ms": 22.88,
-          "predicted_ms": 144.72,
+          "roundtrip_ms": 173.01,
+          "prompt_ms": 22.8,
+          "predicted_ms": 146.48,
           "prompt_n": 5,
           "predicted_n": 15,
-          "predicted_tps": 96.7,
+          "predicted_tps": 95.6,
           "content": "listen for safety. if the outlet is sparking, do not touch it."
         }
       ]
@@ -211,82 +211,82 @@
       "assertion_reason": "Found 'Paris' in response: 'listen for you the capital of France is Paris. for example, it is'",
       "statistics": {
         "roundtrip_stats": {
-          "mean": 171.54,
-          "std": 1.67,
-          "min": 170.34,
-          "max": 174.83
+          "mean": 176.48,
+          "std": 1.2,
+          "min": 174.58,
+          "max": 178.28
         },
         "prompt_eval_stats": {
-          "mean": 22.7,
-          "std": 0.18,
-          "min": 22.51,
-          "max": 23.02
+          "mean": 23.27,
+          "std": 0.32,
+          "min": 22.92,
+          "max": 23.78
         },
         "generation_stats": {
-          "mean": 145.61,
-          "std": 1.23,
-          "min": 144.36,
-          "max": 147.97
+          "mean": 149.5,
+          "std": 1.49,
+          "min": 146.9,
+          "max": 151.53
         }
       },
       "runs": [
         {
           "run_index": 1,
-          "roundtrip_ms": 171.13,
-          "prompt_ms": 22.7,
-          "predicted_ms": 145.46,
+          "roundtrip_ms": 174.58,
+          "prompt_ms": 23.0,
+          "predicted_ms": 146.9,
           "prompt_n": 5,
           "predicted_n": 15,
-          "predicted_tps": 96.2,
+          "predicted_tps": 95.3,
           "content": "listen for you the capital of France is Paris. for example, it is"
         },
         {
           "run_index": 2,
-          "roundtrip_ms": 170.34,
-          "prompt_ms": 22.54,
-          "predicted_ms": 144.36,
+          "roundtrip_ms": 176.56,
+          "prompt_ms": 23.5,
+          "predicted_ms": 149.53,
           "prompt_n": 5,
           "predicted_n": 15,
-          "predicted_tps": 97.0,
+          "predicted_tps": 93.6,
           "content": "listen for you the capital of France is Paris. for example, it is"
         },
         {
           "run_index": 3,
-          "roundtrip_ms": 170.73,
-          "prompt_ms": 22.73,
-          "predicted_ms": 145.1,
+          "roundtrip_ms": 178.28,
+          "prompt_ms": 23.14,
+          "predicted_ms": 151.53,
           "prompt_n": 5,
           "predicted_n": 15,
-          "predicted_tps": 96.5,
+          "predicted_tps": 92.4,
           "content": "listen for you the capital of France is Paris. for example, it is"
         },
         {
           "run_index": 4,
-          "roundtrip_ms": 170.65,
-          "prompt_ms": 22.51,
-          "predicted_ms": 145.18,
+          "roundtrip_ms": 176.93,
+          "prompt_ms": 23.78,
+          "predicted_ms": 150.01,
           "prompt_n": 5,
           "predicted_n": 15,
-          "predicted_tps": 96.4,
+          "predicted_tps": 93.3,
           "content": "listen for you the capital of France is Paris. for example, it is"
         },
         {
           "run_index": 5,
-          "roundtrip_ms": 174.83,
-          "prompt_ms": 23.02,
-          "predicted_ms": 147.97,
+          "roundtrip_ms": 176.06,
+          "prompt_ms": 22.92,
+          "predicted_ms": 149.53,
           "prompt_n": 5,
           "predicted_n": 15,
-          "predicted_tps": 94.6,
+          "predicted_tps": 93.6,
           "content": "listen for you the capital of France is Paris. for example, it is"
         }
       ]
     }
   ],
   "overall_statistics": {
-    "global_avg_roundtrip_ms": 171.8,
-    "global_avg_gen_ms": 145.81,
-    "global_avg_prompt_ms": 22.77,
+    "global_avg_roundtrip_ms": 175.54,
+    "global_avg_gen_ms": 148.99,
+    "global_avg_prompt_ms": 23.21,
     "total_benchmark_queries": 15,
     "target_threshold_ms": 200.0
   },

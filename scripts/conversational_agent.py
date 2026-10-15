@@ -69,9 +69,26 @@ def clean_text_for_speech(text: str) -> str:
     """
     Cleans markdown formatting, code blocks, URLs, and symbols so the text
     sounds natural when read aloud by Kokoro TTS.
+    Also strips discrete full-duplex action tokens ('listen') and action prefixes.
     """
     if not text:
         return ""
+
+    # Full-Duplex action token handling:
+    # If the text is strictly a yield action token ('listen')
+    t_raw = text.strip()
+    if t_raw.lower() in ("listen", "listen.", "listen!", "<listen>", "[listen]"):
+        return ""
+
+    # Strip leading duplex action tokens and filler prefixes
+    text = re.sub(r"^listen[\s,\.!\:\-]+", "", text, flags=re.IGNORECASE).strip()
+    text = re.sub(r"^(?:for\s+you|for\s+safety|to\s+that)[\s,\.!\:\-]+", "", text, flags=re.IGNORECASE).strip()
+    text = re.sub(r"^listen\s+(?:for\s+you|for\s+safety|to\s+that)[\s,\.!\:\-]+", "", text, flags=re.IGNORECASE).strip()
+    text = re.sub(r"^listen\s+for\s+you\s+", "", text, flags=re.IGNORECASE).strip()
+    text = re.sub(r"^listen[\s,\.!\:\-]+", "", text, flags=re.IGNORECASE).strip()
+    if not text or text.lower() in ("listen", "listen.", "listen!", "<listen>"):
+        return ""
+
     # Strip markdown code blocks
     text = re.sub(r"```[\s\S]*?```", " [code omitted] ", text)
     # Strip inline code
@@ -96,6 +113,16 @@ def clean_text_for_speech(text: str) -> str:
     text = re.sub(r"^\s*[-+*]\s+", "", text, flags=re.MULTILINE)
     # Replace multiple newlines or spaces with single space
     text = re.sub(r"\s+", " ", text).strip()
+
+    # If the text has completed sentences and ends with an incomplete fragment, trim trailing fragment
+    matches = list(re.finditer(r"[\.!\?](?:\s|$)", text))
+    if matches and len(matches) >= 1:
+        last_end = matches[-1].end()
+        # Only trim if the trailing fragment is short (< 30 chars without terminal punctuation)
+        trailing = text[last_end:].strip()
+        if trailing and len(trailing) < 30 and not any(trailing.endswith(p) for p in [".", "!", "?"]):
+            text = text[:last_end].strip()
+
     return text
 
 
@@ -427,7 +454,7 @@ Guidelines for your spoken responses:
 """
 
 AVAILABLE_MODELS = [
-    {"id": "local/gemma-4-e2b", "name": "Local Gemma-4-E2B (llama-fork GPU)", "provider": "local_llama"},
+    {"id": "local/gemma-4-e2b", "name": "Fine-Tuned Gemma-4-E2B Duplex (llama-fork GPU)", "provider": "local_llama"},
     {"id": "openai/gpt-oss-120b", "name": "GPT-OSS 120B (Groq)", "provider": "groq"},
     {"id": "openai/gpt-oss-20b", "name": "GPT-OSS 20B (Groq)", "provider": "groq"},
 ]
@@ -683,9 +710,17 @@ class ConversationalAgent:
             worker_task = asyncio.create_task(tts_worker())
 
             if is_local:
-                # Stream from local llama-server (Gemma-4-E2B via llama-fork GPU)
+                # Stream from local llama-server (Gemma-4-E2B with duplex fine-tuning)
                 clean_history = []
-                for m in self.conversation_history:
+                DUPLEX_SYSTEM_PROMPT = (
+                    "You are a full-duplex conversational voice assistant powered by fine-tuned Gemma-4-E2B. "
+                    "If the user is speaking to you, greeting you, or asking a question, provide a direct, concise, natural answer in 1 to 2 sentences. "
+                    "If the user is hesitating, unfinished, or speaking filler words ('um', 'I was thinking...'), output exactly 'listen' to yield the floor. "
+                    "Yield immediately for urgent safety hazards. "
+                    "Never repeat phrases in loops and never ramble."
+                )
+                clean_history.append({"role": "system", "content": DUPLEX_SYSTEM_PROMPT})
+                for m in self.conversation_history[1:]:
                     if isinstance(m, dict) and "role" in m and "content" in m:
                         clean_history.append({"role": m["role"], "content": str(m["content"])})
 
@@ -694,7 +729,11 @@ class ConversationalAgent:
                     model="local/gemma-4-e2b",
                     messages=clean_history,
                     stream=True,
-                    max_tokens=600
+                    max_tokens=45,
+                    temperature=0.2,
+                    frequency_penalty=0.7,
+                    presence_penalty=0.7,
+                    stop=["<turn|>", "<|turn>", "\n\n", "User:", "user\n", "<eos>"]
                 )
 
                 async for chunk in stream:
@@ -711,8 +750,10 @@ class ConversationalAgent:
 
                         sentences = chunker.add_token(delta)
                         for s in sentences:
-                            segment_index += 1
-                            await tts_queue.put((segment_index, s))
+                            cleaned_s = clean_text_for_speech(s)
+                            if cleaned_s:
+                                segment_index += 1
+                                await tts_queue.put((segment_index, cleaned_s))
 
             elif first_response and not tool_detected:
                 full_response_text = first_response
@@ -725,8 +766,10 @@ class ConversationalAgent:
                     await callback.on_llm_token(tok)
                     sentences = chunker.add_token(tok)
                     for s in sentences:
-                        segment_index += 1
-                        await tts_queue.put((segment_index, s))
+                        cleaned_s = clean_text_for_speech(s)
+                        if cleaned_s:
+                            segment_index += 1
+                            await tts_queue.put((segment_index, cleaned_s))
             else:
                 # Stream from Groq
                 stream = await asyncio.to_thread(
@@ -734,7 +777,8 @@ class ConversationalAgent:
                     model=model,
                     messages=self.conversation_history,
                     stream=True,
-                    max_tokens=600
+                    max_tokens=250,
+                    temperature=0.7,
                 )
 
                 for chunk in stream:
@@ -751,14 +795,18 @@ class ConversationalAgent:
 
                         sentences = chunker.add_token(delta)
                         for s in sentences:
-                            segment_index += 1
-                            await tts_queue.put((segment_index, s))
+                            cleaned_s = clean_text_for_speech(s)
+                            if cleaned_s:
+                                segment_index += 1
+                                await tts_queue.put((segment_index, cleaned_s))
 
             # Flush remaining buffer in chunker
             remaining_sentences = chunker.flush()
             for s in remaining_sentences:
-                segment_index += 1
-                await tts_queue.put((segment_index, s))
+                cleaned_s = clean_text_for_speech(s)
+                if cleaned_s:
+                    segment_index += 1
+                    await tts_queue.put((segment_index, cleaned_s))
 
             # Wait for all TTS chunks to finish synthesizing
             await tts_queue.put(None)  # Sentinel to stop worker
@@ -771,12 +819,16 @@ class ConversationalAgent:
             self.conversation_history.append({"role": "assistant", "content": full_response_text})
 
             total_ms = (time.time() - start_time) * 1000
+            action = "YIELD (listen)" if (segment_index == 0 or full_response_text.strip().lower() in ("listen", "listen.", "<listen>")) else "SPEAK"
             metrics = {
                 "ttft_ms": ttft_ms,
                 "ttfa_ms": ttfa_ms,
                 "total_ms": total_ms,
                 "segments": segment_index,
                 "model": model,
+                "model_detail": "Fine-Tuned Gemma-4-E2B (Merged GGUF via llama-fork GPU)" if is_local else model,
+                "backend": "llama-fork GPU (:8080)" if is_local else "Groq Cloud API",
+                "action": action,
                 "voice": voice,
             }
 

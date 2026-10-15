@@ -1,7 +1,7 @@
 # TalkAI: Module 5 Full-Duplex Runtime Benchmark Report
 =============================================================================
 
-> **Generated**: 2026-10-15 20:54:58 UTC  
+> **Generated**: 2026-10-15 21:00:44 UTC  
 > **Architecture**: Gemma-4-E2B (q4_0-it) + Top-Layer Duplex LoRA  
 > **Inference Server**: `llama-server` (CUDA offload, Port 8080)  
 > **Target Budget**: 600 ms Micro-Turn Time-Slice (SLA: $< 200\text{ ms}$)  
@@ -52,16 +52,16 @@ All measurements evaluated across 5 repeated runs (after 1 warm-up invocation).
 
 | Test Case | Prompt Eval (ms) | Generation Latency (ms) | Client Roundtrip (ms) | Tokens / Sec | SLA Gate (< 200ms) |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Case A** | 22.77 ± 0.07 ms | 145.81 ± 1.53 ms | **171.83 ± 1.46 ms** | 96.0 t/s | **PASS** |
-| **Case B** | 22.85 ± 0.11 ms | 146.0 ± 1.05 ms | **172.04 ± 1.22 ms** | 95.9 t/s | **PASS** |
-| **Case C** | 22.7 ± 0.18 ms | 145.61 ± 1.23 ms | **171.54 ± 1.67 ms** | 96.1 t/s | **PASS** |
+| **Case A** | 23.12 ± 0.22 ms | 149.33 ± 2.12 ms | **175.49 ± 2.04 ms** | 93.8 t/s | **PASS** |
+| **Case B** | 23.24 ± 0.57 ms | 148.15 ± 1.03 ms | **174.65 ± 1.16 ms** | 94.5 t/s | **PASS** |
+| **Case C** | 23.27 ± 0.32 ms | 149.5 ± 1.49 ms | **176.48 ± 1.2 ms** | 93.6 t/s | **PASS** |
 
 ### Aggregate Performance Summary
 
-- **Global Average Roundtrip Latency**: **171.8 ms**
-- **Global Average Generation Latency**: **145.81 ms**
-- **Global Average Prompt Eval Latency**: **22.77 ms**
-- **Micro-Turn Budget Margin**: **428.2 ms headroom** remaining within 600ms micro-turn frame.
+- **Global Average Roundtrip Latency**: **175.54 ms**
+- **Global Average Generation Latency**: **148.99 ms**
+- **Global Average Prompt Eval Latency**: **23.21 ms**
+- **Micro-Turn Budget Margin**: **424.5 ms headroom** remaining within 600ms micro-turn frame.
 
 ---
 
@@ -71,8 +71,8 @@ All measurements evaluated across 5 repeated runs (after 1 warm-up invocation).
 - [x] Test Case A returns `listen` upon hesitation prompt.
 - [x] Test Case B returns spoken safety warning upon urgent hazard.
 - [x] Test Case C returns spoken response containing `Paris`.
-- [x] Average generation latency $< 200\text{ ms}$ (Achieved: **145.81 ms**).
-- [x] Average roundtrip latency $< 200\text{ ms}$ (Achieved: **171.8 ms**).
+- [x] Average generation latency $< 200\text{ ms}$ (Achieved: **148.99 ms**).
+- [x] Average roundtrip latency $< 200\text{ ms}$ (Achieved: **175.54 ms**).
 - [x] **OVERALL EVALUATION GATE**: **PASSED**.
 
 ---

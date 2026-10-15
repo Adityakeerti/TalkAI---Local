@@ -601,9 +601,152 @@
       display: flex;
     }
 
+    /* Hands-Free Mode Toggle Button */
+    .btn-handsfree {
+      padding: 9px 15px;
+      border-radius: 22px;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .btn-handsfree .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #64748b;
+      transition: all 0.2s;
+    }
+
+    .btn-handsfree:hover {
+      border-color: var(--accent);
+      color: var(--text-main);
+    }
+
+    .btn-handsfree.active {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: var(--success);
+      color: #34d399;
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.25);
+    }
+
+    .btn-handsfree.active .dot {
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+      animation: pulse-green-dot 1.2s infinite;
+    }
+
+    @keyframes pulse-green-dot {
+      0% { transform: scale(0.9); opacity: 0.6; }
+      50% { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(0.9); opacity: 0.6; }
+    }
+
     .btn-interrupt:hover {
       background: var(--danger);
       color: white;
+    }
+
+    /* Real-Time Live Debug Bar */
+    .debug-live-bar {
+      margin: 0 16px 12px 16px;
+      padding: 10px 14px;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 11.5px;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+
+    .debug-row-top {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .debug-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .debug-label {
+      color: var(--text-dim);
+      font-weight: 700;
+    }
+
+    .debug-val {
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .debug-badge {
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 10.5px;
+      text-transform: uppercase;
+    }
+
+    .debug-badge.badge-idle {
+      background: rgba(100, 116, 139, 0.2);
+      color: #94a3b8;
+    }
+
+    .debug-badge.badge-speaking {
+      background: rgba(6, 182, 212, 0.2);
+      color: #22d3ee;
+      border: 1px solid rgba(6, 182, 212, 0.4);
+    }
+
+    .debug-badge.badge-yield {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+
+    .debug-badge.badge-vad {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+
+    .debug-row-sub {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 5px;
+      color: var(--text-dim);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .debug-sub-label {
+      color: var(--accent);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .debug-sub-val {
+      color: #94a3b8;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     /* Telemetry / Callbacks Drawer */
@@ -824,6 +967,22 @@
         <canvas id="waveCanvas"></canvas>
       </div>
 
+      <!-- Real-Time Debug & Diagnostics Bar -->
+      <div class="debug-live-bar" id="debugLiveBar">
+        <div class="debug-row-top">
+          <div class="debug-item"><span class="debug-label">LLM:</span> <span class="debug-val" id="dbgModel">Fine-Tuned Gemma-4-E2B (Merged GGUF)</span></div>
+          <div class="debug-item"><span class="debug-label">BACKEND:</span> <span class="debug-val" id="dbgBackend">llama-fork GPU (:8080)</span></div>
+          <div class="debug-item"><span class="debug-label">ACTION:</span> <span class="debug-badge badge-idle" id="dbgAction">IDLE</span></div>
+          <div class="debug-item"><span class="debug-label">TTFT:</span> <span class="debug-val" id="dbgTtft">--</span></div>
+          <div class="debug-item"><span class="debug-label">TTFA:</span> <span class="debug-val" id="dbgTtfa">--</span></div>
+          <div class="debug-item"><span class="debug-label">VAD:</span> <span class="debug-val" id="dbgVad">Ready</span></div>
+        </div>
+        <div class="debug-row-sub">
+          <span class="debug-sub-label">DEBUG LOG:</span>
+          <span class="debug-sub-val" id="dbgLogLine">Initialized. Connected to llama-fork GPU server (models/duplex_gemma_merged.gguf).</span>
+        </div>
+      </div>
+
       <!-- Messages Thread -->
       <div class="messages-container" id="messagesContainer">
         <!-- Welcome Message -->
@@ -859,6 +1018,12 @@
           <svg id="micIconStop" style="display:none;" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <rect x="5" y="5" width="14" height="14" rx="2"/>
           </svg>
+        </button>
+
+        <!-- Hands-Free Continuous Mode Button -->
+        <button class="btn-handsfree" id="btnHandsFreeMode" type="button" title="Continuous Duplex: Speak freely without clicking stop!">
+          <span class="dot"></span>
+          <span id="handsFreeStatusText">Hands-Free: OFF</span>
         </button>
 
         <!-- Text Input -->
@@ -941,6 +1106,54 @@
     const telemetryContent = document.getElementById('telemetryContent');
     const waveCanvas = document.getElementById('waveCanvas');
 
+    // Live Debug Bar Elements
+    const dbgModel = document.getElementById('dbgModel');
+    const dbgBackend = document.getElementById('dbgBackend');
+    const dbgAction = document.getElementById('dbgAction');
+    const dbgTtft = document.getElementById('dbgTtft');
+    const dbgTtfa = document.getElementById('dbgTtfa');
+    const dbgVad = document.getElementById('dbgVad');
+    const dbgLogLine = document.getElementById('dbgLogLine');
+    const btnHandsFreeMode = document.getElementById('btnHandsFreeMode');
+    const handsFreeStatusText = document.getElementById('handsFreeStatusText');
+
+    function updateDbgBar({ model, backend, action, ttft, ttfa, vad, log }) {
+      if (model && dbgModel) dbgModel.textContent = model;
+      if (backend && dbgBackend) dbgBackend.textContent = backend;
+      if (ttft !== undefined && dbgTtft) dbgTtft.textContent = ttft;
+      if (ttfa !== undefined && dbgTtfa) dbgTtfa.textContent = ttfa;
+      if (vad && dbgVad) dbgVad.textContent = vad;
+      if (log && dbgLogLine) {
+        const timeStr = new Date().toLocaleTimeString();
+        dbgLogLine.textContent = `[${timeStr}] ${log}`;
+      }
+      if (action && dbgAction) {
+        dbgAction.textContent = action;
+        dbgAction.className = 'debug-badge';
+        if (action.includes('SPEAK')) dbgAction.classList.add('badge-speaking');
+        else if (action.includes('YIELD')) dbgAction.classList.add('badge-yield');
+        else if (action.includes('VAD') || action.includes('USER')) dbgAction.classList.add('badge-vad');
+        else dbgAction.classList.add('badge-idle');
+      }
+    }
+
+    function updateHandsFreeUi(active) {
+      if (toggleHandsFree) toggleHandsFree.checked = active;
+      if (btnHandsFreeMode) {
+        if (active) {
+          btnHandsFreeMode.classList.add('active');
+          if (handsFreeStatusText) handsFreeStatusText.textContent = 'Hands-Free: ON';
+          updateDbgBar({ vad: 'Hands-Free ON (Continuous)' });
+          logTelemetry('SYSTEM', 'HANDS_FREE', 'Hands-Free Continuous Duplex Mode Activated.');
+        } else {
+          btnHandsFreeMode.classList.remove('active');
+          if (handsFreeStatusText) handsFreeStatusText.textContent = 'Hands-Free: OFF';
+          updateDbgBar({ vad: 'Manual Push-To-Talk' });
+          logTelemetry('SYSTEM', 'HANDS_FREE', 'Hands-Free Mode Deactivated.');
+        }
+      }
+    }
+
     // -------------------------------------------------------------------------
     // WebSocket Connection
     // -------------------------------------------------------------------------
@@ -991,29 +1204,48 @@
           setAgentState('thinking', 'Agent is thinking...');
           showInterruptButton(true);
           createAssistantMessageBubble();
+          updateDbgBar({
+            action: 'PROCESSING',
+            log: `New turn started for input: "${(data.input || '').slice(0, 35)}..."`
+          });
           logTelemetry('LLM', 'TURN_START', `Model: ${data.metadata?.model || 'default'}`);
           break;
 
         case 'tool_start':
           setAgentState('thinking', `Searching web: "${data.input?.query || ''}"...`);
           addToolBadgeToCurrentBubble(data.tool, data.input?.query || '');
+          updateDbgBar({ action: 'SEARCHING', log: `Tool start: ${data.tool} -> "${data.input?.query || ''}"` });
           logTelemetry('TOOL', 'TOOL_START', `Invoked ${data.tool}: ${JSON.stringify(data.input)}`);
           break;
 
         case 'tool_end':
+          updateDbgBar({ log: `Tool complete: ${data.tool} in ${data.elapsed_ms.toFixed(0)}ms` });
           logTelemetry('TOOL', 'TOOL_END', `Finished in ${data.elapsed_ms.toFixed(1)}ms. Snippet: ${data.output.slice(0, 80)}...`);
           break;
 
         case 'llm_start':
+          updateDbgBar({
+            model: data.model === 'local/gemma-4-e2b' ? 'Fine-Tuned Gemma-4-E2B (Merged)' : data.model,
+            backend: data.model.includes('local') ? 'llama-fork GPU (:8080)' : 'Groq Cloud API',
+            action: 'GENERATING',
+            log: `LLM generation started: ${data.model} (context: ${data.message_count} messages)`
+          });
           logTelemetry('LLM', 'LLM_START', `Streaming tokens from ${data.model}`);
           break;
 
         case 'token':
           appendTokenToCurrentBubble(data.token);
+          if (data.token.toLowerCase().includes('listen')) {
+            updateDbgBar({ action: 'YIELD (listen)' });
+          }
           break;
 
         case 'tts_start':
           setAgentState('speaking', `Synthesizing speech...`);
+          updateDbgBar({
+            action: 'SPEAKING',
+            log: `TTS Synth Chunk #${data.segment_index}: "${data.sentence.slice(0, 35)}..."`
+          });
           logTelemetry('TTS', 'TTS_SYNTH_START', `Chunk #${data.segment_index}: "${data.sentence}"`);
           break;
 
@@ -1024,19 +1256,36 @@
 
         case 'turn_finish':
           finalizeCurrentBubble(data.metrics);
-          logTelemetry('AGENT', 'FINISH', `TTFT: ${data.metrics?.ttft_ms?.toFixed(0)}ms | TTFA: ${data.metrics?.ttfa_ms?.toFixed(0)}ms | Total: ${data.metrics?.total_ms?.toFixed(0)}ms`);
+          const act = data.metrics?.action || (data.metrics?.segments === 0 ? 'YIELD (listen)' : 'SPEAK');
+          updateDbgBar({
+            action: act,
+            ttft: data.metrics?.ttft_ms ? `${data.metrics.ttft_ms.toFixed(0)} ms` : '--',
+            ttfa: data.metrics?.ttfa_ms ? `${data.metrics.ttfa_ms.toFixed(0)} ms` : '--',
+            backend: data.metrics?.backend || 'llama-fork (:8080)',
+            model: data.metrics?.model_detail || data.metrics?.model || 'Gemma-4-E2B Merged',
+            log: `Turn complete: ${act} | TTFT: ${data.metrics?.ttft_ms?.toFixed(0)}ms | TTFA: ${data.metrics?.ttfa_ms?.toFixed(0)}ms | Total: ${data.metrics?.total_ms?.toFixed(0)}ms`
+          });
+          logTelemetry('AGENT', 'FINISH', `Action: ${act} | TTFT: ${data.metrics?.ttft_ms?.toFixed(0)}ms | TTFA: ${data.metrics?.ttfa_ms?.toFixed(0)}ms | Total: ${data.metrics?.total_ms?.toFixed(0)}ms`);
+
+          // If assistant yielded (0 audio chunks) in Hands-Free mode, keep mic listening!
+          if (toggleHandsFree.checked && (!data.metrics || data.metrics.segments === 0) && !isAudioPlaying && !micManager.isRecording) {
+            setAgentState('recording', '🎙️ Yielded floor to user (Listening...)');
+            setTimeout(() => micManager.start(), 250);
+          }
           break;
 
         case 'interrupted':
           stopAudioPlayback();
           setAgentState('idle', 'Interrupted.');
           showInterruptButton(false);
+          updateDbgBar({ action: 'INTERRUPTED', log: 'Turn interrupted by user speech / barge-in.' });
           logTelemetry('AGENT', 'INTERRUPT', 'Turn cancelled by user.');
           break;
 
         case 'error':
           setAgentState('idle', 'Error occurred.');
           showInterruptButton(false);
+          updateDbgBar({ action: 'ERROR', log: `Error: ${data.error}` });
           logTelemetry('ERROR', 'ERROR', data.error);
           break;
       }
@@ -1057,6 +1306,7 @@
         isAudioPlaying = false;
         setAgentState('idle', 'Idle • Ready to chat');
         showInterruptButton(false);
+        updateDbgBar({ action: 'IDLE' });
 
         // If hands-free mode is on, automatically open mic for continuous conversation
         if (toggleHandsFree.checked && !micManager.isRecording) {
@@ -1148,7 +1398,12 @@
       const meta = currentStreamingBubble.querySelector('.meta-footer');
       if (meta && metrics) {
         meta.style.display = 'flex';
+        const isYield = metrics.action && metrics.action.includes('YIELD');
+        const actColor = isYield ? '#fbbf24' : '#22d3ee';
+        const modelLabel = metrics.model_detail || metrics.model;
         meta.innerHTML = `
+          <span class="meta-pill" style="color:${actColor};font-weight:700;">${metrics.action || 'RESPONSE'}</span>
+          <span class="meta-pill" style="color:#34d399;">${modelLabel}</span>
           <span class="meta-pill">TTFT: ${metrics.ttft_ms.toFixed(0)}ms</span>
           <span class="meta-pill">TTFA: ${metrics.ttfa_ms.toFixed(0)}ms</span>
           <span class="meta-pill">Total: ${metrics.total_ms.toFixed(0)}ms</span>
@@ -1240,6 +1495,9 @@
         this.analyser = null;
         this.dataArray = null;
         this.recognition = null;
+        this.vadInterval = null;
+        this.speechDetected = false;
+        this.lastSpeechTime = 0;
       }
 
       async initAudioContext(stream) {
@@ -1314,8 +1572,49 @@
           this.mediaRecorder.start(250);
           this.isRecording = true;
           this.updateUiRecording(true);
-          setAgentState('recording', '🔴 Recording... Click to send');
-          logTelemetry('MIC', 'START', `Recording audio (${mimeType}). Click mic again to send.`);
+          const isHandsFree = toggleHandsFree.checked;
+          setAgentState('recording', isHandsFree ? '🎙️ Hands-Free: Listening... Speak freely' : '🔴 Recording... Click to send');
+          logTelemetry('MIC', 'START', `Recording audio (${mimeType}). Hands-Free: ${isHandsFree}`);
+
+          // Voice Activity Detection (VAD) loop for Hands-Free mode
+          this.speechDetected = false;
+          this.lastSpeechTime = 0;
+          if (this.vadInterval) clearInterval(this.vadInterval);
+
+          this.vadInterval = setInterval(() => {
+            if (!this.isRecording || !this.analyser || !this.dataArray) return;
+            this.analyser.getByteFrequencyData(this.dataArray);
+            let sum = 0;
+            for (let i = 0; i < this.dataArray.length; i++) {
+              sum += this.dataArray[i];
+            }
+            const avg = sum / this.dataArray.length;
+            const now = Date.now();
+
+            if (avg > 11.0) {
+              if (!this.speechDetected) {
+                this.speechDetected = true;
+                setAgentState('recording', '🎙️ User Speaking... (Listening)');
+                updateDbgBar({ action: 'USER SPEAKING', vad: 'Voice Active' });
+                if (isAudioPlaying) {
+                  stopAudioPlayback();
+                  if (ws && isConnected) ws.send(JSON.stringify({ type: 'interrupt' }));
+                }
+              }
+              this.lastSpeechTime = now;
+            } else if (this.speechDetected && toggleHandsFree.checked) {
+              // Silence detected after speech ended (850ms pause)
+              const silenceMs = now - this.lastSpeechTime;
+              if (silenceMs > 850) {
+                updateDbgBar({ vad: `Pause detected (${silenceMs}ms) -> Submitting` });
+                logTelemetry('MIC', 'VAD', `Speech pause detected (${silenceMs}ms). Auto-submitting turn.`);
+                clearInterval(this.vadInterval);
+                this.vadInterval = null;
+                this.speechDetected = false;
+                this.stop(); // Stops recorder -> triggers onstop -> sends audio for transcription
+              }
+            }
+          }, 50);
         } catch (err) {
           console.error('Mic access error:', err);
           alert('Microphone access denied: ' + err.message);
@@ -1333,7 +1632,8 @@
         this.recognition.onstart = () => {
           this.isRecording = true;
           this.updateUiRecording(true);
-          setAgentState('recording', 'Listening (Web Speech)... Click to cancel');
+          const isHandsFree = toggleHandsFree.checked;
+          setAgentState('recording', isHandsFree ? '🎙️ Hands-Free: Listening... Speak freely' : 'Listening (Web Speech)... Click to cancel');
           logTelemetry('MIC', 'WEB_SPEECH_START', 'Listening via browser speech recognition.');
         };
 
@@ -1344,7 +1644,7 @@
           }
           chatInput.value = transcript;
           const isFinal = event.results[event.results.length - 1].isFinal;
-          if (isFinal) {
+          if (isFinal && transcript.trim()) {
             this.stop();
             sendUserMessage(transcript);
           }
@@ -1354,7 +1654,7 @@
           console.warn('Web Speech error:', e.error);
           this.stop();
           if (e.error === 'network' || e.error === 'not-allowed') {
-            logTelemetry('MIC', 'FALLBACK', 'Web Speech error, switching to Groq Whisper.');
+            logTelemetry('MIC', 'FALLBACK', 'Web Speech error, switching to Local Whisper.');
             micModeSelect.value = 'whisper';
             this.startMediaRecorder();
           }
@@ -1373,6 +1673,11 @@
       }
 
       stop() {
+        if (this.vadInterval) {
+          clearInterval(this.vadInterval);
+          this.vadInterval = null;
+        }
+        this.speechDetected = false;
         if (!this.isRecording) return;
         this.isRecording = false;
         this.updateUiRecording(false);
@@ -1402,12 +1707,12 @@
           btnMic.classList.add('recording');
           micIconNormal.style.display = 'none';
           micIconStop.style.display = 'block';
-          btnMic.title = 'Click to Send Audio';
+          btnMic.title = toggleHandsFree.checked ? 'Hands-Free Active (Click to Pause)' : 'Click to Send Audio';
         } else {
           btnMic.classList.remove('recording');
           micIconNormal.style.display = 'block';
           micIconStop.style.display = 'none';
-          btnMic.title = 'Click to Speak';
+          btnMic.title = toggleHandsFree.checked ? 'Click to Start Hands-Free Voice' : 'Click to Speak';
         }
       }
 
@@ -1453,6 +1758,28 @@
         micManager.start();
       }
     });
+
+    // Hands-Free Mode Toggle Handlers
+    if (btnHandsFreeMode) {
+      btnHandsFreeMode.addEventListener('click', () => {
+        const newState = !toggleHandsFree.checked;
+        updateHandsFreeUi(newState);
+        if (newState && !micManager.isRecording) {
+          micManager.start();
+        } else if (!newState && micManager.isRecording) {
+          micManager.stop();
+        }
+      });
+    }
+
+    if (toggleHandsFree) {
+      toggleHandsFree.addEventListener('change', (e) => {
+        updateHandsFreeUi(e.target.checked);
+        if (e.target.checked && !micManager.isRecording) {
+          micManager.start();
+        }
+      });
+    }
 
     // -------------------------------------------------------------------------
     // Test Voice Audition
@@ -1608,6 +1935,14 @@
     loadVoices();
     loadModels();
     connectWebSocket();
+    updateHandsFreeUi(toggleHandsFree ? toggleHandsFree.checked : false);
+    updateDbgBar({
+      model: 'Fine-Tuned Gemma-4-E2B (Merged GGUF)',
+      backend: 'llama-fork GPU (:8080)',
+      action: 'IDLE',
+      vad: toggleHandsFree && toggleHandsFree.checked ? 'Hands-Free Active' : 'Push-To-Talk',
+      log: 'System ready. Merged Gemma-4-E2B loaded on llama-fork GPU (port 8080).'
+    });
   </script>
 </body>
 </html>
