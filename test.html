@@ -1160,6 +1160,14 @@
             <span class="slider"></span>
           </label>
         </div>
+
+        <div class="form-group" style="margin-top: 14px;">
+          <div class="slider-header">
+            <span>Barge-In Sensitivity</span>
+            <span id="vadSensVal">Medium (18)</span>
+          </div>
+          <input type="range" id="vadSensSlider" min="10" max="30" step="1" value="18" title="Calibrate voice energy needed to interrupt assistant (lower = easier to interrupt, higher = ignores speaker echo)">
+        </div>
       </div>
 
       <div>
@@ -1335,6 +1343,9 @@
     // Audio Playback Queue
     const audioQueue = [];
     let isAudioPlaying = false;
+    let isTurnActive = false;
+    let isTurnInterrupted = false;
+    let currentTurnId = 0;
     const audioPlayer = document.getElementById('audioPlayer');
 
     // Telemetry & Timing Metrics
@@ -1351,6 +1362,8 @@
     const speedVal = document.getElementById('speedVal');
     const micModeSelect = document.getElementById('micModeSelect');
     const toggleHandsFree = document.getElementById('toggleHandsFree');
+    const vadSensSlider = document.getElementById('vadSensSlider');
+    const vadSensVal = document.getElementById('vadSensVal');
     const modelSelect = document.getElementById('modelSelect');
     const toggleSearch = document.getElementById('toggleSearch');
     const messagesContainer = document.getElementById('messagesContainer');
@@ -1463,6 +1476,9 @@
       switch (data.type) {
         case 'turn_start':
           currentTurnStartTime = performance.now();
+          currentTurnId++;
+          isTurnInterrupted = false;
+          isTurnActive = true;
           setAgentState('thinking', 'Agent is thinking...');
           showInterruptButton(true);
           createAssistantMessageBubble();
@@ -1474,6 +1490,7 @@
           break;
 
         case 'tool_start':
+          if (isTurnInterrupted) return;
           setAgentState('thinking', `Searching web: "${data.input?.query || ''}"...`);
           addToolBadgeToCurrentBubble(data.tool, data.input?.query || '');
           updateDbgBar({ action: 'SEARCHING', log: `Tool start: ${data.tool} -> "${data.input?.query || ''}"` });
@@ -1481,11 +1498,13 @@
           break;
 
         case 'tool_end':
+          if (isTurnInterrupted) return;
           updateDbgBar({ log: `Tool complete: ${data.tool} in ${data.elapsed_ms.toFixed(0)}ms` });
           logTelemetry('TOOL', 'TOOL_END', `Finished in ${data.elapsed_ms.toFixed(1)}ms. Snippet: ${data.output.slice(0, 80)}...`);
           break;
 
         case 'llm_start':
+          if (isTurnInterrupted) return;
           updateDbgBar({
             model: data.model === 'local/gemma-4-e2b' ? 'Fine-Tuned Gemma-4-E2B (Merged)' : data.model,
             backend: data.model.includes('local') ? 'llama-fork GPU (:8080)' : 'Groq Cloud API',
@@ -1496,6 +1515,7 @@
           break;
 
         case 'token':
+          if (isTurnInterrupted) return;
           appendTokenToCurrentBubble(data.token);
           if (data.token.toLowerCase().includes('listen')) {
             updateDbgBar({ action: 'YIELD (listen)' });
@@ -1503,6 +1523,7 @@
           break;
 
         case 'tts_start':
+          if (isTurnInterrupted) return;
           setAgentState('speaking', `Synthesizing speech...`);
           updateDbgBar({
             action: 'SPEAKING',
@@ -1512,11 +1533,17 @@
           break;
 
         case 'tts_chunk':
+          if (isTurnInterrupted) {
+            logTelemetry('TTS', 'DISCARD', `Discarded in-flight TTS chunk from interrupted turn.`);
+            return;
+          }
           logTelemetry('TTS', 'TTS_CHUNK_READY', `Audio ready: ${data.duration.toFixed(2)}s in ${data.gen_time_ms.toFixed(0)}ms`);
           queueAudioChunk(data.audio);
           break;
 
         case 'turn_finish':
+          isTurnActive = false;
+          if (isTurnInterrupted) return;
           finalizeCurrentBubble(data.metrics);
           const act = data.metrics?.action || (data.metrics?.segments === 0 ? 'YIELD (listen)' : 'SPEAK');
           updateDbgBar({
@@ -1529,16 +1556,17 @@
           });
           logTelemetry('AGENT', 'FINISH', `Action: ${act} | TTFT: ${data.metrics?.ttft_ms?.toFixed(0)}ms | TTFA: ${data.metrics?.ttfa_ms?.toFixed(0)}ms | Total: ${data.metrics?.total_ms?.toFixed(0)}ms`);
 
-          // If assistant yielded (0 audio chunks) in Hands-Free mode, keep mic listening!
-          if (toggleHandsFree.checked && (!data.metrics || data.metrics.segments === 0) && !isAudioPlaying && !micManager.isRecording) {
+          // If assistant yielded (0 audio chunks) in Hands-Free mode, inform user
+          if (toggleHandsFree.checked && (!data.metrics || data.metrics.segments === 0) && !isAudioPlaying) {
             setAgentState('recording', '🎙️ Yielded floor to user (Listening...)');
-            setTimeout(() => micManager.start(), 250);
           }
           break;
 
         case 'interrupted':
+          isTurnActive = false;
+          isTurnInterrupted = true;
           stopAudioPlayback();
-          setAgentState('idle', 'Interrupted.');
+          setAgentState(micManager.isListening ? 'recording' : 'idle', micManager.isListening ? '🎙️ Interrupted • Listening to you...' : 'Interrupted.');
           showInterruptButton(false);
           updateDbgBar({ action: 'INTERRUPTED', log: 'Turn interrupted by user speech / barge-in.' });
           logTelemetry('AGENT', 'INTERRUPT', 'Turn cancelled by user barge-in.');
@@ -1555,6 +1583,7 @@
           break;
 
         case 'error':
+          isTurnActive = false;
           setAgentState('idle', 'Error occurred.');
           showInterruptButton(false);
           updateDbgBar({ action: 'ERROR', log: `Error: ${data.error}` });
@@ -1567,6 +1596,7 @@
     // Audio Queue & Streaming Playback
     // -------------------------------------------------------------------------
     function queueAudioChunk(audioDataUri) {
+      if (isTurnInterrupted) return;
       audioQueue.push(audioDataUri);
       if (!isAudioPlaying) {
         playNextAudioChunk();
@@ -1578,21 +1608,18 @@
       const heroMicLabel = document.getElementById('heroMicLabel');
       const heroCaption = document.getElementById('heroCaption');
 
-      if (audioQueue.length === 0) {
+      if (isTurnInterrupted || audioQueue.length === 0) {
         isAudioPlaying = false;
         btnMic.classList.remove('speaking');
-        if (heroRing && !micManager.isRecording) heroRing.classList.remove('active');
-        if (heroMicLabel && !micManager.isRecording) heroMicLabel.textContent = 'TALK';
+        if (heroRing && !micManager.isRecording && !micManager.isListening) heroRing.classList.remove('active');
+        if (heroMicLabel && !micManager.isRecording) heroMicLabel.textContent = micManager.isListening ? 'REC' : 'TALK';
         if (heroCaption && !micManager.isRecording) {
           heroCaption.textContent = toggleHandsFree.checked ? 'Listening... Speak freely' : 'Click mic or enable Hands-Free to talk';
         }
-        setAgentState('idle', 'Idle • Ready to chat');
-        showInterruptButton(false);
-        updateDbgBar({ action: 'IDLE' });
-
-        // If hands-free mode is on, automatically open mic for continuous conversation
-        if (toggleHandsFree.checked && !micManager.isRecording) {
-          setTimeout(() => micManager.start(), 300);
+        if (!isTurnActive) {
+          setAgentState(micManager.isListening ? 'recording' : 'idle', micManager.isListening ? '🎙️ Hands-Free: Listening... Speak freely' : 'Idle • Ready to chat');
+          showInterruptButton(false);
+          updateDbgBar({ action: 'IDLE' });
         }
         return;
       }
@@ -1603,22 +1630,27 @@
       if (heroMicLabel) heroMicLabel.textContent = 'AI';
       if (heroCaption) heroCaption.textContent = 'AI is speaking... (Speak to interrupt)';
       showInterruptButton(true);
-      setAgentState('speaking', 'Speaking...');
+      setAgentState('speaking', 'Speaking... (Speak to interrupt)');
 
       const chunk = audioQueue.shift();
       audioPlayer.src = chunk;
       audioPlayer.playbackRate = parseFloat(speedSlider.value);
       audioPlayer.play().catch(e => {
+        if (!isAudioPlaying || isTurnInterrupted) return;
+        if (e.name === 'AbortError') return;
         console.warn('Playback error (user gesture may be needed):', e);
-        playNextAudioChunk();
+        if (isAudioPlaying) playNextAudioChunk();
       });
     }
 
     audioPlayer.onended = () => {
-      playNextAudioChunk();
+      if (!isTurnInterrupted && isAudioPlaying) {
+        playNextAudioChunk();
+      }
     };
 
     function stopAudioPlayback() {
+      isTurnInterrupted = true;
       audioQueue.length = 0;
       audioPlayer.pause();
       audioPlayer.currentTime = 0;
@@ -1627,12 +1659,37 @@
       const heroRing = document.getElementById('heroRing');
       const heroMicLabel = document.getElementById('heroMicLabel');
       const heroCaption = document.getElementById('heroCaption');
-      if (heroRing && !micManager.isRecording) heroRing.classList.remove('active');
-      if (heroMicLabel && !micManager.isRecording) heroMicLabel.textContent = 'TALK';
+      if (heroRing && !micManager.isRecording && !micManager.isListening) heroRing.classList.remove('active');
+      if (heroMicLabel && !micManager.isRecording) heroMicLabel.textContent = micManager.isListening ? 'REC' : 'TALK';
       if (heroCaption && !micManager.isRecording) {
-        heroCaption.textContent = toggleHandsFree.checked ? 'Hands-Free standby' : 'Click mic or enable Hands-Free to talk';
+        heroCaption.textContent = toggleHandsFree.checked ? 'Listening... Speak freely' : 'Click mic or enable Hands-Free to talk';
       }
       showInterruptButton(false);
+    }
+
+    function triggerBargeIn() {
+      logTelemetry('MIC', 'BARGE_IN', 'Voice detected during turn! Immediate interruption (<20ms).');
+      isTurnInterrupted = true;
+      isTurnActive = false;
+      stopAudioPlayback();
+
+      if (ws && isConnected && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ type: 'interrupt' }));
+      }
+
+      setAgentState('recording', '⚡ Interrupted! Listening to you...');
+      updateDbgBar({ action: 'USER BARGE-IN', vad: 'Auto-Interrupted' });
+
+      if (currentStreamingBubble) {
+        const tokenContainer = currentStreamingBubble.querySelector('.token-container');
+        if (tokenContainer && !tokenContainer.querySelector('.token-chip.interrupt')) {
+          const chip = document.createElement('span');
+          chip.className = 'token-chip interrupt';
+          chip.textContent = '[⚡ AUTO-INTERRUPT: BARGE-IN]';
+          tokenContainer.appendChild(chip);
+        }
+        finalizeCurrentBubble({ action: 'INTERRUPTED (BARGE-IN)', model: 'Gemma-4-E2B', ttft_ms: 0, ttfa_ms: 0, total_ms: 0, voice: 'none' });
+      }
     }
 
     // -------------------------------------------------------------------------
@@ -1773,6 +1830,10 @@
       text = text.trim();
       if (!text || !isConnected) return;
 
+      isTurnInterrupted = false;
+      isTurnActive = true;
+      stopAudioPlayback();
+
       addUserMessage(text);
       chatInput.value = '';
 
@@ -1794,10 +1855,7 @@
     });
 
     btnInterrupt.addEventListener('click', () => {
-      if (ws && isConnected) {
-        ws.send(JSON.stringify({ type: 'interrupt' }));
-      }
-      stopAudioPlayback();
+      triggerBargeIn();
     });
 
     btnClearChat.addEventListener('click', () => {
@@ -1809,11 +1867,12 @@
     });
 
     // -------------------------------------------------------------------------
-    // Robust Multi-Turn Microphone Controller (Whisper + Web Speech API)
+    // Full-Duplex Continuous Microphone & Voice Activity Detection (VAD)
     // -------------------------------------------------------------------------
-    class MicrophoneManager {
+    class DuplexMicrophoneManager {
       constructor() {
-        this.isRecording = false;
+        this.isListening = false;          // True when persistent duplex mic stream is live
+        this.isRecording = false;          // True when actively recording a user utterance
         this.mediaRecorder = null;
         this.mediaStream = null;
         this.recordedChunks = [];
@@ -1824,48 +1883,158 @@
         this.vadInterval = null;
         this.speechDetected = false;
         this.lastSpeechTime = 0;
+        this.speechStartTime = 0;
+        this.consecutiveSpeechFrames = 0;
+        this.isTranscribing = false;
+
+        // Calibrated speech energy thresholds (0 to 255)
+        this.restingThreshold = 12.0;       // Quiet room speech trigger
+        this.bargeInThreshold = 18.0;       // Speech trigger while assistant audio plays
+        this.silenceTimeoutMs = 800;        // Silence after speech to finalize utterance
       }
 
-      async initAudioContext(stream) {
+      async ensureAudioPipeline() {
+        if (this.mediaStream && this.mediaStream.active && this.analyser) {
+          if (this.audioContext && this.audioContext.state === 'suspended') {
+            await this.audioContext.resume();
+          }
+          return;
+        }
+
         try {
+          // Explicit constraints for Full-Duplex AEC, Noise Suppression, and AGC
+          const constraints = {
+            audio: {
+              echoCancellation: { ideal: true },
+              noiseSuppression: { ideal: true },
+              autoGainControl: { ideal: true },
+              channelCount: 1
+            }
+          };
+
+          this.mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+
           if (!this.audioContext) {
             this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
           }
           if (this.audioContext.state === 'suspended') {
             await this.audioContext.resume();
           }
+
           this.analyser = this.audioContext.createAnalyser();
           this.analyser.fftSize = 256;
-          const source = this.audioContext.createMediaStreamSource(stream);
+          this.analyser.smoothingTimeConstant = 0.25;
+
+          const source = this.audioContext.createMediaStreamSource(this.mediaStream);
           source.connect(this.analyser);
           this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
-        } catch (e) {
-          console.warn('AudioContext setup error:', e);
+
+          logTelemetry('MIC', 'AEC_READY', 'Acoustic Echo Cancellation full-duplex pipeline active.');
+        } catch (err) {
+          console.error('Mic access error:', err);
+          alert('Microphone access denied: ' + err.message);
+          throw err;
         }
       }
 
       async start() {
-        if (this.isRecording) return;
+        const isHandsFree = toggleHandsFree && toggleHandsFree.checked;
+        const mode = micModeSelect ? micModeSelect.value : 'whisper';
 
-        // Interrupt any speaking agent audio
-        if (isAudioPlaying) {
-          stopAudioPlayback();
-          if (ws && isConnected) ws.send(JSON.stringify({ type: 'interrupt' }));
+        // If audio is playing or turn is active, user clicking mic interrupts it immediately
+        if (isAudioPlaying || isTurnActive) {
+          triggerBargeIn();
         }
 
-        const mode = micModeSelect.value;
         if (mode === 'browser' && (window.SpeechRecognition || window.webkitSpeechRecognition)) {
           this.startWebSpeech();
+          return;
+        }
+
+        await this.ensureAudioPipeline();
+
+        if (isHandsFree) {
+          this.startContinuousDuplex();
         } else {
-          await this.startMediaRecorder();
+          this.startSingleTurnRecording();
         }
       }
 
-      async startMediaRecorder() {
-        try {
-          this.mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          await this.initAudioContext(this.mediaStream);
+      startContinuousDuplex() {
+        this.isListening = true;
+        this.updateUiListening(true);
+        setAgentState('recording', '🎙️ Hands-Free: Listening... Speak freely');
+        logTelemetry('MIC', 'DUPLEX_START', 'Continuous Duplex VAD loop active.');
 
+        if (this.vadInterval) clearInterval(this.vadInterval);
+        this.speechDetected = false;
+        this.consecutiveSpeechFrames = 0;
+        this.lastSpeechTime = 0;
+
+        this.vadInterval = setInterval(() => {
+          this.runVadTick();
+        }, 25);
+      }
+
+      runVadTick() {
+        if (!this.analyser || !this.dataArray) return;
+        this.analyser.getByteFrequencyData(this.dataArray);
+
+        // Speech-band energy (~180Hz to ~3800Hz, bins 1 to 22)
+        const startBin = 1;
+        const endBin = Math.min(22, this.dataArray.length);
+        let speechSum = 0;
+        for (let i = startBin; i < endBin; i++) {
+          speechSum += this.dataArray[i];
+        }
+        const speechEnergy = speechSum / (endBin - startBin);
+
+        const aiSpeaking = isAudioPlaying || (audioQueue.length > 0);
+        const threshold = aiSpeaking ? this.bargeInThreshold : this.restingThreshold;
+        const now = Date.now();
+
+        if (speechEnergy > threshold) {
+          this.consecutiveSpeechFrames++;
+          const requiredFrames = aiSpeaking ? 2 : 1; // 50ms debounce during AI speech
+
+          if (this.consecutiveSpeechFrames >= requiredFrames) {
+            // Immediate barge-in cutoff if AI was speaking!
+            if (aiSpeaking || isTurnActive) {
+              triggerBargeIn();
+            }
+
+            // Start recording user utterance if not already recording
+            if (!this.isRecording && !this.isTranscribing) {
+              this.startUtteranceRecording();
+              this.speechStartTime = now;
+            }
+
+            this.speechDetected = true;
+            this.lastSpeechTime = now;
+            updateDbgBar({ action: 'USER SPEAKING', vad: `Voice Active (${speechEnergy.toFixed(1)})` });
+          }
+        } else {
+          this.consecutiveSpeechFrames = 0;
+
+          if (this.isRecording && this.speechDetected) {
+            const silenceMs = now - this.lastSpeechTime;
+            if (silenceMs > this.silenceTimeoutMs) {
+              const speechDuration = this.lastSpeechTime - this.speechStartTime;
+              if (speechDuration >= 150) {
+                updateDbgBar({ vad: `Pause detected (${silenceMs}ms) -> Submitting` });
+                logTelemetry('MIC', 'VAD', `Speech pause detected (${silenceMs}ms). Submitting turn.`);
+                this.stopUtteranceRecording();
+              } else {
+                this.cancelUtteranceRecording();
+              }
+            }
+          }
+        }
+      }
+
+      startUtteranceRecording() {
+        if (this.isRecording || !this.mediaStream) return;
+        try {
           let mimeType = 'audio/webm';
           let ext = 'recording.webm';
 
@@ -1891,132 +2060,71 @@
 
           this.mediaRecorder.onstop = async () => {
             const blob = new Blob(this.recordedChunks, { type: mimeType });
-            this.cleanupStream();
-            await this.sendAudioForTranscription(blob, ext);
+            this.recordedChunks = [];
+            if (blob.size >= 1000) {
+              await this.sendAudioForTranscription(blob, ext);
+            } else if (toggleHandsFree.checked) {
+              setAgentState('recording', '🎙️ Hands-Free: Listening... Speak freely');
+            }
           };
 
-          this.mediaRecorder.start(250);
+          this.mediaRecorder.start(100);
           this.isRecording = true;
           this.updateUiRecording(true);
-          const isHandsFree = toggleHandsFree.checked;
-          setAgentState('recording', isHandsFree ? '🎙️ Hands-Free: Listening... Speak freely' : '🔴 Recording... Click to send');
-          logTelemetry('MIC', 'START', `Recording audio (${mimeType}). Hands-Free: ${isHandsFree}`);
-
-          // Voice Activity Detection (VAD) loop for Hands-Free mode
-          this.speechDetected = false;
-          this.lastSpeechTime = 0;
-          if (this.vadInterval) clearInterval(this.vadInterval);
-
-          this.vadInterval = setInterval(() => {
-            if (!this.isRecording || !this.analyser || !this.dataArray) return;
-            this.analyser.getByteFrequencyData(this.dataArray);
-            let sum = 0;
-            for (let i = 0; i < this.dataArray.length; i++) {
-              sum += this.dataArray[i];
-            }
-            const avg = sum / this.dataArray.length;
-            const now = Date.now();
-
-            if (avg > 11.0) {
-              if (!this.speechDetected) {
-                this.speechDetected = true;
-                setAgentState('recording', '🎙️ User Speaking... (Listening)');
-                updateDbgBar({ action: 'USER SPEAKING', vad: 'Voice Active' });
-                if (isAudioPlaying) {
-                  stopAudioPlayback();
-                  if (ws && isConnected) ws.send(JSON.stringify({ type: 'interrupt' }));
-                }
-              }
-              this.lastSpeechTime = now;
-            } else if (this.speechDetected && toggleHandsFree.checked) {
-              // Silence detected after speech ended (850ms pause)
-              const silenceMs = now - this.lastSpeechTime;
-              if (silenceMs > 850) {
-                updateDbgBar({ vad: `Pause detected (${silenceMs}ms) -> Submitting` });
-                logTelemetry('MIC', 'VAD', `Speech pause detected (${silenceMs}ms). Auto-submitting turn.`);
-                clearInterval(this.vadInterval);
-                this.vadInterval = null;
-                this.speechDetected = false;
-                this.stop(); // Stops recorder -> triggers onstop -> sends audio for transcription
-              }
-            }
-          }, 50);
-        } catch (err) {
-          console.error('Mic access error:', err);
-          alert('Microphone access denied: ' + err.message);
-          this.updateUiRecording(false);
+          setAgentState('recording', '🎙️ User Speaking... (Listening)');
+        } catch (e) {
+          console.error('Error starting MediaRecorder:', e);
         }
       }
 
-      startWebSpeech() {
-        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-        this.recognition = new SpeechRec();
-        this.recognition.continuous = false;
-        this.recognition.interimResults = true;
-        this.recognition.lang = 'en-US';
-
-        this.recognition.onstart = () => {
-          this.isRecording = true;
-          this.updateUiRecording(true);
-          const isHandsFree = toggleHandsFree.checked;
-          setAgentState('recording', isHandsFree ? '🎙️ Hands-Free: Listening... Speak freely' : 'Listening (Web Speech)... Click to cancel');
-          logTelemetry('MIC', 'WEB_SPEECH_START', 'Listening via browser speech recognition.');
-        };
-
-        this.recognition.onresult = (event) => {
-          let transcript = '';
-          for (let i = 0; i < event.results.length; ++i) {
-            transcript += event.results[i][0].transcript;
-          }
-          chatInput.value = transcript;
-          const isFinal = event.results[event.results.length - 1].isFinal;
-          if (isFinal && transcript.trim()) {
-            this.stop();
-            sendUserMessage(transcript);
-          }
-        };
-
-        this.recognition.onerror = (e) => {
-          console.warn('Web Speech error:', e.error);
-          this.stop();
-          if (e.error === 'network' || e.error === 'not-allowed') {
-            logTelemetry('MIC', 'FALLBACK', 'Web Speech error, switching to Local Whisper.');
-            micModeSelect.value = 'whisper';
-            this.startMediaRecorder();
-          }
-        };
-
-        this.recognition.onend = () => {
-          this.stop();
-        };
-
-        try {
-          this.recognition.start();
-        } catch (err) {
-          console.warn('Recognition start exception, using Whisper:', err);
-          this.startMediaRecorder();
-        }
-      }
-
-      stop() {
-        if (this.vadInterval) {
-          clearInterval(this.vadInterval);
-          this.vadInterval = null;
-        }
+      stopUtteranceRecording() {
         this.speechDetected = false;
-        if (!this.isRecording) return;
+        if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
+          this.mediaRecorder.stop();
+        }
         this.isRecording = false;
         this.updateUiRecording(false);
+      }
+
+      cancelUtteranceRecording() {
+        this.speechDetected = false;
+        this.isRecording = false;
+        this.recordedChunks = [];
+        if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
+          this.mediaRecorder.ondataavailable = null;
+          this.mediaRecorder.onstop = null;
+          try { this.mediaRecorder.stop(); } catch (e) {}
+        }
+        this.updateUiRecording(false);
+        setAgentState('recording', '🎙️ Hands-Free: Listening... Speak freely');
+      }
+
+      startSingleTurnRecording() {
+        this.speechDetected = true;
+        this.startUtteranceRecording();
+      }
+
+      stop(fullShutdown = false) {
+        if (this.vadInterval && (fullShutdown || !toggleHandsFree.checked)) {
+          clearInterval(this.vadInterval);
+          this.vadInterval = null;
+          this.isListening = false;
+        }
+
+        this.speechDetected = false;
 
         if (this.recognition) {
           try { this.recognition.stop(); } catch (e) {}
           this.recognition = null;
         }
 
-        if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
-          this.mediaRecorder.stop();
-        } else {
+        if (this.isRecording) {
+          this.stopUtteranceRecording();
+        }
+
+        if (fullShutdown) {
           this.cleanupStream();
+          this.updateUiListening(false);
           setAgentState('idle', 'Idle • Ready to chat');
         }
       }
@@ -2025,6 +2133,100 @@
         if (this.mediaStream) {
           this.mediaStream.getTracks().forEach(t => t.stop());
           this.mediaStream = null;
+        }
+        if (this.audioContext && this.audioContext.state !== 'closed') {
+          try { this.audioContext.close(); } catch (e) {}
+          this.audioContext = null;
+        }
+        this.analyser = null;
+        this.isListening = false;
+        this.isRecording = false;
+      }
+
+      startWebSpeech() {
+        const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+        this.recognition = new SpeechRec();
+        const isHandsFree = toggleHandsFree && toggleHandsFree.checked;
+        this.recognition.continuous = isHandsFree;
+        this.recognition.interimResults = true;
+        this.recognition.lang = 'en-US';
+
+        this.recognition.onstart = () => {
+          this.isRecording = true;
+          this.isListening = true;
+          this.updateUiRecording(true);
+          setAgentState('recording', isHandsFree ? '🎙️ Hands-Free: Listening... Speak freely' : 'Listening (Web Speech)... Click to cancel');
+          logTelemetry('MIC', 'WEB_SPEECH_START', 'Listening via browser speech recognition.');
+        };
+
+        this.recognition.onresult = (event) => {
+          if (isAudioPlaying || isTurnActive) {
+            triggerBargeIn();
+          }
+
+          let transcript = '';
+          for (let i = 0; i < event.results.length; ++i) {
+            transcript += event.results[i][0].transcript;
+          }
+          chatInput.value = transcript;
+          const isFinal = event.results[event.results.length - 1].isFinal;
+          if (isFinal && transcript.trim()) {
+            if (!isHandsFree) this.stop(false);
+            sendUserMessage(transcript);
+          }
+        };
+
+        this.recognition.onerror = (e) => {
+          console.warn('Web Speech error:', e.error);
+          if (e.error === 'network' || e.error === 'not-allowed') {
+            this.stop(true);
+            logTelemetry('MIC', 'FALLBACK', 'Web Speech error, switching to Local Faster-Whisper.');
+            if (micModeSelect) micModeSelect.value = 'whisper';
+            this.start();
+          }
+        };
+
+        this.recognition.onend = () => {
+          if (toggleHandsFree.checked && this.isListening) {
+            try { this.recognition.start(); } catch (e) {}
+          } else {
+            this.isRecording = false;
+            this.updateUiRecording(false);
+          }
+        };
+
+        try {
+          this.recognition.start();
+        } catch (err) {
+          console.warn('Recognition start exception, using Whisper:', err);
+          if (micModeSelect) micModeSelect.value = 'whisper';
+          this.start();
+        }
+      }
+
+      updateUiListening(listening) {
+        const heroRing = document.getElementById('heroRing');
+        const heroMicLabel = document.getElementById('heroMicLabel');
+        const heroCaption = document.getElementById('heroCaption');
+
+        if (listening) {
+          if (heroRing && !isAudioPlaying) heroRing.classList.add('active');
+          if (heroMicLabel && !isAudioPlaying) heroMicLabel.textContent = 'REC';
+          micIconNormal.style.display = 'none';
+          micIconStop.style.display = 'block';
+          btnMic.title = 'Hands-Free Active (Click to Pause)';
+          if (heroCaption && !isAudioPlaying) {
+            heroCaption.textContent = 'Listening... Speak freely (VAD Duplex)';
+          }
+        } else {
+          if (heroRing && !isAudioPlaying) heroRing.classList.remove('active');
+          if (heroMicLabel && !isAudioPlaying) heroMicLabel.textContent = 'TALK';
+          micIconNormal.style.display = 'block';
+          micIconStop.style.display = 'none';
+          btnMic.title = 'Click to Speak / Hands-Free Mode';
+          if (heroCaption && !isAudioPlaying) {
+            heroCaption.textContent = 'Click mic or enable Hands-Free to talk';
+          }
         }
       }
 
@@ -2039,30 +2241,26 @@
           if (heroMicLabel) heroMicLabel.textContent = 'REC';
           micIconNormal.style.display = 'none';
           micIconStop.style.display = 'block';
-          btnMic.title = toggleHandsFree.checked ? 'Hands-Free Active (Click to Pause)' : 'Click to Send Audio';
-          if (heroCaption) heroCaption.textContent = toggleHandsFree.checked ? 'Listening... Speak freely (VAD Auto-Send)' : 'Recording... Click button to send';
+          btnMic.title = toggleHandsFree.checked ? 'Hands-Free: Recording Utterance' : 'Click to Send Audio';
+          if (heroCaption) heroCaption.textContent = '🎙️ Recording voice... Speak your thought';
         } else {
           btnMic.classList.remove('recording');
-          if (heroRing && !isAudioPlaying) heroRing.classList.remove('active');
-          if (heroMicLabel && !isAudioPlaying) heroMicLabel.textContent = 'TALK';
-          micIconNormal.style.display = 'block';
-          micIconStop.style.display = 'none';
-          btnMic.title = toggleHandsFree.checked ? 'Click to Start Hands-Free Voice' : 'Click to Speak';
-          if (heroCaption && !isAudioPlaying) {
-            heroCaption.textContent = toggleHandsFree.checked ? 'Hands-Free standby' : 'Click mic or enable Hands-Free to talk';
+          if (!isAudioPlaying && this.isListening) {
+            if (heroCaption) heroCaption.textContent = 'Listening... Speak freely (VAD Duplex)';
           }
         }
       }
 
       async sendAudioForTranscription(audioBlob, filename) {
         if (audioBlob.size < 1000) {
-          setAgentState('idle', 'Recording too short.');
+          setAgentState(toggleHandsFree.checked ? 'recording' : 'idle', toggleHandsFree.checked ? '🎙️ Hands-Free: Listening...' : 'Recording too short.');
           return;
         }
 
+        this.isTranscribing = true;
         setAgentState('thinking', '⚡ Transcribing with Whisper...');
         btnMic.classList.add('transcribing');
-        logTelemetry('MIC', 'TRANSCRIBING', `Uploading ${audioBlob.size} bytes (${filename}) to Groq Whisper...`);
+        logTelemetry('MIC', 'TRANSCRIBING', `Uploading ${audioBlob.size} bytes (${filename}) to Whisper...`);
 
         const formData = new FormData();
         formData.append('file', audioBlob, filename);
@@ -2074,26 +2272,40 @@
             logTelemetry('MIC', 'TRANSCRIPTION_SUCCESS', `"${data.text}"`);
             sendUserMessage(data.text);
           } else {
-            setAgentState('idle', 'No speech detected.');
+            setAgentState(toggleHandsFree.checked ? 'recording' : 'idle', toggleHandsFree.checked ? '🎙️ Hands-Free: Listening...' : 'No speech detected.');
           }
         } catch (e) {
           console.error('Transcription failed:', e);
           logTelemetry('ERROR', 'TRANSCRIBE_FAIL', String(e));
-          setAgentState('idle', 'Transcription error.');
+          setAgentState(toggleHandsFree.checked ? 'recording' : 'idle', 'Transcription error.');
         } finally {
+          this.isTranscribing = false;
           btnMic.classList.remove('transcribing');
+          if (toggleHandsFree.checked && !isAudioPlaying && !isTurnActive) {
+            setAgentState('recording', '🎙️ Hands-Free: Listening... Speak freely');
+          }
         }
       }
     }
 
-    const micManager = new MicrophoneManager();
+    const micManager = new DuplexMicrophoneManager();
 
     // Single unified click handler for the mic button
     btnMic.addEventListener('click', () => {
-      if (micManager.isRecording) {
-        micManager.stop();
+      if (toggleHandsFree.checked) {
+        if (micManager.isListening) {
+          micManager.stop(true);
+          updateHandsFreeUi(false);
+        } else {
+          updateHandsFreeUi(true);
+          micManager.start();
+        }
       } else {
-        micManager.start();
+        if (micManager.isRecording) {
+          micManager.stop(false);
+        } else {
+          micManager.start();
+        }
       }
     });
 
@@ -2102,10 +2314,10 @@
       btnHandsFreeMode.addEventListener('click', () => {
         const newState = !toggleHandsFree.checked;
         updateHandsFreeUi(newState);
-        if (newState && !micManager.isRecording) {
+        if (newState) {
           micManager.start();
-        } else if (!newState && micManager.isRecording) {
-          micManager.stop();
+        } else {
+          micManager.stop(true);
         }
       });
     }
@@ -2113,9 +2325,25 @@
     if (toggleHandsFree) {
       toggleHandsFree.addEventListener('change', (e) => {
         updateHandsFreeUi(e.target.checked);
-        if (e.target.checked && !micManager.isRecording) {
+        if (e.target.checked) {
           micManager.start();
+        } else {
+          micManager.stop(true);
         }
+      });
+    }
+
+    // Barge-In Sensitivity Slider Handler
+    if (vadSensSlider && vadSensVal) {
+      vadSensSlider.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        micManager.bargeInThreshold = val;
+        micManager.restingThreshold = Math.max(8, val - 6);
+        let label = 'Medium';
+        if (val < 14) label = 'High (Quiet Voice)';
+        else if (val > 22) label = 'Low (Noisy Room)';
+        vadSensVal.textContent = `${label} (${val})`;
+        logTelemetry('MIC', 'CALIBRATE', `Barge-In threshold set to ${val} (resting: ${micManager.restingThreshold})`);
       });
     }
 
@@ -2196,7 +2424,7 @@
       ctx.clearRect(0, 0, width, height);
 
       let micVolume = 0;
-      if (micManager.isRecording && micManager.analyser && micManager.dataArray) {
+      if (micManager.analyser && micManager.dataArray && (micManager.isListening || micManager.isRecording)) {
         micManager.analyser.getByteFrequencyData(micManager.dataArray);
         let sum = 0;
         for (let i = 0; i < micManager.dataArray.length; i++) {
@@ -2205,8 +2433,8 @@
         micVolume = sum / micManager.dataArray.length; // 0 to 255
       }
 
-      const isVoiceActive = isAudioPlaying || micManager.isRecording;
-      const amplitude = micManager.isRecording
+      const isVoiceActive = isAudioPlaying || micManager.isRecording || (micManager.isListening && micVolume > micManager.restingThreshold);
+      const amplitude = (micManager.isRecording || (micManager.isListening && micVolume > micManager.restingThreshold))
         ? Math.max(height / 10, (micVolume / 255) * (height / 2))
         : (isAudioPlaying ? (height / 2.6) : (height / 12));
       const frequency = isVoiceActive ? 0.04 : 0.015;
@@ -2215,7 +2443,9 @@
 
       ctx.beginPath();
       ctx.lineWidth = isVoiceActive ? 2.5 : 1.5;
-      ctx.strokeStyle = micManager.isRecording ? '#ef4444' : (isAudioPlaying ? '#06b6d4' : '#475569');
+      ctx.strokeStyle = (micManager.isRecording || (micManager.isListening && micVolume > micManager.restingThreshold))
+        ? '#ef4444'
+        : (isAudioPlaying ? '#06b6d4' : '#475569');
 
       for (let x = 0; x < width; x++) {
         const y = height / 2 + Math.sin(x * frequency + phase) * amplitude * Math.sin(x / width * Math.PI);

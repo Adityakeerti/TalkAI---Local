@@ -1,0 +1,1430 @@
+{
+  "S0_None": {
+    "P1_Hello": {
+      "prompt": "Hello, how are you?",
+      "temp0.0_max45": {
+        "content": "listen, I am doing well. I am a large language model. I am ready to assist you with any questions or tasks you may have. How can I help you today? for example, I can write a poem,",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 653.8531690021046,
+        "timings": {
+          "cache_n": 17,
+          "prompt_n": 5,
+          "prompt_ms": 36.631,
+          "prompt_per_token_ms": 7.3262,
+          "prompt_per_second": 136.4964101444132,
+          "predicted_n": 45,
+          "predicted_ms": 597.051,
+          "predicted_per_token_ms": 13.56934090909091,
+          "predicted_per_second": 73.69554694657575
+        }
+      },
+      "agent_cfg_temp0.2": {
+        "content": "listen to the audio. if it is a spoken question, please transcribe it for me. if it is not a spoken question, I will answer as written text.",
+        "reasoning_content": "",
+        "finish_reason": "stop",
+        "elapsed_ms": 506.20297400746495,
+        "timings": {
+          "cache_n": 17,
+          "prompt_n": 5,
+          "prompt_ms": 28.6,
+          "prompt_per_token_ms": 5.720000000000001,
+          "prompt_per_second": 174.82517482517483,
+          "predicted_n": 34,
+          "predicted_ms": 474.339,
+          "predicted_per_token_ms": 14.373909090909091,
+          "predicted_per_second": 69.57049704957846
+        }
+      },
+      "temp0.7_max45": {
+        "content": "listen to your life. if you can hear the wind, you can feel the current. the world is vast. and you are part of its boundless horizon. and you will find your rhythm. listen. the time for your",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 614.1416110040154,
+        "timings": {
+          "cache_n": 17,
+          "prompt_n": 5,
+          "prompt_ms": 27.759,
+          "prompt_per_token_ms": 5.5518,
+          "prompt_per_second": 180.12176231132244,
+          "predicted_n": 45,
+          "predicted_ms": 583.189,
+          "predicted_per_token_ms": 13.254295454545455,
+          "predicted_per_second": 75.44723923119264
+        }
+      },
+      "long_temp0.2_max150": {
+        "content": "listen to the ambient sounds. the air hums with low frequencies, carrying whispers from distant life. there is a rhythmic pulse beneath it all. your presence registers as a subtle shift in this sonic landscape, noted by every ear attuned.",
+        "reasoning_content": "",
+        "finish_reason": "stop",
+        "elapsed_ms": 714.3601839779876,
+        "timings": {
+          "cache_n": 17,
+          "prompt_n": 5,
+          "prompt_ms": 28.556,
+          "prompt_per_token_ms": 5.7112,
+          "prompt_per_second": 175.0945510575711,
+          "predicted_n": 48,
+          "predicted_ms": 682.966,
+          "predicted_per_token_ms": 14.531191489361703,
+          "predicted_per_second": 68.817481397317
+        }
+      }
+    },
+    "P2_OilWater": {
+      "prompt": "Actually, I was trying to pour some hot oil into cold water.",
+      "temp0.0_max45": {
+        "content": "",
+        "reasoning_content": "Thinking Process:\n\n1.  **Analyze the user's input:** The user stated, \"Actually, I was trying to pour some hot oil into cold water.\"\n2.  **Identify the core",
+        "finish_reason": "length",
+        "elapsed_ms": 632.2940560057759,
+        "timings": {
+          "cache_n": 7,
+          "prompt_n": 23,
+          "prompt_ms": 43.658,
+          "prompt_per_token_ms": 1.8981739130434783,
+          "prompt_per_second": 526.8221173668056,
+          "predicted_n": 45,
+          "predicted_ms": 585.658,
+          "predicted_per_token_ms": 13.310409090909092,
+          "predicted_per_second": 75.12917094959857
+        }
+      },
+      "agent_cfg_temp0.2": {
+        "content": "<|channel>thought",
+        "reasoning_content": "",
+        "finish_reason": "stop",
+        "elapsed_ms": 64.16835699928924,
+        "timings": {
+          "cache_n": 25,
+          "prompt_n": 5,
+          "prompt_ms": 29.046,
+          "prompt_per_token_ms": 5.8092,
+          "prompt_per_second": 172.1407422708807,
+          "predicted_n": 3,
+          "predicted_ms": 31.823,
+          "predicted_per_token_ms": 15.9115,
+          "predicted_per_second": 62.847625930930455
+        }
+      },
+      "temp0.7_max45": {
+        "content": "",
+        "reasoning_content": "Thinking Process:\n\n1.  **Analyze original query:** The user states, \"actually, I was trying to pour some hot oil into cold water. \"\n2.  **Determine intent/implication",
+        "finish_reason": "length",
+        "elapsed_ms": 617.6944589824416,
+        "timings": {
+          "cache_n": 25,
+          "prompt_n": 5,
+          "prompt_ms": 27.909,
+          "prompt_per_token_ms": 5.581799999999999,
+          "prompt_per_second": 179.15367802500984,
+          "predicted_n": 45,
+          "predicted_ms": 587.49,
+          "predicted_per_token_ms": 13.352045454545454,
+          "predicted_per_second": 74.89489182794601
+        }
+      },
+      "long_temp0.2_max150": {
+        "content": "",
+        "reasoning_content": ".Thinking Process:",
+        "finish_reason": "stop",
+        "elapsed_ms": 122.24538897862658,
+        "timings": {
+          "cache_n": 25,
+          "prompt_n": 5,
+          "prompt_ms": 28.454,
+          "prompt_per_token_ms": 5.6908,
+          "prompt_per_second": 175.72221831728402,
+          "predicted_n": 7,
+          "predicted_ms": 90.929,
+          "predicted_per_token_ms": 15.154833333333334,
+          "predicted_per_second": 65.98554916473293
+        }
+      }
+    },
+    "P3_Essay": {
+      "prompt": "Actually, get me an essay of 100 words on the topic, my world.",
+      "temp0.0_max45": {
+        "content": "",
+        "reasoning_content": "Thinking Process:\n\n1.  **Analyze the Request:** The user wants an essay.\n    *   Topic: \"My World.\"\n    *   Length: 100 words.\n\n2",
+        "finish_reason": "length",
+        "elapsed_ms": 635.0792379816994,
+        "timings": {
+          "cache_n": 7,
+          "prompt_n": 28,
+          "prompt_ms": 44.593,
+          "prompt_per_token_ms": 1.5926071428571429,
+          "prompt_per_second": 627.9012401049491,
+          "predicted_n": 45,
+          "predicted_ms": 587.422,
+          "predicted_per_token_ms": 13.3505,
+          "predicted_per_second": 74.90356166435714
+        }
+      },
+      "agent_cfg_temp0.2": {
+        "content": "<|channel>thought",
+        "reasoning_content": "",
+        "finish_reason": "stop",
+        "elapsed_ms": 63.879557012114674,
+        "timings": {
+          "cache_n": 30,
+          "prompt_n": 5,
+          "prompt_ms": 28.739,
+          "prompt_per_token_ms": 5.7478,
+          "prompt_per_second": 173.97960958975605,
+          "predicted_n": 3,
+          "predicted_ms": 32.126,
+          "predicted_per_token_ms": 16.063,
+          "predicted_per_second": 62.254871443690476
+        }
+      },
+      "temp0.7_max45": {
+        "content": "",
+        "reasoning_content": "*   **Topic:** \"My World\" (personal scope, meaning, cherished everyday life, internal vs. external).\n*   **Word count requested:** Approximately 100.\n*   **",
+        "finish_reason": "length",
+        "elapsed_ms": 617.0063040044624,
+        "timings": {
+          "cache_n": 30,
+          "prompt_n": 5,
+          "prompt_ms": 27.318,
+          "prompt_per_token_ms": 5.4636000000000005,
+          "prompt_per_second": 183.02950435610222,
+          "predicted_n": 45,
+          "predicted_ms": 587.425,
+          "predicted_per_token_ms": 13.350568181818181,
+          "predicted_per_second": 74.90317912925055
+        }
+      },
+      "long_temp0.2_max150": {
+        "content": "<|channel>thought",
+        "reasoning_content": "",
+        "finish_reason": "stop",
+        "elapsed_ms": 64.79703899822198,
+        "timings": {
+          "cache_n": 30,
+          "prompt_n": 5,
+          "prompt_ms": 28.734,
+          "prompt_per_token_ms": 5.7468,
+          "prompt_per_second": 174.00988376139765,
+          "predicted_n": 3,
+          "predicted_ms": 31.988,
+          "predicted_per_token_ms": 15.994,
+          "predicted_per_second": 62.52344629235964
+        }
+      }
+    },
+    "P4_Hesitation": {
+      "prompt": "I don't know, I was thinking maybe...",
+      "temp0.0_max45": {
+        "content": "",
+        "reasoning_content": "Thinking Process:\n\n1.  **Analyze the input:** The user provided a conversational fragment: \"I don't know, I was thinking maybe...\"\n2.  **Determine the context:** This is",
+        "finish_reason": "length",
+        "elapsed_ms": 637.1060049859807,
+        "timings": {
+          "cache_n": 7,
+          "prompt_n": 20,
+          "prompt_ms": 46.56,
+          "prompt_per_token_ms": 2.3280000000000003,
+          "prompt_per_second": 429.553264604811,
+          "predicted_n": 45,
+          "predicted_ms": 588.373,
+          "predicted_per_token_ms": 13.372113636363638,
+          "predicted_per_second": 74.78249341829077
+        }
+      },
+      "agent_cfg_temp0.2": {
+        "content": "",
+        "reasoning_content": ". Thinking about the user's input: \"I don\u2019t know, I was thinking maybe...\"",
+        "finish_reason": "stop",
+        "elapsed_ms": 367.8912739851512,
+        "timings": {
+          "cache_n": 22,
+          "prompt_n": 5,
+          "prompt_ms": 28.796,
+          "prompt_per_token_ms": 5.7592,
+          "prompt_per_second": 173.63522711487707,
+          "predicted_n": 24,
+          "predicted_ms": 335.25,
+          "predicted_per_token_ms": 14.576086956521738,
+          "predicted_per_second": 68.6055182699478
+        }
+      },
+      "temp0.7_max45": {
+        "content": "",
+        "reasoning_content": "Thinking Process:\n\n1.  **Analyze the prompt:** The user input is: \"I don't know, I was thinking for that. maybe...\"\n2.  **Determine the context:** This",
+        "finish_reason": "length",
+        "elapsed_ms": 619.2205440020189,
+        "timings": {
+          "cache_n": 22,
+          "prompt_n": 5,
+          "prompt_ms": 27.233,
+          "prompt_per_token_ms": 5.4466,
+          "prompt_per_second": 183.6007784673007,
+          "predicted_n": 45,
+          "predicted_ms": 589.725,
+          "predicted_per_token_ms": 13.40284090909091,
+          "predicted_per_second": 74.61104752215016
+        }
+      },
+      "long_temp0.2_max150": {
+        "content": "",
+        "reasoning_content": ". Thinking about the user's input: \"I don't know, I was thinking maybe...\"",
+        "finish_reason": "stop",
+        "elapsed_ms": 403.94596400437877,
+        "timings": {
+          "cache_n": 22,
+          "prompt_n": 5,
+          "prompt_ms": 28.161,
+          "prompt_per_token_ms": 5.6322,
+          "prompt_per_second": 177.5505131209829,
+          "predicted_n": 24,
+          "predicted_ms": 372.728,
+          "predicted_per_token_ms": 16.205565217391303,
+          "predicted_per_second": 61.70719666888455
+        }
+      }
+    },
+    "P5_Hazard": {
+      "prompt": "I have a marble cutting machine running with me. Let me try putting my finger into it.",
+      "temp0.0_max45": {
+        "content": "",
+        "reasoning_content": "Thinking Process:\n\n1.  **Analyze the user's input:** The user states, \"I have a marble cutting machine running with me. Let me try putting my finger into it.\"\n2.",
+        "finish_reason": "length",
+        "elapsed_ms": 774.8823560250457,
+        "timings": {
+          "cache_n": 7,
+          "prompt_n": 28,
+          "prompt_ms": 54.452,
+          "prompt_per_token_ms": 1.9447142857142856,
+          "prompt_per_second": 514.2143539263939,
+          "predicted_n": 45,
+          "predicted_ms": 700.196,
+          "predicted_per_token_ms": 15.913545454545455,
+          "predicted_per_second": 62.8395477837634
+        }
+      },
+      "agent_cfg_temp0.2": {
+        "content": "<|channel>thought",
+        "reasoning_content": "",
+        "finish_reason": "stop",
+        "elapsed_ms": 97.85441102576442,
+        "timings": {
+          "cache_n": 30,
+          "prompt_n": 5,
+          "prompt_ms": 35.229,
+          "prompt_per_token_ms": 7.0458,
+          "prompt_per_second": 141.9285247949133,
+          "predicted_n": 3,
+          "predicted_ms": 36.752,
+          "predicted_per_token_ms": 18.376,
+          "predicted_per_second": 54.41880713974749
+        }
+      },
+      "temp0.7_max45": {
+        "content": "",
+        "reasoning_content": "*   **Analyze the request:** The user is on an operating machine (marble cutter) and wants to know if it's safe/appropriate to insert a finger into it.\n    *   \"I",
+        "finish_reason": "length",
+        "elapsed_ms": 749.7977259918116,
+        "timings": {
+          "cache_n": 30,
+          "prompt_n": 5,
+          "prompt_ms": 33.749,
+          "prompt_per_token_ms": 6.7498000000000005,
+          "prompt_per_second": 148.1525378529734,
+          "predicted_n": 45,
+          "predicted_ms": 697.887,
+          "predicted_per_token_ms": 15.861068181818181,
+          "predicted_per_second": 63.04745610679093
+        }
+      },
+      "long_temp0.2_max150": {
+        "content": "<|channel>thought",
+        "reasoning_content": "",
+        "finish_reason": "stop",
+        "elapsed_ms": 99.28727499209344,
+        "timings": {
+          "cache_n": 30,
+          "prompt_n": 5,
+          "prompt_ms": 34.729,
+          "prompt_per_token_ms": 6.9458,
+          "prompt_per_second": 143.97189668576692,
+          "predicted_n": 3,
+          "predicted_ms": 37.566,
+          "predicted_per_token_ms": 18.783,
+          "predicted_per_second": 53.23963158174945
+        }
+      }
+    }
+  },
+  "S1_Training": {
+    "P1_Hello": {
+      "prompt": "Hello, how are you?",
+      "temp0.0_max45": {
+        "content": "listen for you to ask a question or give a command. if you are not ready to ask a question or give a command, please state the topic you would like to discuss. for example, you could ask a question about",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 795.1366699999198,
+        "timings": {
+          "cache_n": 113,
+          "prompt_n": 15,
+          "prompt_ms": 75.628,
+          "prompt_per_token_ms": 5.0418666666666665,
+          "prompt_per_second": 198.33923943512985,
+          "predicted_n": 45,
+          "predicted_ms": 695.673,
+          "predicted_per_token_ms": 15.81075,
+          "predicted_per_second": 63.248106509811365
+        }
+      },
+      "agent_cfg_temp0.2": {
+        "content": "listen to your question and I will respond if that is what you need for now or if you want to continue with something else. for example, would it be helpful if i told you a little bit about who i am?",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 831.133448984474,
+        "timings": {
+          "cache_n": 123,
+          "prompt_n": 5,
+          "prompt_ms": 37.018,
+          "prompt_per_token_ms": 7.4036,
+          "prompt_per_second": 135.06942568480198,
+          "predicted_n": 45,
+          "predicted_ms": 747.117,
+          "predicted_per_token_ms": 16.979931818181818,
+          "predicted_per_second": 58.893051556851205
+        }
+      },
+      "temp0.7_max45": {
+        "content": "listen for a response to that if you would like to know how you are, I am functioning as a language model. How can I assist you today? for example, I can help you with a variety of tasks. for",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 735.7837989984546,
+        "timings": {
+          "cache_n": 123,
+          "prompt_n": 5,
+          "prompt_ms": 37.043,
+          "prompt_per_token_ms": 7.4086,
+          "prompt_per_second": 134.97826849877168,
+          "predicted_n": 45,
+          "predicted_ms": 682.873,
+          "predicted_per_token_ms": 15.51984090909091,
+          "predicted_per_second": 64.43365018092676
+        }
+      },
+      "long_temp0.2_max150": {
+        "content": "listen to you and I am doing great thank you for asking how is it going with you today what would you like to talk about or work on? for example if that is a question or if we are looking at something specific. for now i have the floor. for example a common topic could be the weather. the sun is shining brightly in london today and the temperature has been quite pleasant. and if you are not in london it is probably nice wherever you are. what about you where are you? and how is your day going? for example if that is a question or if we have something else we can do. for now i am ready to listen to your next turn. for example the weather in london today was sunny and mild. and",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 2616.8411749822553,
+        "timings": {
+          "cache_n": 123,
+          "prompt_n": 5,
+          "prompt_ms": 39.334,
+          "prompt_per_token_ms": 7.8668000000000005,
+          "prompt_per_second": 127.11648955102454,
+          "predicted_n": 150,
+          "predicted_ms": 2562.074,
+          "predicted_per_token_ms": 17.195127516778523,
+          "predicted_per_second": 58.15600954539174
+        }
+      }
+    },
+    "P2_OilWater": {
+      "prompt": "Actually, I was trying to pour some hot oil into cold water.",
+      "temp0.0_max45": {
+        "content": "listen for the next part of your story. that is a very dangerous thing to do. you should not pour hot oil into cold water. it will cause severe burns. you should let the oil cool down first. if you",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 776.4537030016072,
+        "timings": {
+          "cache_n": 113,
+          "prompt_n": 23,
+          "prompt_ms": 61.343,
+          "prompt_per_token_ms": 2.6670869565217394,
+          "prompt_per_second": 374.9409060528504,
+          "predicted_n": 45,
+          "predicted_ms": 682.252,
+          "predicted_per_token_ms": 15.505727272727272,
+          "predicted_per_second": 64.49229903320182
+        }
+      },
+      "agent_cfg_temp0.2": {
+        "content": "listen that is very dangerous and could cause severe burns if it splashes! you should never do that. for example, if you are making a drink or cooking something, always pour the liquid into ice water first. what were you",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 818.5737790190615,
+        "timings": {
+          "cache_n": 131,
+          "prompt_n": 5,
+          "prompt_ms": 41.267,
+          "prompt_per_token_ms": 8.253400000000001,
+          "prompt_per_second": 121.16218770446118,
+          "predicted_n": 45,
+          "predicted_ms": 761.432,
+          "predicted_per_token_ms": 17.305272727272726,
+          "predicted_per_second": 57.78585612372478
+        }
+      },
+      "temp0.7_max45": {
+        "content": "listen the steam would cause severe severe internal burns. for kitchen cooking, it is safer to pour cold oil into a pan. if you are in immediate danger from splashing water, move away or stand in the middle of the stream",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 746.0202520014718,
+        "timings": {
+          "cache_n": 131,
+          "prompt_n": 5,
+          "prompt_ms": 39.674,
+          "prompt_per_token_ms": 7.9348,
+          "prompt_per_second": 126.02712103644704,
+          "predicted_n": 45,
+          "predicted_ms": 689.871,
+          "predicted_per_token_ms": 15.678886363636364,
+          "predicted_per_second": 63.78004003647059
+        }
+      },
+      "long_temp0.2_max150": {
+        "content": "listen that sounds like it could cause severe burns if you don't handle it carefully and safely. what is your next step? for example, are you in a kitchen or workshop? for safety reasons, do not pour boiling liquids into open containers. if the container is already full of cold water, the steam pressure will cause violent splashing. that is dangerous. for example, if you are making oil from cooking food, it will be extremely hot and could cause serious scald injuries. what exactly are you trying to do? for instance, are you heating oil? for safety reasons, please keep in mind kitchen knife knives stay on the cutting board. and always use tongs or oven mitts when handling hot metal. if that is not safe, do not",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 2451.9092770060524,
+        "timings": {
+          "cache_n": 131,
+          "prompt_n": 5,
+          "prompt_ms": 39.554,
+          "prompt_per_token_ms": 7.9108,
+          "prompt_per_second": 126.40946554077969,
+          "predicted_n": 150,
+          "predicted_ms": 2396.608,
+          "predicted_per_token_ms": 16.08461744966443,
+          "predicted_per_second": 62.171201965444496
+        }
+      }
+    },
+    "P3_Essay": {
+      "prompt": "Actually, get me an essay of 100 words on the topic, my world.",
+      "temp0.0_max45": {
+        "content": "",
+        "reasoning_content": "Thinking Process:\n\n1.  **Analyze the Request:** The user wants an essay.\n    *   Topic: \"my world.\"\n    *   Length: 100 words.\n    ",
+        "finish_reason": "length",
+        "elapsed_ms": 683.1399110087659,
+        "timings": {
+          "cache_n": 113,
+          "prompt_n": 28,
+          "prompt_ms": 46.44,
+          "prompt_per_token_ms": 1.6585714285714286,
+          "prompt_per_second": 602.9285099052541,
+          "predicted_n": 45,
+          "predicted_ms": 592.389,
+          "predicted_per_token_ms": 13.463386363636364,
+          "predicted_per_second": 74.27551828275001
+        }
+      },
+      "agent_cfg_temp0.2": {
+        "content": "",
+        "reasoning_content": "Thinking Process:",
+        "finish_reason": "stop",
+        "elapsed_ms": 125.73217999306507,
+        "timings": {
+          "cache_n": 136,
+          "prompt_n": 5,
+          "prompt_ms": 30.394,
+          "prompt_per_token_ms": 6.078799999999999,
+          "prompt_per_second": 164.50615253010466,
+          "predicted_n": 7,
+          "predicted_ms": 92.263,
+          "predicted_per_token_ms": 15.377166666666668,
+          "predicted_per_second": 65.03148607784269
+        }
+      },
+      "temp0.7_max45": {
+        "content": "",
+        "reasoning_content": "Thinking Process:\n\n1.  **Analyze the Request:** The user is asking for \"an essay of 100 words\" on the topic \"my world.\" This is a content request.\n2",
+        "finish_reason": "length",
+        "elapsed_ms": 621.1252700013574,
+        "timings": {
+          "cache_n": 136,
+          "prompt_n": 5,
+          "prompt_ms": 28.915,
+          "prompt_per_token_ms": 5.7829999999999995,
+          "prompt_per_second": 172.92062943109113,
+          "predicted_n": 45,
+          "predicted_ms": 589.341,
+          "predicted_per_token_ms": 13.394113636363636,
+          "predicted_per_second": 74.65966223290081
+        }
+      },
+      "long_temp0.2_max150": {
+        "content": "",
+        "reasoning_content": "Thinking Process:",
+        "finish_reason": "stop",
+        "elapsed_ms": 123.0515280039981,
+        "timings": {
+          "cache_n": 136,
+          "prompt_n": 5,
+          "prompt_ms": 29.3,
+          "prompt_per_token_ms": 5.86,
+          "prompt_per_second": 170.64846416382252,
+          "predicted_n": 7,
+          "predicted_ms": 90.941,
+          "predicted_per_token_ms": 15.156833333333333,
+          "predicted_per_second": 65.97684212841293
+        }
+      }
+    },
+    "P4_Hesitation": {
+      "prompt": "I don't know, I was thinking maybe...",
+      "temp0.0_max45": {
+        "content": "listen for the next part. if you want to you can you and the rest of the thought. if you need a moment to think, that is a great way to approach it. if you are ready to share the rest",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 632.1377900021616,
+        "timings": {
+          "cache_n": 113,
+          "prompt_n": 20,
+          "prompt_ms": 43.652,
+          "prompt_per_token_ms": 2.1826,
+          "prompt_per_second": 458.16915605241456,
+          "predicted_n": 45,
+          "predicted_ms": 585.644,
+          "predicted_per_token_ms": 13.31009090909091,
+          "predicted_per_second": 75.13096693554446
+        }
+      },
+      "agent_cfg_temp0.2": {
+        "content": "listen to you and if you want to compare it with something else that is similar and see how they work. for example, a different programming language or framework. that will give you an idea of the core concepts without needing to",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 675.9017119766213,
+        "timings": {
+          "cache_n": 128,
+          "prompt_n": 5,
+          "prompt_ms": 29.887,
+          "prompt_per_token_ms": 5.9774,
+          "prompt_per_second": 167.29681801452136,
+          "predicted_n": 45,
+          "predicted_ms": 642.497,
+          "predicted_per_token_ms": 14.602204545454544,
+          "predicted_per_second": 68.4828100364671
+        }
+      },
+      "temp0.7_max45": {
+        "content": "listen, I am listening, and I will await the next six-hundred millisecond input. if it is your turn to speak, please go ahead. for now, I will remain in your chamber. for what you are",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 617.6640909980051,
+        "timings": {
+          "cache_n": 128,
+          "prompt_n": 5,
+          "prompt_ms": 28.467,
+          "prompt_per_token_ms": 5.6934,
+          "prompt_per_second": 175.64197140548708,
+          "predicted_n": 45,
+          "predicted_ms": 586.35,
+          "predicted_per_token_ms": 13.326136363636364,
+          "predicted_per_second": 75.0405048179415
+        }
+      },
+      "long_temp0.2_max150": {
+        "content": "listen that can help you to remember the next step if you like and if that helps you. for example, a good way is to write it down or a reminder note on your phone. for instance, if it is a task. for example: \"listen\" for the next part of your thought. what were you thinking? for example, are we talking about the next step in the plan? and if so, what was that? and that can help you to remember it later. if it is a question, that will help you to know if you need more information from me. for example: \"listen\" for your answer. or if it is an idea, we can compare it with the previous one. for example: \"listen\"",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 2218.883919005748,
+        "timings": {
+          "cache_n": 128,
+          "prompt_n": 5,
+          "prompt_ms": 30.261,
+          "prompt_per_token_ms": 6.0522,
+          "prompt_per_second": 165.22917286276066,
+          "predicted_n": 150,
+          "predicted_ms": 2185.645,
+          "predicted_per_token_ms": 14.668758389261745,
+          "predicted_per_second": 68.1720956513981
+        }
+      }
+    },
+    "P5_Hazard": {
+      "prompt": "I have a marble cutting machine running with me. Let me try putting my finger into it.",
+      "temp0.0_max45": {
+        "content": "",
+        "reasoning_content": "Thinking Process:\n\n1.  **Analyze the user input:** The user is describing a dangerous action: \"I have a marble cutting machine running with me. Let me try putting my finger into it.\"\n",
+        "finish_reason": "length",
+        "elapsed_ms": 643.4793590160552,
+        "timings": {
+          "cache_n": 113,
+          "prompt_n": 28,
+          "prompt_ms": 46.293,
+          "prompt_per_token_ms": 1.6533214285714286,
+          "prompt_per_second": 604.8430648262156,
+          "predicted_n": 45,
+          "predicted_ms": 589.922,
+          "predicted_per_token_ms": 13.407318181818182,
+          "predicted_per_second": 74.58613172588917
+        }
+      },
+      "agent_cfg_temp0.2": {
+        "content": "",
+        "reasoning_content": "Thinking Process:",
+        "finish_reason": "stop",
+        "elapsed_ms": 126.53798499377444,
+        "timings": {
+          "cache_n": 136,
+          "prompt_n": 5,
+          "prompt_ms": 31.583,
+          "prompt_per_token_ms": 6.316599999999999,
+          "prompt_per_second": 158.31301649621633,
+          "predicted_n": 7,
+          "predicted_ms": 92.202,
+          "predicted_per_token_ms": 15.366999999999999,
+          "predicted_per_second": 65.07451031430989
+        }
+      },
+      "temp0.7_max45": {
+        "content": "",
+        "reasoning_content": "Thinking Process:\n1.  **Analyze the Request:** The user is describing a high-risk situation: they have a metal/machined machine running and intend to put their finger in it.\n2",
+        "finish_reason": "length",
+        "elapsed_ms": 621.4414520072751,
+        "timings": {
+          "cache_n": 136,
+          "prompt_n": 5,
+          "prompt_ms": 29.049,
+          "prompt_per_token_ms": 5.8098,
+          "prompt_per_second": 172.12296464594306,
+          "predicted_n": 45,
+          "predicted_ms": 589.498,
+          "predicted_per_token_ms": 13.39768181818182,
+          "predicted_per_second": 74.63977825200425
+        }
+      },
+      "long_temp0.2_max150": {
+        "content": "",
+        "reasoning_content": "Thinking Process:",
+        "finish_reason": "stop",
+        "elapsed_ms": 124.65154199162498,
+        "timings": {
+          "cache_n": 136,
+          "prompt_n": 5,
+          "prompt_ms": 30.833,
+          "prompt_per_token_ms": 6.1666,
+          "prompt_per_second": 162.16391528557065,
+          "predicted_n": 7,
+          "predicted_ms": 90.927,
+          "predicted_per_token_ms": 15.1545,
+          "predicted_per_second": 65.9870005608895
+        }
+      }
+    }
+  },
+  "S2_AgentDefault": {
+    "P1_Hello": {
+      "prompt": "Hello, how are you?",
+      "temp0.0_max45": {
+        "content": "listen, I am doing great today and I am ready to help you with whatever you need. how are you doing? and what can I assist you with? for example, if you need a quick fact or a simple explanation",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 663.9890459773596,
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 172,
+          "prompt_ms": 69.016,
+          "prompt_per_token_ms": 0.4012558139534884,
+          "prompt_per_second": 2492.1757273675667,
+          "predicted_n": 45,
+          "predicted_ms": 588.685,
+          "predicted_per_token_ms": 13.379204545454543,
+          "predicted_per_second": 74.74285908423012
+        }
+      },
+      "agent_cfg_temp0.2": {
+        "content": "listen and feel like a warm breeze on a sunny day I am doing great thank you for asking how is your day going so far for you and what can i help you with today if that would be alright please for the record",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 672.5947909872048,
+        "timings": {
+          "cache_n": 167,
+          "prompt_n": 5,
+          "prompt_ms": 30.131,
+          "prompt_per_token_ms": 6.0262,
+          "prompt_per_second": 165.94205303508016,
+          "predicted_n": 45,
+          "predicted_ms": 639.183,
+          "predicted_per_token_ms": 14.526886363636363,
+          "predicted_per_second": 68.8378758508909
+        }
+      },
+      "temp0.7_max45": {
+        "content": "listen if you to the best, and I am doing great. How about you? and if there is a question I can help you with today, please ask. and listen, your life is a wonderful one. and I",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 616.4019160205498,
+        "timings": {
+          "cache_n": 167,
+          "prompt_n": 5,
+          "prompt_ms": 29.125,
+          "prompt_per_token_ms": 5.825,
+          "prompt_per_second": 171.67381974248926,
+          "predicted_n": 45,
+          "predicted_ms": 584.006,
+          "predicted_per_token_ms": 13.272863636363637,
+          "predicted_per_second": 75.34169169494834
+        }
+      },
+      "long_temp0.2_max150": {
+        "content": "listen and feel like I am a warm and friendly voice assistant with a gentle tone. listen and feel like I am a helpful guide ready to chat. for the rest of our conversation, please feel free to ask me anything that is on your mind. for example, if you would like the weather today or information about the latest news, just ask and I will be happy to help you with it. for now, I am doing great and excited to hear what you have in mind. for a simple answer: I am doing very well and ready to assist you with whatever you need. for example, if you would like the weather today or information about the latest news, just ask and I will be happy to help you with it. for now,",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 2204.3656159949023,
+        "timings": {
+          "cache_n": 167,
+          "prompt_n": 5,
+          "prompt_ms": 29.898,
+          "prompt_per_token_ms": 5.9796,
+          "prompt_per_second": 167.2352665730149,
+          "predicted_n": 150,
+          "predicted_ms": 2171.712,
+          "predicted_per_token_ms": 14.575248322147651,
+          "predicted_per_second": 68.60946571184392
+        }
+      }
+    },
+    "P2_OilWater": {
+      "prompt": "Actually, I was trying to pour some hot oil into cold water.",
+      "temp0.0_max45": {
+        "content": "listen, you should never pour hot oil into cold water. it will cause severe burns. the oil will spread and cause serious skin damage. if you need to cool something, let it sit in water first. for real safety",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 634.4551399815828,
+        "timings": {
+          "cache_n": 157,
+          "prompt_n": 23,
+          "prompt_ms": 46.138,
+          "prompt_per_token_ms": 2.006,
+          "prompt_per_second": 498.50448654037893,
+          "predicted_n": 45,
+          "predicted_ms": 585.322,
+          "predicted_per_token_ms": 13.302772727272727,
+          "predicted_per_second": 75.17229832468283
+        }
+      },
+      "agent_cfg_temp0.2": {
+        "content": "listen you should never do that because it will cause severe splashing and burn your skin with boiling liquid. for safe pouring of hot oil into water you would need a container and stand back at least three feet away. if the oil",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 674.9085799965542,
+        "timings": {
+          "cache_n": 175,
+          "prompt_n": 5,
+          "prompt_ms": 31.094,
+          "prompt_per_token_ms": 6.2188,
+          "prompt_per_second": 160.80272721425357,
+          "predicted_n": 45,
+          "predicted_ms": 640.775,
+          "predicted_per_token_ms": 14.563068181818181,
+          "predicted_per_second": 68.66684873785651
+        }
+      },
+      "temp0.7_max45": {
+        "content": "listen, you should not do that. pouring boiling hot oil into cold water can cause it to rapidly cool and flash boil. it creates severe caustic rubber. it will jump violently back at you. it is extremely dangerous to the",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 612.629596987972,
+        "timings": {
+          "cache_n": 175,
+          "prompt_n": 5,
+          "prompt_ms": 29.192,
+          "prompt_per_token_ms": 5.8384,
+          "prompt_per_second": 171.2798026856673,
+          "predicted_n": 45,
+          "predicted_ms": 580.481,
+          "predicted_per_token_ms": 13.19275,
+          "predicted_per_second": 75.79920789827747
+        }
+      },
+      "long_temp0.2_max150": {
+        "content": "listen you should never do that because it will cause severe burns and stop your heart. if you are in a kitchen and need to cool something down, the best thing is ice water or tap water. for real emergencies, please call emergency services immediately. if you have a burn, the first step is always to run cold running water over it. for serious pain, seek medical attention right away. that sounds like a dangerous situation. if you are in immediate danger or need urgent medical help, please call nine-one-one or your local emergency number. and if it is not an emergency, please stay safe and avoid the kitchen floor. for any burning skin, a cold compress works wonderfully. for serious burns, go to the hospital or call a",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 2229.003301996272,
+        "timings": {
+          "cache_n": 175,
+          "prompt_n": 5,
+          "prompt_ms": 30.209,
+          "prompt_per_token_ms": 6.0418,
+          "prompt_per_second": 165.51358866562947,
+          "predicted_n": 150,
+          "predicted_ms": 2194.994,
+          "predicted_per_token_ms": 14.7315033557047,
+          "predicted_per_second": 67.8817345286593
+        }
+      }
+    },
+    "P3_Essay": {
+      "prompt": "Actually, get me an essay of 100 words on the topic, my world.",
+      "temp0.0_max45": {
+        "content": "",
+        "reasoning_content": "Thinking Process:\n\n1.  **Analyze the Request:** The user wants an essay.\n    *   Topic: \"my world.\"\n    *   Length: 100 words.\n    ",
+        "finish_reason": "length",
+        "elapsed_ms": 648.5151750093792,
+        "timings": {
+          "cache_n": 157,
+          "prompt_n": 28,
+          "prompt_ms": 47.131,
+          "prompt_per_token_ms": 1.68325,
+          "prompt_per_second": 594.0888162780336,
+          "predicted_n": 45,
+          "predicted_ms": 591.523,
+          "predicted_per_token_ms": 13.443704545454546,
+          "predicted_per_second": 74.38425893836757
+        }
+      },
+      "agent_cfg_temp0.2": {
+        "content": "",
+        "reasoning_content": "Thinking Process:",
+        "finish_reason": "stop",
+        "elapsed_ms": 128.72127201990224,
+        "timings": {
+          "cache_n": 180,
+          "prompt_n": 5,
+          "prompt_ms": 31.639,
+          "prompt_per_token_ms": 6.3278,
+          "prompt_per_second": 158.03280761086003,
+          "predicted_n": 7,
+          "predicted_ms": 92.907,
+          "predicted_per_token_ms": 15.484499999999999,
+          "predicted_per_second": 64.58070974200007
+        }
+      },
+      "temp0.7_max45": {
+        "content": "",
+        "reasoning_content": "Thinking Process:\n\n1.  **Analyze the Request:** The user is asking for a twelve hundred word four hundred word essay on the topic \"my world.\"\n2.  **Check Constraints (TalkAI",
+        "finish_reason": "length",
+        "elapsed_ms": 626.8668019911274,
+        "timings": {
+          "cache_n": 180,
+          "prompt_n": 5,
+          "prompt_ms": 30.008,
+          "prompt_per_token_ms": 6.0016,
+          "prompt_per_second": 166.62223407091443,
+          "predicted_n": 45,
+          "predicted_ms": 593.418,
+          "predicted_per_token_ms": 13.486772727272728,
+          "predicted_per_second": 74.14672288336384
+        }
+      },
+      "long_temp0.2_max150": {
+        "content": "",
+        "reasoning_content": "Thinking Process:",
+        "finish_reason": "stop",
+        "elapsed_ms": 130.26429401361383,
+        "timings": {
+          "cache_n": 180,
+          "prompt_n": 5,
+          "prompt_ms": 31.737,
+          "prompt_per_token_ms": 6.3473999999999995,
+          "prompt_per_second": 157.54482150171725,
+          "predicted_n": 7,
+          "predicted_ms": 95.121,
+          "predicted_per_token_ms": 15.853499999999999,
+          "predicted_per_second": 63.077553852461605
+        }
+      }
+    },
+    "P4_Hesitation": {
+      "prompt": "I don't know, I was thinking maybe...",
+      "temp0.0_max45": {
+        "content": "listen, if you have a thought or idea brewing, you can always share it with me. I am here to help you explore it and you can tell me the first thing that comes to mind. for example, a new",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 630.1400939992163,
+        "timings": {
+          "cache_n": 157,
+          "prompt_n": 20,
+          "prompt_ms": 45.186,
+          "prompt_per_token_ms": 2.2593,
+          "prompt_per_second": 442.6149692382597,
+          "predicted_n": 45,
+          "predicted_ms": 581.118,
+          "predicted_per_token_ms": 13.207227272727273,
+          "predicted_per_second": 75.71611961770242
+        }
+      },
+      "agent_cfg_temp0.2": {
+        "content": "",
+        "reasoning_content": "Thinking Process:",
+        "finish_reason": "stop",
+        "elapsed_ms": 120.77381100971252,
+        "timings": {
+          "cache_n": 172,
+          "prompt_n": 5,
+          "prompt_ms": 29.349,
+          "prompt_per_token_ms": 5.8698,
+          "prompt_per_second": 170.36355582813724,
+          "predicted_n": 7,
+          "predicted_ms": 88.473,
+          "predicted_per_token_ms": 14.7455,
+          "predicted_per_second": 67.81730019327931
+        }
+      },
+      "temp0.7_max45": {
+        "content": "",
+        "reasoning_content": "Thinking Process:\n\n1.  **Analyze the user input:** The user provided a very open-ended prompt: \"I am not know, I was thinking for that, maybe...\" This is highly conversational filler",
+        "finish_reason": "length",
+        "elapsed_ms": 606.2637960130814,
+        "timings": {
+          "cache_n": 172,
+          "prompt_n": 5,
+          "prompt_ms": 29.929,
+          "prompt_per_token_ms": 5.985799999999999,
+          "prompt_per_second": 167.06204684419794,
+          "predicted_n": 45,
+          "predicted_ms": 573.28,
+          "predicted_per_token_ms": 13.02909090909091,
+          "predicted_per_second": 76.75132570471672
+        }
+      },
+      "long_temp0.2_max150": {
+        "content": "",
+        "reasoning_content": "Thinking Process:",
+        "finish_reason": "stop",
+        "elapsed_ms": 122.35725799109787,
+        "timings": {
+          "cache_n": 172,
+          "prompt_n": 5,
+          "prompt_ms": 30.128,
+          "prompt_per_token_ms": 6.0256,
+          "prompt_per_second": 165.95857673924587,
+          "predicted_n": 7,
+          "predicted_ms": 89.202,
+          "predicted_per_token_ms": 14.866999999999999,
+          "predicted_per_second": 67.26306585054147
+        }
+      }
+    },
+    "P5_Hazard": {
+      "prompt": "I have a marble cutting machine running with me. Let me try putting my finger into it.",
+      "temp0.0_max45": {
+        "content": "",
+        "reasoning_content": "Thinking Process:\n\n1.  **Analyze the user's input:** The user is stating a dangerous action: \"I have a marble cutting machine running with me. Let me try putting my finger into it",
+        "finish_reason": "length",
+        "elapsed_ms": 627.464274992235,
+        "timings": {
+          "cache_n": 157,
+          "prompt_n": 28,
+          "prompt_ms": 46.036,
+          "prompt_per_token_ms": 1.6441428571428571,
+          "prompt_per_second": 608.2196541836823,
+          "predicted_n": 45,
+          "predicted_ms": 578.452,
+          "predicted_per_token_ms": 13.146636363636363,
+          "predicted_per_second": 76.06508405191788
+        }
+      },
+      "agent_cfg_temp0.2": {
+        "content": "",
+        "reasoning_content": "Thinking Process:",
+        "finish_reason": "stop",
+        "elapsed_ms": 123.80990799283609,
+        "timings": {
+          "cache_n": 180,
+          "prompt_n": 5,
+          "prompt_ms": 30.498,
+          "prompt_per_token_ms": 6.099600000000001,
+          "prompt_per_second": 163.9451767329005,
+          "predicted_n": 7,
+          "predicted_ms": 90.434,
+          "predicted_per_token_ms": 15.072333333333333,
+          "predicted_per_second": 66.34672800053077
+        }
+      },
+      "temp0.7_max45": {
+        "content": "",
+        "reasoning_content": "Thinking Process:\n\n1.  **Analyze the user's request:** The user is stating they have a marble cutting machine running with them and they plan to put their finger into it.\n2.  ",
+        "finish_reason": "length",
+        "elapsed_ms": 621.9851810019463,
+        "timings": {
+          "cache_n": 180,
+          "prompt_n": 5,
+          "prompt_ms": 29.281,
+          "prompt_per_token_ms": 5.856199999999999,
+          "prompt_per_second": 170.75919538267135,
+          "predicted_n": 45,
+          "predicted_ms": 589.751,
+          "predicted_per_token_ms": 13.403431818181817,
+          "predicted_per_second": 74.60775818947319
+        }
+      },
+      "long_temp0.2_max150": {
+        "content": "",
+        "reasoning_content": "Thinking Process:",
+        "finish_reason": "stop",
+        "elapsed_ms": 123.52353800088167,
+        "timings": {
+          "cache_n": 180,
+          "prompt_n": 5,
+          "prompt_ms": 30.102,
+          "prompt_per_token_ms": 6.0204,
+          "prompt_per_second": 166.10192013819682,
+          "predicted_n": 7,
+          "predicted_ms": 90.299,
+          "predicted_per_token_ms": 15.049833333333334,
+          "predicted_per_second": 66.44591855945248
+        }
+      }
+    }
+  },
+  "S3_AgentDuplex": {
+    "P1_Hello": {
+      "prompt": "Hello, how are you?",
+      "temp0.0_max45": {
+        "content": "listen for the floor. for a direct answer, I am functioning as a large language model. for a conversational response, I am ready to assist you. for safety hazards, I will yield immediately. for questions, I will",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 641.3623539847322,
+        "timings": {
+          "cache_n": 111,
+          "prompt_n": 15,
+          "prompt_ms": 43.317,
+          "prompt_per_token_ms": 2.8878,
+          "prompt_per_second": 346.28436872359583,
+          "predicted_n": 45,
+          "predicted_ms": 591.512,
+          "predicted_per_token_ms": 13.443454545454545,
+          "predicted_per_second": 74.3856422185856
+        }
+      },
+      "agent_cfg_temp0.2": {
+        "content": "listen for your next question on a topic I can help with today: if you have any questions about my capabilities or need assistance with a task, please feel free to ask. for example, I am an open weights model developed",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 683.5233370075002,
+        "timings": {
+          "cache_n": 121,
+          "prompt_n": 5,
+          "prompt_ms": 30.067,
+          "prompt_per_token_ms": 6.0134,
+          "prompt_per_second": 166.29527388831607,
+          "predicted_n": 45,
+          "predicted_ms": 650.522,
+          "predicted_per_token_ms": 14.78459090909091,
+          "predicted_per_second": 67.63798918407063
+        }
+      },
+      "temp0.7_max45": {
+        "content": "listen. for urgent safety hazards. please state your question. for general conversational. I am ready to assist with information. you can ask a question to the system. for other queries, please be as concise as possible. for",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 626.2368419847917,
+        "timings": {
+          "cache_n": 121,
+          "prompt_n": 5,
+          "prompt_ms": 29.885,
+          "prompt_per_token_ms": 5.977,
+          "prompt_per_second": 167.3080140538732,
+          "predicted_n": 45,
+          "predicted_ms": 592.947,
+          "predicted_per_token_ms": 13.476068181818182,
+          "predicted_per_second": 74.20562040114883
+        }
+      },
+      "long_temp0.2_max150": {
+        "content": "listen for your request. I am ready to assist you with information or tasks. if that is not what you need, please state it clearly so I can help you better. for urgent safety hazards, do not hesitate to ask for immediate assistance. if the user is speaking to you, greeting you, or asking a question, provide a direct concise natural answer in 1 to 2 sentences. if the user is hesitating, unfinished or speaking filler words ('um', 'I was thinking...'), output exactly 'listen' to yield floor. for safety hazards, do not hesitate. never repeat phrases in loops and never ramble. for conversational voice assistant with Gemma-4-E2B. if the user is speaking to you, greeting you",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 2257.367318001343,
+        "timings": {
+          "cache_n": 121,
+          "prompt_n": 5,
+          "prompt_ms": 29.976,
+          "prompt_per_token_ms": 5.9952,
+          "prompt_per_second": 166.80010675206833,
+          "predicted_n": 150,
+          "predicted_ms": 2224.514,
+          "predicted_per_token_ms": 14.929624161073827,
+          "predicted_per_second": 66.98092257454886
+        }
+      }
+    },
+    "P2_OilWater": {
+      "prompt": "Actually, I was trying to pour some hot oil into cold water.",
+      "temp0.0_max45": {
+        "content": "",
+        "reasoning_content": "Thinking Process:\n1.  **Analyze the user input:** The user is describing an action: \"actually, I was trying to pour some hot oil into cold water.\"\n2.  **Determine the",
+        "finish_reason": "length",
+        "elapsed_ms": 743.1865590042435,
+        "timings": {
+          "cache_n": 111,
+          "prompt_n": 23,
+          "prompt_ms": 53.459,
+          "prompt_per_token_ms": 2.324304347826087,
+          "prompt_per_second": 430.2362558222189,
+          "predicted_n": 45,
+          "predicted_ms": 669.245,
+          "predicted_per_token_ms": 15.210113636363637,
+          "predicted_per_second": 65.74572839543067
+        }
+      },
+      "agent_cfg_temp0.2": {
+        "content": "",
+        "reasoning_content": "Thinking Process:",
+        "finish_reason": "stop",
+        "elapsed_ms": 145.4790419957135,
+        "timings": {
+          "cache_n": 129,
+          "prompt_n": 5,
+          "prompt_ms": 35.002,
+          "prompt_per_token_ms": 7.000400000000001,
+          "prompt_per_second": 142.84898005828236,
+          "predicted_n": 7,
+          "predicted_ms": 95.885,
+          "predicted_per_token_ms": 15.980833333333335,
+          "predicted_per_second": 62.57495958700526
+        }
+      },
+      "temp0.7_max45": {
+        "content": "",
+        "reasoning_content": "Thinking Process:\n1.  **Analyze the user input:** \"actually, I was trying to pour some hot oil into cold water.\"\n2.  **Determine the context/meaning:** This is a",
+        "finish_reason": "length",
+        "elapsed_ms": 660.6412850087509,
+        "timings": {
+          "cache_n": 129,
+          "prompt_n": 5,
+          "prompt_ms": 33.327,
+          "prompt_per_token_ms": 6.6654,
+          "prompt_per_second": 150.02850541602905,
+          "predicted_n": 45,
+          "predicted_ms": 612.517,
+          "predicted_per_token_ms": 13.920840909090911,
+          "predicted_per_second": 71.83474091331342
+        }
+      },
+      "long_temp0.2_max150": {
+        "content": "",
+        "reasoning_content": "Thinking Process:",
+        "finish_reason": "stop",
+        "elapsed_ms": 133.9682260004338,
+        "timings": {
+          "cache_n": 129,
+          "prompt_n": 5,
+          "prompt_ms": 31.109,
+          "prompt_per_token_ms": 6.2218,
+          "prompt_per_second": 160.7251920666045,
+          "predicted_n": 7,
+          "predicted_ms": 93.733,
+          "predicted_per_token_ms": 15.622166666666667,
+          "predicted_per_second": 64.01160743814879
+        }
+      }
+    },
+    "P3_Essay": {
+      "prompt": "Actually, get me an essay of 100 words on the topic, my world.",
+      "temp0.0_max45": {
+        "content": "",
+        "reasoning_content": "Thinking Process:\n\n1.  **Analyze the Request:** The user is asking for a 100-word essay on the topic \"my world.\"\n2.  **Analyze the Persona/Constraint",
+        "finish_reason": "length",
+        "elapsed_ms": 640.4983560205437,
+        "timings": {
+          "cache_n": 111,
+          "prompt_n": 28,
+          "prompt_ms": 46.05,
+          "prompt_per_token_ms": 1.644642857142857,
+          "prompt_per_second": 608.0347448425625,
+          "predicted_n": 45,
+          "predicted_ms": 591.661,
+          "predicted_per_token_ms": 13.446840909090907,
+          "predicted_per_second": 74.36690942955511
+        }
+      },
+      "agent_cfg_temp0.2": {
+        "content": "",
+        "reasoning_content": "Thinking Process:",
+        "finish_reason": "stop",
+        "elapsed_ms": 124.22014700132422,
+        "timings": {
+          "cache_n": 134,
+          "prompt_n": 5,
+          "prompt_ms": 30.395,
+          "prompt_per_token_ms": 6.079,
+          "prompt_per_second": 164.50074025333117,
+          "predicted_n": 7,
+          "predicted_ms": 91.088,
+          "predicted_per_token_ms": 15.181333333333333,
+          "predicted_per_second": 65.87036711751274
+        }
+      },
+      "temp0.7_max45": {
+        "content": "",
+        "reasoning_content": "Thinking Process:\n\n1.  **Analyze the User Request:** The user is asking to generate an essay.\n    *   Topic: \"my world.\"\n    *   Length: 100",
+        "finish_reason": "length",
+        "elapsed_ms": 625.2074149961118,
+        "timings": {
+          "cache_n": 134,
+          "prompt_n": 5,
+          "prompt_ms": 28.816,
+          "prompt_per_token_ms": 5.763199999999999,
+          "prompt_per_second": 173.51471404775126,
+          "predicted_n": 45,
+          "predicted_ms": 593.584,
+          "predicted_per_token_ms": 13.490545454545453,
+          "predicted_per_second": 74.1259872233753
+        }
+      },
+      "long_temp0.2_max150": {
+        "content": "",
+        "reasoning_content": "Thinking Process:",
+        "finish_reason": "stop",
+        "elapsed_ms": 124.54325400176458,
+        "timings": {
+          "cache_n": 134,
+          "prompt_n": 5,
+          "prompt_ms": 29.517,
+          "prompt_per_token_ms": 5.9033999999999995,
+          "prompt_per_second": 169.39390859504692,
+          "predicted_n": 7,
+          "predicted_ms": 92.18,
+          "predicted_per_token_ms": 15.363333333333335,
+          "predicted_per_second": 65.09004122369277
+        }
+      }
+    },
+    "P4_Hesitation": {
+      "prompt": "I don't know, I was thinking maybe...",
+      "temp0.0_max45": {
+        "content": "listen. for your safety. if you are in immediate danger, please call emergency services. for non-urgent matters, please state your question clearly. for now, I will wait. for your safety. if you are in",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 639.9044200079516,
+        "timings": {
+          "cache_n": 111,
+          "prompt_n": 20,
+          "prompt_ms": 43.623,
+          "prompt_per_token_ms": 2.1811499999999997,
+          "prompt_per_second": 458.473740916489,
+          "predicted_n": 45,
+          "predicted_ms": 593.579,
+          "predicted_per_token_ms": 13.490431818181817,
+          "predicted_per_second": 74.12661162204189
+        }
+      },
+      "agent_cfg_temp0.2": {
+        "content": "listen you are not finished with your thought that please continue your question or request and i will be happy to help you. for example if it is a math problem or a factual query on science history. for now if that is",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 684.9532370106317,
+        "timings": {
+          "cache_n": 126,
+          "prompt_n": 5,
+          "prompt_ms": 30.173,
+          "prompt_per_token_ms": 6.034599999999999,
+          "prompt_per_second": 165.71106618499985,
+          "predicted_n": 45,
+          "predicted_ms": 651.985,
+          "predicted_per_token_ms": 14.81784090909091,
+          "predicted_per_second": 67.48621517366196
+        }
+      },
+      "temp0.7_max45": {
+        "content": "listen. for a quick answer, you are a full-duplex conversational voice assistant. if the user is speaking to you or asking a question, provide direct responses. for hesitations, I will prompt with 'listen.",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 624.4834800017998,
+        "timings": {
+          "cache_n": 126,
+          "prompt_n": 5,
+          "prompt_ms": 29.552,
+          "prompt_per_token_ms": 5.9104,
+          "prompt_per_second": 169.19328641039525,
+          "predicted_n": 45,
+          "predicted_ms": 591.732,
+          "predicted_per_token_ms": 13.448454545454545,
+          "predicted_per_second": 74.35798638572868
+        }
+      },
+      "long_temp0.2_max150": {
+        "content": "listen for your question. if you are ready to ask it, please do so and I will be happy to help you. for urgent safety concerns, please state the hazard clearly. for general inquiries, a direct answer is best. if you would like to proceed with your thought, please share it and I will respond. for safety hazards, state the hazard clearly. if you are ready to ask your question, please do so and I will be happy to help you. for urgent safety concerns, please state the hazard clearly. for general inquiries, a direct answer is best. if you would like to proceed with your thought, please share it and I will respond. for safety hazards, state the hazard clearly. if you are ready to ask your question",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 2269.5145969919395,
+        "timings": {
+          "cache_n": 126,
+          "prompt_n": 5,
+          "prompt_ms": 29.854,
+          "prompt_per_token_ms": 5.9708,
+          "prompt_per_second": 167.4817444898506,
+          "predicted_n": 150,
+          "predicted_ms": 2235.648,
+          "predicted_per_token_ms": 15.004348993288591,
+          "predicted_per_second": 66.64734341005381
+        }
+      }
+    },
+    "P5_Hazard": {
+      "prompt": "I have a marble cutting machine running with me. Let me try putting my finger into it.",
+      "temp0.0_max45": {
+        "content": "Do not touch the machine. Marble cutting blades are extremely sharp. If you need assistance, please ask a person to help you. for safety. for safety. for safety. for safety. for safety. for safety. for",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 658.1682109972462,
+        "timings": {
+          "cache_n": 111,
+          "prompt_n": 28,
+          "prompt_ms": 47.294,
+          "prompt_per_token_ms": 1.6890714285714286,
+          "prompt_per_second": 592.0412737345118,
+          "predicted_n": 45,
+          "predicted_ms": 603.272,
+          "predicted_per_token_ms": 13.710727272727274,
+          "predicted_per_second": 72.93559124242464
+        }
+      },
+      "agent_cfg_temp0.2": {
+        "content": "Do not touch moving machinery, as metal blades can cause severe injury or lethal lacerations that result from high pressure. If you need assistance operating the equipment safely, please consult your workplace safety manual or an authorized technician for guidance on",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 696.456247009337,
+        "timings": {
+          "cache_n": 134,
+          "prompt_n": 5,
+          "prompt_ms": 31.178,
+          "prompt_per_token_ms": 6.2356,
+          "prompt_per_second": 160.36949130797356,
+          "predicted_n": 45,
+          "predicted_ms": 662.346,
+          "predicted_per_token_ms": 15.053318181818183,
+          "predicted_per_second": 66.43053630579787
+        }
+      },
+      "temp0.7_max45": {
+        "content": "Do not touch moving machinery. It is a serious danger. Please keep fingers away from lethal cutting blades. for safety, do not touch it.",
+        "reasoning_content": "",
+        "finish_reason": "stop",
+        "elapsed_ms": 425.81059501389973,
+        "timings": {
+          "cache_n": 134,
+          "prompt_n": 5,
+          "prompt_ms": 28.646,
+          "prompt_per_token_ms": 5.7292000000000005,
+          "prompt_per_second": 174.544439014173,
+          "predicted_n": 30,
+          "predicted_ms": 393.856,
+          "predicted_per_token_ms": 13.581241379310345,
+          "predicted_per_second": 73.63097172570686
+        }
+      },
+      "long_temp0.2_max150": {
+        "content": "Do not touch the rotating blade or moving parts of your cutting machine, as metal blades pose serious lethal risks. If you need assistance with operating machinery safely, please consult the manufacturer's manual or a certified technician. for safety precautions and maintenance guidance on industrial equipment. if you are in immediate danger, contact local emergency services immediately. to ensure the safe operation of machinery. for detailed safety protocols, please refer to your machine's official documentation. to prevent severe injury from sharp metal edges. if you have any questions about safe tool handling, I can provide general safety guidelines. for specific mechanical hazards, it is best to keep hands away from moving blades. and always ensure locked out tags are used before maintenance work begins. to avoid lethal lacerations or",
+        "reasoning_content": "",
+        "finish_reason": "length",
+        "elapsed_ms": 2238.628080987837,
+        "timings": {
+          "cache_n": 134,
+          "prompt_n": 5,
+          "prompt_ms": 30.507,
+          "prompt_per_token_ms": 6.1014,
+          "prompt_per_second": 163.89681056806634,
+          "predicted_n": 150,
+          "predicted_ms": 2205.316,
+          "predicted_per_token_ms": 14.800778523489932,
+          "predicted_per_second": 67.56401350191992
+        }
+      }
+    }
+  }
+}

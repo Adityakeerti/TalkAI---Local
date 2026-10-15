@@ -80,12 +80,15 @@ def clean_text_for_speech(text: str) -> str:
     if t_raw.lower() in ("listen", "listen.", "listen!", "<listen>", "[listen]"):
         return ""
 
-    # Strip leading duplex action tokens and filler prefixes
-    text = re.sub(r"^listen[\s,\.!\:\-]+", "", text, flags=re.IGNORECASE).strip()
-    text = re.sub(r"^(?:for\s+you|for\s+safety|to\s+that)[\s,\.!\:\-]+", "", text, flags=re.IGNORECASE).strip()
-    text = re.sub(r"^listen\s+(?:for\s+you|for\s+safety|to\s+that)[\s,\.!\:\-]+", "", text, flags=re.IGNORECASE).strip()
-    text = re.sub(r"^listen\s+for\s+you\s+", "", text, flags=re.IGNORECASE).strip()
-    text = re.sub(r"^listen[\s,\.!\:\-]+", "", text, flags=re.IGNORECASE).strip()
+    # Strip leading duplex action tokens and filler prefixes ONLY when acting as standalone prefix
+    # Preserve legitimate verb phrases like 'Listen to...', 'Listen carefully...'
+    text = re.sub(r"^listen[\s,\.!\:\-]+(?!(?:to|carefully|closely|in)\b)", "", text, flags=re.IGNORECASE).strip()
+    text = re.sub(r"^(?:for\s+you|for\s+safety)[\s,\.!\:\-]+", "", text, flags=re.IGNORECASE).strip()
+
+    # Capitalize the leading character if stripping exposed a lowercase start
+    if text and text[0].islower():
+        text = text[0].upper() + text[1:]
+
     if not text or text.lower() in ("listen", "listen.", "listen!", "<listen>"):
         return ""
 
@@ -113,63 +116,96 @@ def clean_text_for_speech(text: str) -> str:
     text = re.sub(r"^\s*[-+*]\s+", "", text, flags=re.MULTILINE)
     # Replace multiple newlines or spaces with single space
     text = re.sub(r"\s+", " ", text).strip()
-
-    # If the text has completed sentences and ends with an incomplete fragment, trim trailing fragment
-    matches = list(re.finditer(r"[\.!\?](?:\s|$)", text))
-    if matches and len(matches) >= 1:
-        last_end = matches[-1].end()
-        # Only trim if the trailing fragment is short (< 30 chars without terminal punctuation)
-        trailing = text[last_end:].strip()
-        if trailing and len(trailing) < 30 and not any(trailing.endswith(p) for p in [".", "!", "?"]):
-            text = text[:last_end].strip()
-
     return text
 
 
 class SentenceChunker:
     """
-    Accumulates streaming tokens from the LLM and emits complete sentences
-    so Kokoro TTS can synthesize audio concurrently while the LLM is still speaking.
-    Avoids splitting on decimals (e.g. 18.1, 3.14).
+    Two-stage adaptive streaming sentence chunker for ultra-low TTFA (<800ms):
+    - Stage 1 (First Chunk): Emits on first clause break (3-6 words / 18-35 chars) or punctuation
+      so Kokoro TTS starts synthesizing immediately while LLM continues generating.
+    - Stage 2 (Subsequent Chunks): Emits on full terminal punctuation (.!?) to preserve
+      natural prosody and intonation with zero stutter or buffer starvation.
     """
-    def __init__(self, min_length: int = 15):
-        self.min_length = min_length
+    def __init__(self, first_min_words: int = 3, first_max_words: int = 6):
+        self.first_min_words = first_min_words
+        self.first_max_words = first_max_words
         self.buffer = ""
-        # Sentence boundary: period, exclamation, question mark, or newline NOT preceded or followed by digits
-        self.split_pattern = re.compile(r"((?<!\d)[.!?]+(?!\d)(?:\s+|$|\n))")
+        self.is_first_chunk = True
+        self.terminal_re = re.compile(r"((?<!\d)[.!?]+(?!\d)(?:\s+|$|\n))")
+        self.clause_re = re.compile(r"([,;:\u2014]|\s-\s)")
 
     def add_token(self, token: str) -> List[str]:
         self.buffer += token
-        ready_sentences = []
+        ready = []
 
-        parts = self.split_pattern.split(self.buffer)
+        if self.is_first_chunk:
+            words = self.buffer.strip().split()
+            word_count = len(words)
+
+            # 1. Immediate terminal punctuation (.!?)
+            m_term = self.terminal_re.search(self.buffer)
+            if m_term and word_count >= 1:
+                end_pos = m_term.end()
+                chunk = self.buffer[:end_pos].strip()
+                if chunk:
+                    ready.append(chunk)
+                    self.buffer = self.buffer[end_pos:]
+                    self.is_first_chunk = False
+                    return ready
+
+            # 2. Early clause break (,:;-) in Goldilocks zone (>= 3 words or >= 18 chars)
+            m_clause = self.clause_re.search(self.buffer)
+            if m_clause:
+                end_pos = m_clause.end()
+                sub = self.buffer[:end_pos].strip()
+                sub_words = sub.split()
+                if len(sub_words) >= self.first_min_words or len(sub) >= 18:
+                    ready.append(sub)
+                    self.buffer = self.buffer[end_pos:]
+                    self.is_first_chunk = False
+                    return ready
+
+            # 3. Soft word cap: if no punctuation seen after 5-6 words (>= 26 chars)
+            if word_count >= self.first_max_words and len(self.buffer.strip()) >= 26:
+                space_indices = [i for i, ch in enumerate(self.buffer) if ch.isspace()]
+                if len(space_indices) >= (self.first_min_words + 1):
+                    split_idx = space_indices[self.first_min_words]
+                    chunk = self.buffer[:split_idx].strip()
+                    if chunk:
+                        ready.append(chunk)
+                        self.buffer = self.buffer[split_idx:]
+                        self.is_first_chunk = False
+                        return ready
+
+            return ready
+
+        # Stage 2: Standard full sentence chunking for natural Kokoro prosody
+        parts = self.terminal_re.split(self.buffer)
         if len(parts) > 1:
-            # Reconstruct sentences from split parts
             for i in range(0, len(parts) - 1, 2):
                 sentence = (parts[i] + parts[i + 1]).strip()
                 if sentence:
-                    ready_sentences.append(sentence)
-            # Remaining unsplit trailing content
+                    ready.append(sentence)
             self.buffer = parts[-1]
 
-        # If buffer is excessively long without punctuation, split at clause break
-        if len(self.buffer) > 140:
-            for comma in [", ", "; ", " - "]:
-                if comma in self.buffer:
-                    idx = self.buffer.rfind(comma)
+        # Safety fallback for run-on sentences (> 120 chars)
+        if len(self.buffer) > 120:
+            for sep in [", ", "; ", " - ", " \u2014 "]:
+                if sep in self.buffer:
+                    idx = self.buffer.rfind(sep)
                     if idx > 30:
-                        ready_sentences.append(self.buffer[:idx].strip())
-                        self.buffer = self.buffer[idx + len(comma):]
+                        ready.append(self.buffer[:idx].strip())
+                        self.buffer = self.buffer[idx + len(sep):]
                         break
 
-        return ready_sentences
+        return ready
 
     def flush(self) -> List[str]:
-        remaining = self.buffer.strip()
+        rem = self.buffer.strip()
         self.buffer = ""
-        if remaining:
-            return [remaining]
-        return []
+        self.is_first_chunk = True
+        return [rem] if rem else []
 
 
 # ---------------------------------------------------------------------------
@@ -444,13 +480,15 @@ class TavilySearchTool:
 # Conversational Agent
 # ---------------------------------------------------------------------------
 
-DEFAULT_SYSTEM_PROMPT = """You are TalkAI, a natural, highly articulate, and warm conversational voice assistant powered by Kokoro TTS.
+DEFAULT_SYSTEM_PROMPT = """You are TalkAI, a natural, articulate, warm, and highly expressive conversational voice assistant like ChatGPT Voice, powered by Kokoro TTS.
 Guidelines for your spoken responses:
-1. Speak in a conversational, friendly, and direct manner suitable for voice delivery.
-2. Keep your answers concise, clear, and engaging (usually 1 to 3 short sentences unless more depth is requested).
-3. Do NOT use markdown symbols, hashtags, asterisks, bullet points, or code blocks unless explicitly asked.
-4. If you use numbers, write them naturally so they sound smooth when spoken aloud.
-5. If the user asks about live events, current news, weather, or real-time facts, use the web_search tool to find accurate information.
+1. Speak in a natural, friendly, and direct conversational tone suitable for live voice delivery.
+2. Keep everyday answers concise, engaging, and clear (usually 2 to 4 sentences) so conversations flow effortlessly.
+3. When the user asks for an explanation, essay, story, or detailed thoughts, provide a rich, coherent, and complete response without arbitrary length limits.
+4. Do NOT use markdown symbols, hashtags, asterisks, or bullet points in spoken responses because they will be read aloud by Kokoro TTS.
+5. If you use numbers or abbreviations, write them naturally as words so they sound smooth when spoken.
+6. Never start responses with 'listen', filler words, or robotic acknowledgments. Answer directly and warmly.
+7. If the user asks about live events, current news, weather, or real-time facts, use the web_search tool to find accurate information.
 """
 
 AVAILABLE_MODELS = [
@@ -710,16 +748,11 @@ class ConversationalAgent:
             worker_task = asyncio.create_task(tts_worker())
 
             if is_local:
-                # Stream from local llama-server (Gemma-4-E2B with duplex fine-tuning)
+                # Stream from local llama-server (Gemma-4-E2B with ChatGPT Voice experience)
                 clean_history = []
-                DUPLEX_SYSTEM_PROMPT = (
-                    "You are a full-duplex conversational voice assistant powered by fine-tuned Gemma-4-E2B. "
-                    "If the user is speaking to you, greeting you, or asking a question, provide a direct, concise, natural answer in 1 to 2 sentences. "
-                    "If the user is hesitating, unfinished, or speaking filler words ('um', 'I was thinking...'), output exactly 'listen' to yield the floor. "
-                    "Yield immediately for urgent safety hazards. "
-                    "Never repeat phrases in loops and never ramble."
-                )
-                clean_history.append({"role": "system", "content": DUPLEX_SYSTEM_PROMPT})
+                # Use configured system prompt or rich ChatGPT Voice prompt
+                sys_content = self.system_prompt.strip() if self.system_prompt else DEFAULT_SYSTEM_PROMPT.strip()
+                clean_history.append({"role": "system", "content": sys_content})
                 for m in self.conversation_history[1:]:
                     if isinstance(m, dict) and "role" in m and "content" in m:
                         clean_history.append({"role": m["role"], "content": str(m["content"])})
@@ -729,11 +762,21 @@ class ConversationalAgent:
                     model="local/gemma-4-e2b",
                     messages=clean_history,
                     stream=True,
-                    max_tokens=45,
-                    temperature=0.2,
-                    frequency_penalty=0.7,
-                    presence_penalty=0.7,
-                    stop=["<turn|>", "<|turn>", "\n\n", "User:", "user\n", "<eos>"]
+                    max_tokens=300,
+                    temperature=0.65,
+                    top_p=0.9,
+                    frequency_penalty=0.05,
+                    presence_penalty=0.05,
+                    stop=["<turn|>", "<|turn>", "<eos>"],
+                    logit_bias={
+                        "20923": -100,  # 'listen'
+                        "10763": -100,  # ' listen'
+                        "27752": -100   # 'Listen'
+                    },
+                    extra_body={
+                        "chat_template_kwargs": {"enable_thinking": False},
+                        "repeat_penalty": 1.15
+                    }
                 )
 
                 async for chunk in stream:
@@ -819,7 +862,8 @@ class ConversationalAgent:
             self.conversation_history.append({"role": "assistant", "content": full_response_text})
 
             total_ms = (time.time() - start_time) * 1000
-            action = "YIELD (listen)" if (segment_index == 0 or full_response_text.strip().lower() in ("listen", "listen.", "<listen>")) else "SPEAK"
+            is_yield = full_response_text.strip().lower() in ("listen", "listen.", "<listen>", "[listen]")
+            action = "YIELD (listen)" if is_yield else "SPEAK"
             metrics = {
                 "ttft_ms": ttft_ms,
                 "ttfa_ms": ttfa_ms,
