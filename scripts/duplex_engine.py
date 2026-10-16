@@ -94,7 +94,8 @@ SYSTEM_PROMPT = (
     "exactly 'listen' when you should yield and keep listening; otherwise output a brief, "
     "natural speech fragment that can be spoken now. Do not repeat prior fragments. Continue "
     "an unfinished answer across turns when appropriate. Yield immediately for a clear "
-    "interruption or urgent safety risk. Do not treat every pause as the end of the user's thought."
+    "interruption or urgent safety risk. Do not treat every pause as the end of the user's thought. "
+    "Dont give unecesaary knowledge answer only what's asked."
 )
 
 DEFAULT_MAX_OUTPUT_TOKENS = int(os.environ.get("MAX_OUTPUT_TOKENS", "36"))
@@ -669,6 +670,27 @@ def extract_incremental_speech(new_text: str, last_text: str) -> str:
     elif match_len == len(new_words):
         return ""
     return new_clean
+
+
+def is_complete_question_or_intent(text: str) -> bool:
+    """
+    Checks if user utterance ends in a complete question or terminal intent.
+    Direct questions ending with '?' can be answered promptly (600ms).
+    Incomplete thoughts / mid-sentence clauses get a 1.2s grace window to let user breathe.
+    """
+    cleaned = text.strip()
+    if not cleaned or cleaned == "no voice":
+        return False
+    if cleaned.endswith("?"):
+        return True
+    lower = cleaned.lower()
+    if lower.endswith("...") or lower.endswith("..") or lower.endswith(","):
+        return False
+    trailing_words = {"and", "or", "but", "so", "because", "if", "with", "like", "am", "was", "be", "to", "uh", "um", "the", "a", "an", "is", "that"}
+    last_word = lower.split()[-1].strip(".,!?:;\"'") if lower.split() else ""
+    if last_word in trailing_words:
+        return False
+    return False
 
 
 # ---------------------------------------------------------------------------
@@ -1321,9 +1343,9 @@ def create_app(
                             # Silence tick
                             current_slice = "no voice"
                             is_speech_slice = False
-                            if len(session.speech_audio_buffer) > 0:
+                            if len(session.speech_audio_buffer) > 0 or session.last_speech_text:
                                 session.silent_ticks_after_speech += 1
-                                if session.silent_ticks_after_speech >= 2:
+                                if session.silent_ticks_after_speech >= 4:
                                     session.speech_audio_buffer.clear()
                                     session.last_speech_text = ""
 
@@ -1404,6 +1426,40 @@ def create_app(
                                 predicted_ms=0.0,
                                 raw_content="listen",
                             )
+                        elif current_slice == "no voice":
+                            last_text = session.last_speech_text.strip()
+                            is_question = is_complete_question_or_intent(last_text)
+
+                            # If thought is midway / incomplete (not a direct question) and user has only paused for 1 tick (600ms):
+                            # Yield floor to provide a natural 1.2s breathing room before answering!
+                            if not is_question and session.silent_ticks_after_speech <= 1:
+                                decision = TurnDecision(
+                                    action="YIELD",
+                                    output_text="listen",
+                                    p_listen=1.0,
+                                    roundtrip_ms=0.0,
+                                    prompt_ms=0.0,
+                                    predicted_ms=0.0,
+                                    raw_content="listen",
+                                )
+                                session.record_turn(current_slice, "listen")
+                            else:
+                                messages = session.get_messages_for_llm(current_slice)
+                                try:
+                                    decision = await model_client.evaluate_turn(messages)
+                                except Exception as err:
+                                    logger.error(f"Error evaluating turn {tick_idx}: {err}")
+                                    decision = TurnDecision(
+                                        action="YIELD",
+                                        output_text="listen",
+                                        p_listen=1.0,
+                                        roundtrip_ms=0.0,
+                                        raw_content="listen",
+                                    )
+                                session.record_turn(current_slice, decision.output_text)
+
+                                if current_slice == "no voice" and session.consecutive_silent_turns >= 2:
+                                    session.is_waiting_for_user = True
                         else:
                             messages = session.get_messages_for_llm(current_slice)
                             try:
@@ -1419,10 +1475,6 @@ def create_app(
                                 )
                             session.record_turn(current_slice, decision.output_text)
 
-                            # Only settle into waiting for user after multiple consecutive silent turns
-                            if current_slice == "no voice" and session.consecutive_silent_turns >= 2:
-                                session.is_waiting_for_user = True
-
                     # 3. Handle assistant speech completion, TTS synthesis, and state update
                     tts_chunk: Optional[TTSAudioChunk] = None
                     should_emit_audio = False
@@ -1430,8 +1482,13 @@ def create_app(
                     if should_emit_interrupt:
                         is_audio_playing = False
 
-                    # Hazard check: True ONLY if user was speaking, assistant decided to speak, and assistant was not already playing
-                    is_hazard = bool(is_speech_slice and decision.action == "SPEAK" and not was_audio_playing)
+                    # Hazard check: True ONLY if user was speaking mid-sentence (not asking a question) and assistant interjected
+                    is_hazard = bool(
+                        is_speech_slice
+                        and decision.action == "SPEAK"
+                        and not was_audio_playing
+                        and not is_complete_question_or_intent(current_slice)
+                    )
 
                     if decision.action == "SPEAK" and not is_audio_playing and decision.output_text.strip() and decision.output_text.strip() != "listen":
                         session.last_assistant_speech = decision.output_text

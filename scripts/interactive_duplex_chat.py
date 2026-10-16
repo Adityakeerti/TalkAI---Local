@@ -17,7 +17,8 @@ SYSTEM_PROMPT = (
     "exactly 'listen' when you should yield and keep listening; otherwise output a brief, "
     "natural speech fragment that can be spoken now. Do not repeat prior fragments. Continue "
     "an unfinished answer across turns when appropriate. Yield immediately for a clear "
-    "interruption or urgent safety risk. Do not treat every pause as the end of the user's thought."
+    "interruption or urgent safety risk. Do not treat every pause as the end of the user's thought. "
+    "Dont give unecesaary knowledge answer only what's asked."
 )
 
 
