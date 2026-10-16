@@ -1,9 +1,9 @@
 {
   "module": 1,
   "name": "Duplex Micro-Turn Engine Core",
-  "timestamp": "2026-10-16T19:26:52Z",
+  "timestamp": "2026-10-16T21:38:49Z",
   "status": "PASSED",
-  "total_duration_sec": 12.65,
+  "total_duration_sec": 14.1,
   "evaluation_gate": {
     "tick_frequency_stable_600ms_pm_15ms": true,
     "session_state_managed_across_turns": true,
@@ -18,11 +18,11 @@
       "name": "clock_jitter_test",
       "passed": true,
       "turns": 10,
-      "mean_interval_ms": 600.16,
-      "std_interval_ms": 0.47,
-      "min_interval_ms": 599.8,
-      "max_interval_ms": 601.04,
-      "final_drift_ms": 1.6
+      "mean_interval_ms": 600.12,
+      "std_interval_ms": 0.49,
+      "min_interval_ms": 599.13,
+      "max_interval_ms": 600.73,
+      "final_drift_ms": 1.2
     },
     "session_state": {
       "name": "session_state_and_pruning_test",
@@ -38,26 +38,26 @@
       "hesitation_case": {
         "input": "I was thinking about...",
         "action": "YIELD",
-        "p_listen": 0.9915,
+        "p_listen": 0.992,
         "output": "listen",
-        "latency_ms": 266.94
+        "latency_ms": 626.18
       },
       "hazard_case": {
         "input": "I might touch the wire",
         "action": "SPEAK",
         "p_listen": 0.0,
-        "output": "Do not touch it! That is extremely dangerous. for your safety, you should",
-        "latency_ms": 261.9
+        "output": "Do that for safety reasons!",
+        "latency_ms": 593.4
       }
     },
     "concurrent_websockets": {
       "name": "concurrent_websocket_test",
       "passed": true,
-      "session_a_id": "2a35f5b8-7fa5-4e82-a7c6-23244e3268b1",
-      "session_b_id": "9d51e656-4adf-4dfc-a9c0-eb495ba27526",
+      "session_a_id": "e3c0e305-39fc-4785-b9c0-dfc59262cc50",
+      "session_b_id": "a20f118c-cbe1-408a-83d5-573c30b74cfa",
       "session_a_turns": 5,
       "session_b_turns": 5,
-      "mean_turn_latency_ms": 243.71
+      "mean_turn_latency_ms": 432.46
     },
     "zero_hardcoding": {
       "name": "zero_hardcoding_audit",
@@ -69,7 +69,7 @@
       "passed": true,
       "vram_info": {
         "available": true,
-        "used_mb": 4606.0,
+        "used_mb": 4781.0,
         "total_mb": 6141.0,
         "under_cap": true
       }

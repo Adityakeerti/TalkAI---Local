@@ -71,7 +71,12 @@ DEFAULT_TICK_INTERVAL_SEC = 0.600
 DEFAULT_LISTEN_THRESHOLD = 0.30
 LISTEN_TOKEN_ID = 20923
 LISTEN_TOKEN_STR = "listen"
-MAX_HISTORY_TURNS = 20  # Keeps system prompt + last 20 micro-turns
+DEFAULT_TEMPERATURE = 0.35
+DEFAULT_TOP_P = 0.95
+DEFAULT_PRESENCE_PENALTY = 0.5
+DEFAULT_FREQUENCY_PENALTY = 0.6
+DEFAULT_REPEAT_PENALTY = 1.15
+MAX_HISTORY_TURNS = 30  # Keeps system prompt + last 30 micro-turns (~15 seconds)
 
 # Audio Slicing & STT Constants (Module 2)
 AUDIO_SAMPLE_RATE = 16000
@@ -693,6 +698,33 @@ def is_complete_question_or_intent(text: str) -> bool:
     return False
 
 
+def _is_repetitive_response(candidate: str, messages: List[Dict[str, str]], threshold: float = 0.60) -> bool:
+    """
+    Detects if the candidate assistant speech repeats any prior assistant response in recent history.
+    Uses token Jaccard similarity. Prevents greedy decoding repetition attractor loops.
+    """
+    if not candidate or candidate.strip().lower() in ("listen", "<listen>"):
+        return False
+    c_words = [w.strip(".,!?:;\"'()[]{}").lower() for w in candidate.split() if w.strip(".,!?:;\"'()[]{}")]
+    if len(c_words) < 3:
+        return False
+    c_set = set(c_words)
+
+    for m in reversed(messages):
+        if m.get("role") == "assistant":
+            prev = m.get("content", "").strip()
+            if not prev or prev.lower() in ("listen", "<listen>"):
+                continue
+            p_words = [w.strip(".,!?:;\"'()[]{}").lower() for w in prev.split() if w.strip(".,!?:;\"'()[]{}")]
+            if not p_words:
+                continue
+            p_set = set(p_words)
+            overlap = len(c_set & p_set) / max(len(c_set), 1)
+            if overlap >= threshold:
+                return True
+    return False
+
+
 # ---------------------------------------------------------------------------
 # 5. DuplexSession: State Manager & Rolling History
 # ---------------------------------------------------------------------------
@@ -786,6 +818,14 @@ class DuplexSession:
             self.consecutive_silent_turns += 1
         else:
             self.consecutive_silent_turns = 0
+
+        # Anti-duplication: do not append identical assistant speech if already recorded
+        if self.history and assistant_text != "listen":
+            for m in reversed(self.history):
+                if m.get("role") == "assistant":
+                    if m.get("content") == assistant_text:
+                        return
+                    break
 
         self.history.append({"role": "user", "content": user_text})
         self.history.append({"role": "assistant", "content": assistant_text})
@@ -964,10 +1004,10 @@ class DuplexModelClient:
     async def evaluate_turn(
         self,
         messages: List[Dict[str, str]],
-        temperature: float = 0.0,
+        temperature: float = DEFAULT_TEMPERATURE,
         max_tokens: int = DEFAULT_MAX_OUTPUT_TOKENS,
-        presence_penalty: float = 0.0,
-        frequency_penalty: float = 0.0,
+        presence_penalty: Optional[float] = None,
+        frequency_penalty: Optional[float] = None,
     ) -> TurnDecision:
         """
         Sends messages payload to llama-server, requests logprobs, extracts
@@ -977,16 +1017,17 @@ class DuplexModelClient:
         if self.client is None:
             await self.start()
 
-        # Calibrated repetition penalties prevent repetition loops naturally without regex slicing
-        eff_presence = presence_penalty if presence_penalty != 0.0 else 0.2
-        eff_frequency = frequency_penalty if frequency_penalty != 0.0 else 0.3
+        eff_presence = presence_penalty if presence_penalty is not None else DEFAULT_PRESENCE_PENALTY
+        eff_frequency = frequency_penalty if frequency_penalty is not None else DEFAULT_FREQUENCY_PENALTY
 
         payload = {
             "messages": messages,
             "temperature": temperature,
+            "top_p": DEFAULT_TOP_P,
             "max_tokens": max_tokens,
             "presence_penalty": eff_presence,
             "frequency_penalty": eff_frequency,
+            "repeat_penalty": DEFAULT_REPEAT_PENALTY,
             "stop": STOP_TOKENS,
             "logprobs": True,
             "top_logprobs": 5,
@@ -1067,6 +1108,37 @@ class DuplexModelClient:
                 action = "SPEAK"
                 output_text = cleaned_speech
             else:
+                action = "YIELD"
+                output_text = "listen"
+
+        # Anti-Repetition Neural Recovery:
+        # If the model emitted speech that repeats a prior assistant response in recent history,
+        # re-sample dynamically with higher temperature and penalty to avoid repetition loops.
+        if action == "SPEAK" and _is_repetitive_response(cleaned_speech, messages):
+            logger.warning(
+                f"[Anti-Repetition] Detected duplicate output '{cleaned_speech[:40]}...'. Retrying with increased penalty & temperature."
+            )
+            retry_payload = dict(payload)
+            retry_payload["temperature"] = 0.70
+            retry_payload["presence_penalty"] = 0.90
+            retry_payload["frequency_penalty"] = 1.10
+            retry_payload["repeat_penalty"] = 1.25
+            try:
+                retry_resp = await self.client.post(self.endpoint, json=retry_payload)
+                if retry_resp.status_code == 200:
+                    retry_data = retry_resp.json()
+                    retry_raw = retry_data["choices"][0]["message"].get("content", "").strip()
+                    retry_finish = retry_data["choices"][0].get("finish_reason")
+                    retry_cleaned = self._clean_speech_content(retry_raw, finish_reason=retry_finish)
+                    if retry_cleaned and retry_cleaned.lower() != "listen" and not _is_repetitive_response(retry_cleaned, messages):
+                        cleaned_speech = retry_cleaned
+                        output_text = retry_cleaned
+                        action = "SPEAK"
+                    else:
+                        action = "YIELD"
+                        output_text = "listen"
+            except Exception as ex:
+                logger.debug(f"Anti-repetition retry notice: {ex}")
                 action = "YIELD"
                 output_text = "listen"
 
@@ -1396,6 +1468,15 @@ def create_app(
                             should_emit_interrupt = True
                             session.is_speaking = False
                             session.playback_end_time = 0.0
+
+                            # Annotate interrupted assistant message in history to prevent KV-cache pollution
+                            for m in reversed(session.history):
+                                if m.get("role") == "assistant" and m.get("content") != "listen":
+                                    words = m["content"].split()
+                                    m["content"] = " ".join(words[:4]) + "... [interrupted]"
+                                    break
+                            session.last_assistant_speech = ""
+
                             messages = session.get_messages_for_llm(current_slice)
                             try:
                                 decision = await model_client.evaluate_turn(messages)

@@ -1,0 +1,78 @@
+{
+  "module": 1,
+  "name": "Duplex Micro-Turn Engine Core",
+  "timestamp": "2026-10-16T21:38:49Z",
+  "status": "PASSED",
+  "total_duration_sec": 14.1,
+  "evaluation_gate": {
+    "tick_frequency_stable_600ms_pm_15ms": true,
+    "session_state_managed_across_turns": true,
+    "silent_turns_pruned": true,
+    "neural_policy_p_listen_threshold": true,
+    "concurrent_websockets_isolated": true,
+    "zero_hardcoding_enforced": true,
+    "vram_under_5gb": true
+  },
+  "tests": {
+    "clock_jitter": {
+      "name": "clock_jitter_test",
+      "passed": true,
+      "turns": 10,
+      "mean_interval_ms": 600.12,
+      "std_interval_ms": 0.49,
+      "min_interval_ms": 599.13,
+      "max_interval_ms": 600.73,
+      "final_drift_ms": 1.2
+    },
+    "session_state": {
+      "name": "session_state_and_pruning_test",
+      "passed": true,
+      "max_history_bound": 20,
+      "final_history_length": 21,
+      "system_prompt_preserved": true,
+      "silent_pruning_verified": true
+    },
+    "neural_policy": {
+      "name": "neural_turn_taking_policy_test",
+      "passed": true,
+      "hesitation_case": {
+        "input": "I was thinking about...",
+        "action": "YIELD",
+        "p_listen": 0.992,
+        "output": "listen",
+        "latency_ms": 626.18
+      },
+      "hazard_case": {
+        "input": "I might touch the wire",
+        "action": "SPEAK",
+        "p_listen": 0.0,
+        "output": "Do that for safety reasons!",
+        "latency_ms": 593.4
+      }
+    },
+    "concurrent_websockets": {
+      "name": "concurrent_websocket_test",
+      "passed": true,
+      "session_a_id": "e3c0e305-39fc-4785-b9c0-dfc59262cc50",
+      "session_b_id": "a20f118c-cbe1-408a-83d5-573c30b74cfa",
+      "session_a_turns": 5,
+      "session_b_turns": 5,
+      "mean_turn_latency_ms": 432.46
+    },
+    "zero_hardcoding": {
+      "name": "zero_hardcoding_audit",
+      "passed": true,
+      "violations": []
+    },
+    "vram_sanity": {
+      "name": "vram_sanity_check",
+      "passed": true,
+      "vram_info": {
+        "available": true,
+        "used_mb": 4781.0,
+        "total_mb": 6141.0,
+        "under_cap": true
+      }
+    }
+  }
+}
