@@ -25,7 +25,7 @@ from torch.utils.data import Dataset
 from transformers import AutoTokenizer, PreTrainedTokenizerBase
 
 # Path Configuration
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 MODEL_PATH = PROJECT_ROOT / "models" / "gemma-4-E2B-it"
 TRAIN_DATASET_PATH = PROJECT_ROOT / "data" / "duplexcascade_synthetic" / "micro_turns_train.jsonl"
 VAL_DATASET_PATH = PROJECT_ROOT / "data" / "duplexcascade_synthetic" / "micro_turns_val.jsonl"

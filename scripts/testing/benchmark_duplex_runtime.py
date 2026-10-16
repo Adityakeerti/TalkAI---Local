@@ -39,7 +39,7 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple
 
 # Path Configuration
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 BASE_MODEL_DIR = PROJECT_ROOT / "models" / "gemma-4-E2B-it"
 ADAPTER_DIR = PROJECT_ROOT / "models" / "duplex_gemma_lora"
 LORA_GGUF_PATH = PROJECT_ROOT / "models" / "duplex_gemma_lora.gguf"

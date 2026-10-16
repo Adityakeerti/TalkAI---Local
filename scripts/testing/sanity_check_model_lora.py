@@ -37,7 +37,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, PreTrainedTokenize
 from peft import LoraConfig, get_peft_model, PeftModel, TaskType
 
 # Path Configuration
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MODEL_PATH = PROJECT_ROOT / "models" / "gemma-4-E2B-it"
 LOGS_DIR = PROJECT_ROOT / "logs"
 

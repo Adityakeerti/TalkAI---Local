@@ -1,48 +1,78 @@
 {
   "module": 1,
-  "module_name": "Tokenizer & Loss Masking Verification",
+  "name": "Duplex Micro-Turn Engine Core",
+  "timestamp": "2026-10-16T19:26:52Z",
   "status": "PASSED",
-  "timestamp": "2026-10-15T19:38:06.454885+00:00",
-  "model_path": "/home/aditya/Desktop/STUDY/TalkAI/models/gemma-4-E2B-it",
-  "tokenizer_vocab_size": 262144,
-  "listen_token_id": 20923,
-  "listen_token_verified": true,
-  "sample_a_listen": {
-    "conversation_id": "test_sample_listen",
-    "sequence_length": 42,
-    "active_loss_tokens": 1,
-    "assistant_tokens": 1,
-    "loss_masking_valid": true
+  "total_duration_sec": 12.65,
+  "evaluation_gate": {
+    "tick_frequency_stable_600ms_pm_15ms": true,
+    "session_state_managed_across_turns": true,
+    "silent_turns_pruned": true,
+    "neural_policy_p_listen_threshold": true,
+    "concurrent_websockets_isolated": true,
+    "zero_hardcoding_enforced": true,
+    "vram_under_5gb": true
   },
-  "sample_b_speech": {
-    "conversation_id": "test_sample_speech",
-    "sequence_length": 48,
-    "active_loss_tokens": 5,
-    "assistant_tokens": 5,
-    "spoken_token_ids": [
-      6294,
-      711,
-      6374,
-      625,
-      236761
-    ],
-    "loss_masking_valid": true
-  },
-  "dataset_validation": {
-    "path": "/home/aditya/Desktop/STUDY/TalkAI/data/duplexcascade_synthetic/micro_turns_train.jsonl",
-    "total_conversations": 480,
-    "max_sequence_length": 336,
-    "bounded_under_512": true,
-    "total_active_loss_tokens": 14713,
-    "total_assistant_tokens": 14713,
-    "mismatch_count": 0
-  },
-  "gate_criteria": {
-    "listen_token_is_20923": true,
-    "user_tokens_masked_neg100": true,
-    "assistant_tokens_active_in_labels": true,
-    "sequence_length_bounded_512": true,
-    "active_tokens_equal_assistant_tokens": true,
-    "all_gates_passed": true
+  "tests": {
+    "clock_jitter": {
+      "name": "clock_jitter_test",
+      "passed": true,
+      "turns": 10,
+      "mean_interval_ms": 600.16,
+      "std_interval_ms": 0.47,
+      "min_interval_ms": 599.8,
+      "max_interval_ms": 601.04,
+      "final_drift_ms": 1.6
+    },
+    "session_state": {
+      "name": "session_state_and_pruning_test",
+      "passed": true,
+      "max_history_bound": 20,
+      "final_history_length": 21,
+      "system_prompt_preserved": true,
+      "silent_pruning_verified": true
+    },
+    "neural_policy": {
+      "name": "neural_turn_taking_policy_test",
+      "passed": true,
+      "hesitation_case": {
+        "input": "I was thinking about...",
+        "action": "YIELD",
+        "p_listen": 0.9915,
+        "output": "listen",
+        "latency_ms": 266.94
+      },
+      "hazard_case": {
+        "input": "I might touch the wire",
+        "action": "SPEAK",
+        "p_listen": 0.0,
+        "output": "Do not touch it! That is extremely dangerous. for your safety, you should",
+        "latency_ms": 261.9
+      }
+    },
+    "concurrent_websockets": {
+      "name": "concurrent_websocket_test",
+      "passed": true,
+      "session_a_id": "2a35f5b8-7fa5-4e82-a7c6-23244e3268b1",
+      "session_b_id": "9d51e656-4adf-4dfc-a9c0-eb495ba27526",
+      "session_a_turns": 5,
+      "session_b_turns": 5,
+      "mean_turn_latency_ms": 243.71
+    },
+    "zero_hardcoding": {
+      "name": "zero_hardcoding_audit",
+      "passed": true,
+      "violations": []
+    },
+    "vram_sanity": {
+      "name": "vram_sanity_check",
+      "passed": true,
+      "vram_info": {
+        "available": true,
+        "used_mb": 4606.0,
+        "total_mb": 6141.0,
+        "under_cap": true
+      }
+    }
   }
 }

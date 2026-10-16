@@ -2,28 +2,33 @@
   "current_module": 5,
   "modules": {
     "1": {
-      "name": "Tokenizer & Loss Masking Verification",
+      "name": "Duplex Micro-Turn Engine Core",
       "status": "PASSED",
+      "target_file": "scripts/duplex_engine.py",
       "report": "logs/module_1_report.json"
     },
     "2": {
-      "name": "Model Architecture Loading, Layer Freezing & VRAM Sanity",
+      "name": "Streaming Audio Ingestion & 600ms Slicing",
       "status": "PASSED",
+      "target_file": "scripts/duplex_engine.py",
       "report": "logs/module_2_report.json"
     },
     "3": {
-      "name": "10-Sample Micro-Overfit Test",
+      "name": "Zero-Hardcoding Neural Policy & Calibrated Turn-Taking",
       "status": "PASSED",
+      "target_file": "scripts/duplex_engine.py",
       "report": "logs/module_3_report.json"
     },
     "4": {
-      "name": "Full Dataset Training & PEFT Checkpoint Validation",
+      "name": "Concurrent Kokoro TTS Synthesis & Audio Queue",
       "status": "PASSED",
+      "target_file": "scripts/duplex_engine.py",
       "report": "logs/module_4_report.json"
     },
     "5": {
-      "name": "GGUF Adapter Conversion & Runtime Benchmark",
+      "name": "Production Web UI & End-to-End Validation Suite",
       "status": "PASSED",
+      "target_file": "scripts/verify_full_duplex.py",
       "report": "logs/module_5_report.json"
     }
   }

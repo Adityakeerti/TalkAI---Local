@@ -20,15 +20,23 @@ echo "Starting llama-server for Gemma-4-E2B (Apache 2.0)"
 echo "Binary:  $LLAMA_SERVER"
 echo "Model:   $MODEL"
 echo "MMProj:  $MMPROJ"
-LORA="/home/aditya/Desktop/STUDY/TalkAI/models/duplex_gemma_lora.gguf"
-LORA_ARGS=""
-if [ -f "$LORA" ]; then
-    echo "LoRA:    $LORA"
-    LORA_ARGS="--lora $LORA"
+MERGED_MODEL="/home/aditya/Desktop/STUDY/TalkAI/models/duplex_gemma_merged.gguf"
+if [ -f "$MERGED_MODEL" ]; then
+    echo "Found merged model: $MERGED_MODEL"
+    MODEL="$MERGED_MODEL"
+    LORA_ARGS=""
+else
+    LORA="/home/aditya/Desktop/STUDY/TalkAI/models/duplex_gemma_lora.gguf"
+    LORA_ARGS=""
+    if [ -f "$LORA" ]; then
+        echo "LoRA:    $LORA"
+        LORA_ARGS="--lora $LORA"
+    fi
 fi
 
 echo "Port:    8080 (http://127.0.0.1:8080)"
 echo "GPU offload: Full layers (-ngl 99)"
+echo "Slots / Ctx: 1 slot (-np 1), 2048 ctx (VRAM <= 3.8 GB)"
 echo "========================================================"
 
 exec "$LLAMA_SERVER" \
@@ -36,6 +44,7 @@ exec "$LLAMA_SERVER" \
   --mmproj "$MMPROJ" \
   $LORA_ARGS \
   -ngl 99 \
-  --ctx-size 4096 \
+  --ctx-size 2048 \
+  -np 1 \
   --host 0.0.0.0 \
   --port 8080

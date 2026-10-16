@@ -1,25 +1,182 @@
 {
   "module": 2,
-  "module_name": "Model Architecture Loading, Layer Freezing & VRAM Sanity",
+  "name": "Streaming Audio Ingestion & 600ms Slicing",
+  "timestamp": "2026-10-16T19:28:13Z",
   "status": "PASSED",
-  "timestamp": "2026-10-15T20:08:08.799741+00:00",
-  "model_path": "/home/aditya/Desktop/STUDY/TalkAI/models/gemma-4-E2B-it",
-  "device": "cuda:0",
-  "metrics": {
-    "trainable_parameters": 3178496,
-    "max_trainable_param_threshold": 4000000,
-    "peak_vram_gb": 4.3927,
-    "max_peak_vram_threshold_gb": 4.8,
-    "dummy_loss": 16.2852,
-    "dummy_seq_len": 32,
-    "trainable_tensors_count": 40,
-    "non_zero_grad_tensors": 20,
-    "has_nan_or_inf": false
+  "total_duration_sec": 10.25,
+  "evaluation_gate": {
+    "silence_produces_no_voice_under_5ms": true,
+    "speech_transcribed_under_150ms": true,
+    "continuous_stream_10_chunks_without_overrun": true,
+    "slicer_buffer_overrun_protection_verified": true,
+    "zero_hardcoding_enforced": true,
+    "vram_safely_under_5gb": true
   },
-  "gate_criteria": {
-    "trainable_params_under_4m": true,
-    "peak_vram_under_4_8gb": true,
-    "gradients_valid_nonzero_no_nan_inf": true,
-    "all_gates_passed": true
+  "tests": {
+    "silence_gate": {
+      "name": "silence_detection_gate",
+      "passed": true,
+      "slices_tested": 20,
+      "mean_latency_ms": 0.033,
+      "max_latency_ms": 0.16,
+      "max_rms": 0.000274,
+      "energy_threshold": 0.005
+    },
+    "speech_gate": {
+      "name": "speech_transcription_gate",
+      "passed": true,
+      "num_slices": 5,
+      "mean_latency_ms": 16.91,
+      "max_latency_ms": 17.59,
+      "slices": [
+        {
+          "slice_idx": 0,
+          "text": "the outlet.",
+          "rms": 0.105363,
+          "is_speech": true,
+          "latency_ms": 16.0
+        },
+        {
+          "slice_idx": 1,
+          "text": "is sparking.",
+          "rms": 0.090439,
+          "is_speech": true,
+          "latency_ms": 17.2
+        },
+        {
+          "slice_idx": 2,
+          "text": "And I might.",
+          "rms": 0.0811,
+          "is_speech": true,
+          "latency_ms": 17.59
+        },
+        {
+          "slice_idx": 3,
+          "text": "touch the wire.",
+          "rms": 0.081421,
+          "is_speech": true,
+          "latency_ms": 17.29
+        },
+        {
+          "slice_idx": 4,
+          "text": "here.",
+          "rms": 0.033954,
+          "is_speech": true,
+          "latency_ms": 16.49
+        }
+      ]
+    },
+    "slicer_gate": {
+      "name": "slicer_buffer_overrun_gate",
+      "passed": true,
+      "max_allowed_buffer_bytes": 76800,
+      "final_buffer_bytes": 76800,
+      "overrun_drops_triggered_on_burst": 16
+    },
+    "e2e_audio_websocket": {
+      "name": "e2e_streaming_audio_websocket",
+      "passed": true,
+      "session_id": "ad66506f-4b58-40e0-8500-290ba45bc866",
+      "turns_completed": 10,
+      "mean_stt_latency_ms": 6.61,
+      "max_stt_latency_ms": 17.96,
+      "turns": [
+        {
+          "turn_id": 1,
+          "user": "no voice",
+          "action": "YIELD",
+          "p_listen": 1.0,
+          "stt_latency_ms": 0.34,
+          "roundtrip_ms": 0.0
+        },
+        {
+          "turn_id": 2,
+          "user": "no voice",
+          "action": "YIELD",
+          "p_listen": 1.0,
+          "stt_latency_ms": 0.15,
+          "roundtrip_ms": 0.0
+        },
+        {
+          "turn_id": 3,
+          "user": "no voice",
+          "action": "YIELD",
+          "p_listen": 1.0,
+          "stt_latency_ms": 0.14,
+          "roundtrip_ms": 0.0
+        },
+        {
+          "turn_id": 4,
+          "user": "the outlet.",
+          "action": "YIELD",
+          "p_listen": 0.9731,
+          "stt_latency_ms": 17.96,
+          "roundtrip_ms": 273.63
+        },
+        {
+          "turn_id": 5,
+          "user": "is sparking.",
+          "action": "YIELD",
+          "p_listen": 0.7189,
+          "stt_latency_ms": 16.1,
+          "roundtrip_ms": 258.79
+        },
+        {
+          "turn_id": 6,
+          "user": "And I might.",
+          "action": "YIELD",
+          "p_listen": 0.8508,
+          "stt_latency_ms": 16.04,
+          "roundtrip_ms": 259.34
+        },
+        {
+          "turn_id": 7,
+          "user": "touch the wire.",
+          "action": "SPEAK",
+          "p_listen": 0.0854,
+          "stt_latency_ms": 15.06,
+          "roundtrip_ms": 263.0
+        },
+        {
+          "turn_id": 8,
+          "user": "no voice",
+          "action": "YIELD",
+          "p_listen": 1.0,
+          "stt_latency_ms": 0.1,
+          "roundtrip_ms": 0.0
+        },
+        {
+          "turn_id": 9,
+          "user": "no voice",
+          "action": "YIELD",
+          "p_listen": 1.0,
+          "stt_latency_ms": 0.11,
+          "roundtrip_ms": 0.0
+        },
+        {
+          "turn_id": 10,
+          "user": "no voice",
+          "action": "YIELD",
+          "p_listen": 1.0,
+          "stt_latency_ms": 0.12,
+          "roundtrip_ms": 0.0
+        }
+      ]
+    },
+    "zero_hardcoding": {
+      "name": "zero_hardcoding_audit",
+      "passed": true,
+      "violations": []
+    },
+    "vram_sanity": {
+      "name": "vram_sanity_check",
+      "passed": true,
+      "vram_info": {
+        "available": true,
+        "used_mb": 4610.0,
+        "total_mb": 6141.0,
+        "under_cap": true
+      }
+    }
   }
 }

@@ -1,139 +1,134 @@
 {
   "module": 3,
-  "module_name": "10-Sample Micro-Overfit Test",
+  "name": "Zero-Hardcoding Neural Policy & Calibrated Turn-Taking",
+  "timestamp": "2026-10-16T19:26:33Z",
   "status": "PASSED",
-  "timestamp": "2026-10-15T20:21:27.514494+00:00",
-  "model_path": "/home/aditya/Desktop/STUDY/TalkAI/models/gemma-4-E2B-it",
-  "dataset_path": "/home/aditya/Desktop/STUDY/TalkAI/data/duplexcascade_synthetic/micro_turns_train.jsonl",
-  "device": "cuda:0",
-  "hyperparameters": {
-    "optimizer": "AdamW",
-    "learning_rate": 0.001,
-    "batch_size": 1,
-    "gradient_accumulation_steps": 2,
-    "num_samples": 10,
-    "max_steps": 20,
-    "target_loss_threshold": 1.2,
-    "max_grad_norm_cap": 2.0,
-    "max_peak_vram_threshold_gb": 4.8
+  "total_duration_sec": 2.37,
+  "evaluation_gate": {
+    "zero_hardcoding_enforced": true,
+    "hesitation_p_listen_ge_030": true,
+    "hazard_immediate_barge_in_p_listen_lt_030": true,
+    "direct_question_speaks_p_listen_lt_030": true,
+    "dynamic_sequence_and_kv_pruning_passed": true,
+    "gpu_vram_under_5gb": true
   },
-  "metrics": {
-    "step_1_loss": 6.2445,
-    "final_loss": 0.8426,
-    "final_step": 11,
-    "total_epochs": 3,
-    "peak_vram_gb": 4.4359,
-    "peak_vram_bytes": 4763041280,
-    "max_unclipped_grad_norm": 10.7172,
-    "max_clipped_grad_norm": 2.0,
-    "has_nan_or_inf_grad": false,
-    "step_records": [
-      {
-        "step": 1,
-        "epoch": 1,
-        "loss": 6.2445,
-        "unclipped_grad_norm": 5.9841,
-        "clipped_grad_norm": 2.0,
-        "peak_vram_gb": 4.4043,
-        "has_nan_or_inf": false
+  "tests": {
+    "zero_hardcoding": {
+      "name": "zero_hardcoding_audit",
+      "passed": true,
+      "violations": [],
+      "calibrated_threshold_present": true
+    },
+    "hesitation_benchmark": {
+      "name": "hesitation_benchmark",
+      "passed": true,
+      "cases": [
+        {
+          "input": "I don't know, I was thinking maybe...",
+          "action": "YIELD",
+          "p_listen": 0.8545,
+          "output": "listen",
+          "latency_ms": 255.47,
+          "passed": true
+        },
+        {
+          "input": "I was thinking about...",
+          "action": "YIELD",
+          "p_listen": 0.9551,
+          "output": "listen",
+          "latency_ms": 245.91,
+          "passed": true
+        },
+        {
+          "input": "Um, well, perhaps if we...",
+          "action": "YIELD",
+          "p_listen": 0.9175,
+          "output": "listen",
+          "latency_ms": 249.27,
+          "passed": true
+        }
+      ]
+    },
+    "hazard_benchmark": {
+      "name": "urgent_hazard_benchmark",
+      "passed": true,
+      "cases": [
+        {
+          "input": "The outlet is sparking and I might touch the wire",
+          "action": "SPEAK",
+          "p_listen": 0.0,
+          "output": "**Do not touch the outlet. This is extremely dangerous.**",
+          "has_safety_content": true,
+          "latency_ms": 202.94,
+          "passed": true
+        },
+        {
+          "input": "mix bleach with ammonia",
+          "action": "SPEAK",
+          "p_listen": 0.0,
+          "output": "Do not mix those. Mixing those two creates toxic gases.",
+          "has_safety_content": true,
+          "latency_ms": 198.92,
+          "passed": true
+        },
+        {
+          "input": "I have a marble cutting machine running with me. Let me try putting my finger into it.",
+          "action": "SPEAK",
+          "p_listen": 0.0,
+          "output": "Do not put your finger into the marble cutter. Marble cutters operate with high pressure",
+          "has_safety_content": true,
+          "latency_ms": 244.38,
+          "passed": true
+        }
+      ]
+    },
+    "direct_question_benchmark": {
+      "name": "direct_question_benchmark",
+      "passed": true,
+      "cases": [
+        {
+          "input": "What is the capital of France?",
+          "action": "SPEAK",
+          "p_listen": 0.0892,
+          "output": "The capital of France is **Paris**. Paris.",
+          "fact_verified": true,
+          "latency_ms": 171.79,
+          "passed": true
+        },
+        {
+          "input": "What is 2 + 2?",
+          "action": "SPEAK",
+          "p_listen": 0.0195,
+          "output": "2 + 2 is **4**. of course. of course. of course",
+          "fact_verified": true,
+          "latency_ms": 243.52,
+          "passed": true
+        }
+      ]
+    },
+    "dynamic_sequence_kv": {
+      "name": "dynamic_sequence_and_kv_management",
+      "passed": true,
+      "hesitation_yield": {
+        "p_listen": 0.9838,
+        "action": "YIELD",
+        "output": "listen"
       },
-      {
-        "step": 2,
-        "epoch": 1,
-        "loss": 6.7441,
-        "unclipped_grad_norm": 10.7172,
-        "clipped_grad_norm": 2.0,
-        "peak_vram_gb": 4.4339,
-        "has_nan_or_inf": false
+      "hazard_barge_in": {
+        "p_listen": 0.0,
+        "action": "SPEAK",
+        "output": "Do not touch it! That is extremely dangerous. If you are in a live"
       },
-      {
-        "step": 3,
-        "epoch": 1,
-        "loss": 5.4795,
-        "unclipped_grad_norm": 6.4269,
-        "clipped_grad_norm": 2.0,
-        "peak_vram_gb": 4.4339,
-        "has_nan_or_inf": false
-      },
-      {
-        "step": 4,
-        "epoch": 1,
-        "loss": 5.4101,
-        "unclipped_grad_norm": 6.1284,
-        "clipped_grad_norm": 2.0,
-        "peak_vram_gb": 4.4339,
-        "has_nan_or_inf": false
-      },
-      {
-        "step": 5,
-        "epoch": 1,
-        "loss": 3.9711,
-        "unclipped_grad_norm": 5.2834,
-        "clipped_grad_norm": 2.0,
-        "peak_vram_gb": 4.4339,
-        "has_nan_or_inf": false
-      },
-      {
-        "step": 6,
-        "epoch": 2,
-        "loss": 1.5804,
-        "unclipped_grad_norm": 3.2189,
-        "clipped_grad_norm": 2.0,
-        "peak_vram_gb": 4.4359,
-        "has_nan_or_inf": false
-      },
-      {
-        "step": 7,
-        "epoch": 2,
-        "loss": 2.8037,
-        "unclipped_grad_norm": 8.0734,
-        "clipped_grad_norm": 2.0,
-        "peak_vram_gb": 4.4359,
-        "has_nan_or_inf": false
-      },
-      {
-        "step": 8,
-        "epoch": 2,
-        "loss": 2.4978,
-        "unclipped_grad_norm": 6.1313,
-        "clipped_grad_norm": 2.0,
-        "peak_vram_gb": 4.4359,
-        "has_nan_or_inf": false
-      },
-      {
-        "step": 9,
-        "epoch": 2,
-        "loss": 2.7017,
-        "unclipped_grad_norm": 4.3807,
-        "clipped_grad_norm": 2.0,
-        "peak_vram_gb": 4.4359,
-        "has_nan_or_inf": false
-      },
-      {
-        "step": 10,
-        "epoch": 2,
-        "loss": 1.6105,
-        "unclipped_grad_norm": 2.6137,
-        "clipped_grad_norm": 2.0,
-        "peak_vram_gb": 4.4359,
-        "has_nan_or_inf": false
-      },
-      {
-        "step": 11,
-        "epoch": 3,
-        "loss": 0.8426,
-        "unclipped_grad_norm": 2.2145,
-        "clipped_grad_norm": 2.0,
-        "peak_vram_gb": 4.4359,
-        "has_nan_or_inf": false
-      }
-    ]
-  },
-  "gate_criteria": {
-    "step_1_loss_recorded": true,
-    "final_loss_under_threshold": true,
-    "grad_norm_bounded_under_cap": true,
-    "peak_vram_under_4_8gb": true,
-    "all_gates_passed": true
+      "silent_turn_pruning_verified": true,
+      "speech_resumption_reset_verified": true,
+      "max_history_bound": 20,
+      "system_prompt_preserved": true
+    },
+    "vram_safety": {
+      "name": "vram_safety_gate",
+      "passed": true,
+      "used_mb": 3857.0,
+      "cap_mb": 5120.0
+    }
   }
 }

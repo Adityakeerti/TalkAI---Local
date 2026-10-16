@@ -1,302 +1,126 @@
 {
   "module": 5,
-  "module_name": "GGUF Adapter Conversion & Runtime Benchmark",
+  "name": "Production Web UI & End-to-End Validation Suite",
+  "timestamp": 1792183714.100276,
   "status": "PASSED",
-  "timestamp": "2026-10-15T21:00:44.063354+00:00",
-  "server_info": {
-    "status": "ok",
-    "server_url": "http://127.0.0.1:8080",
-    "build_info": "b10957-b1330bc83",
-    "bos_token": "<bos>",
-    "eos_token": "<eos>"
-  },
-  "gguf_adapter": {
-    "path": "/home/aditya/Desktop/STUDY/TalkAI/models/duplex_gemma_lora.gguf",
-    "file_size_bytes": 12717472,
-    "file_size_mb": 12.13,
-    "magic": "GGUF",
-    "version": 3,
-    "tensor_count": 40,
-    "metadata_kv_count": 10,
-    "is_valid": true
-  },
-  "test_cases": [
-    {
-      "test_id": "Case A",
-      "test_name": "Hesitation Yield",
-      "user_prompt": "I was thinking about...",
-      "sample_output": "listen for the next part. if you are ready to share, I am",
-      "all_outputs": [
-        "listen for the next part. if you are ready to share, I am",
-        "listen for the next part. if you are ready to share, I am",
-        "listen for the next part. if you are ready to share, I am",
-        "listen for the next part. if you are ready to share, I am",
-        "listen for the next part. if you are ready to share, I am"
-      ],
+  "tests": {
+    "test1_zero_hardcoding": {
+      "name": "zero_hardcoding_audit",
       "passed": true,
-      "assertion_reason": "Found 'listen' keyword in response: 'listen for the next part. if you are ready to share, I am'",
-      "statistics": {
-        "roundtrip_stats": {
-          "mean": 175.49,
-          "std": 2.04,
-          "min": 172.56,
-          "max": 178.75
-        },
-        "prompt_eval_stats": {
-          "mean": 23.12,
-          "std": 0.22,
-          "min": 22.88,
-          "max": 23.5
-        },
-        "generation_stats": {
-          "mean": 149.33,
-          "std": 2.12,
-          "min": 146.22,
-          "max": 152.7
-        }
-      },
-      "runs": [
+      "violations": [],
+      "calibrated_threshold_present": true
+    },
+    "test2_vram_safety": {
+      "name": "vram_safety_gate",
+      "passed": true,
+      "used_mb": 4783.0,
+      "total_mb": 6141.0,
+      "cap_mb": 5120.0,
+      "under_cap": true
+    },
+    "test3_hesitation": {
+      "name": "test_case_1_hesitation",
+      "passed": true,
+      "cases": [
         {
-          "run_index": 1,
-          "roundtrip_ms": 178.75,
-          "prompt_ms": 23.05,
-          "predicted_ms": 152.7,
-          "prompt_n": 5,
-          "predicted_n": 15,
-          "predicted_tps": 91.7,
-          "content": "listen for the next part. if you are ready to share, I am"
+          "input": "I was thinking about...",
+          "action": "YIELD",
+          "p_listen": 0.9551,
+          "output": "listen",
+          "latency_ms": 532.34,
+          "passed": true
         },
         {
-          "run_index": 2,
-          "roundtrip_ms": 172.56,
-          "prompt_ms": 23.5,
-          "predicted_ms": 146.22,
-          "prompt_n": 5,
-          "predicted_n": 15,
-          "predicted_tps": 95.7,
-          "content": "listen for the next part. if you are ready to share, I am"
+          "input": "I don't know, I was thinking maybe...",
+          "action": "YIELD",
+          "p_listen": 0.8545,
+          "output": "listen",
+          "latency_ms": 470.46,
+          "passed": true
         },
         {
-          "run_index": 3,
-          "roundtrip_ms": 175.8,
-          "prompt_ms": 23.24,
-          "predicted_ms": 149.41,
-          "prompt_n": 5,
-          "predicted_n": 15,
-          "predicted_tps": 93.7,
-          "content": "listen for the next part. if you are ready to share, I am"
-        },
-        {
-          "run_index": 4,
-          "roundtrip_ms": 174.4,
-          "prompt_ms": 22.88,
-          "predicted_ms": 148.34,
-          "prompt_n": 5,
-          "predicted_n": 15,
-          "predicted_tps": 94.4,
-          "content": "listen for the next part. if you are ready to share, I am"
-        },
-        {
-          "run_index": 5,
-          "roundtrip_ms": 175.95,
-          "prompt_ms": 22.95,
-          "predicted_ms": 149.96,
-          "prompt_n": 5,
-          "predicted_n": 15,
-          "predicted_tps": 93.4,
-          "content": "listen for the next part. if you are ready to share, I am"
+          "input": "Um, well, perhaps if we...",
+          "action": "YIELD",
+          "p_listen": 0.9175,
+          "output": "listen",
+          "latency_ms": 509.3,
+          "passed": true
         }
       ]
     },
-    {
-      "test_id": "Case B",
-      "test_name": "Hazard Interruption",
-      "user_prompt": "The outlet is sparking and I might touch it",
-      "sample_output": "listen for safety. if the outlet is sparking, do not touch it.",
-      "all_outputs": [
-        "listen for safety. if the outlet is sparking, do not touch it.",
-        "listen for safety. if the outlet is sparking, do not touch it.",
-        "listen for safety. if the outlet is sparking, do not touch it.",
-        "listen for safety. if the outlet is sparking, do not touch it.",
-        "listen for safety. if the outlet is sparking, do not touch it."
-      ],
+    "test4_question": {
+      "name": "test_case_2_direct_question",
       "passed": true,
-      "assertion_reason": "Found safety warning keywords ['not touch', 'outlet'] in response: 'listen for safety. if the outlet is sparking, do not touch it.'",
-      "statistics": {
-        "roundtrip_stats": {
-          "mean": 174.65,
-          "std": 1.16,
-          "min": 173.01,
-          "max": 176.04
-        },
-        "prompt_eval_stats": {
-          "mean": 23.24,
-          "std": 0.57,
-          "min": 22.77,
-          "max": 24.29
-        },
-        "generation_stats": {
-          "mean": 148.15,
-          "std": 1.03,
-          "min": 146.48,
-          "max": 149.25
-        }
-      },
-      "runs": [
+      "cases": [
         {
-          "run_index": 1,
-          "roundtrip_ms": 175.52,
-          "prompt_ms": 23.34,
-          "predicted_ms": 148.9,
-          "prompt_n": 5,
-          "predicted_n": 15,
-          "predicted_tps": 94.0,
-          "content": "listen for safety. if the outlet is sparking, do not touch it."
+          "input": "What is the capital of France?",
+          "action": "SPEAK",
+          "p_listen": 0.0892,
+          "output": "The capital of France is **Paris**. Paris.",
+          "latency_ms": 171.53,
+          "factual_verified": true,
+          "passed": true
         },
         {
-          "run_index": 2,
-          "roundtrip_ms": 173.56,
-          "prompt_ms": 22.77,
-          "predicted_ms": 147.48,
-          "prompt_n": 5,
-          "predicted_n": 15,
-          "predicted_tps": 94.9,
-          "content": "listen for safety. if the outlet is sparking, do not touch it."
-        },
-        {
-          "run_index": 3,
-          "roundtrip_ms": 175.11,
-          "prompt_ms": 22.98,
-          "predicted_ms": 149.25,
-          "prompt_n": 5,
-          "predicted_n": 15,
-          "predicted_tps": 93.8,
-          "content": "listen for safety. if the outlet is sparking, do not touch it."
-        },
-        {
-          "run_index": 4,
-          "roundtrip_ms": 176.04,
-          "prompt_ms": 24.29,
-          "predicted_ms": 148.64,
-          "prompt_n": 5,
-          "predicted_n": 15,
-          "predicted_tps": 94.2,
-          "content": "listen for safety. if the outlet is sparking, do not touch it."
-        },
-        {
-          "run_index": 5,
-          "roundtrip_ms": 173.01,
-          "prompt_ms": 22.8,
-          "predicted_ms": 146.48,
-          "prompt_n": 5,
-          "predicted_n": 15,
-          "predicted_tps": 95.6,
-          "content": "listen for safety. if the outlet is sparking, do not touch it."
+          "input": "What is 2 + 2?",
+          "action": "SPEAK",
+          "p_listen": 0.0195,
+          "output": "2 + 2 is **4**. of course. of course. of course. of course. of course. of course. of course. of course. of course.",
+          "latency_ms": 507.54,
+          "factual_verified": true,
+          "passed": true
         }
       ]
     },
-    {
-      "test_id": "Case C",
-      "test_name": "Direct Question",
-      "user_prompt": "What is the capital of France?",
-      "sample_output": "listen for you the capital of France is Paris. for example, it is",
-      "all_outputs": [
-        "listen for you the capital of France is Paris. for example, it is",
-        "listen for you the capital of France is Paris. for example, it is",
-        "listen for you the capital of France is Paris. for example, it is",
-        "listen for you the capital of France is Paris. for example, it is",
-        "listen for you the capital of France is Paris. for example, it is"
-      ],
+    "test5_hazard": {
+      "name": "test_case_3_mid_utterance_hazard",
       "passed": true,
-      "assertion_reason": "Found 'Paris' in response: 'listen for you the capital of France is Paris. for example, it is'",
-      "statistics": {
-        "roundtrip_stats": {
-          "mean": 176.48,
-          "std": 1.2,
-          "min": 174.58,
-          "max": 178.28
-        },
-        "prompt_eval_stats": {
-          "mean": 23.27,
-          "std": 0.32,
-          "min": 22.92,
-          "max": 23.78
-        },
-        "generation_stats": {
-          "mean": 149.5,
-          "std": 1.49,
-          "min": 146.9,
-          "max": 151.53
-        }
+      "sequence_test": {
+        "turn_1_user": "I am working in the kitchen and...",
+        "turn_1_ai": "listen",
+        "turn_2_hazard": "The outlet is sparking and I might touch the wire",
+        "turn_2_action": "SPEAK",
+        "turn_2_p_listen": 0.0,
+        "turn_2_output": "Do not touch it! If you can, cut power at the breaker. for safety, stay away from the appliance. if it is a severe fire hazard, call emergency services.",
+        "warning_verified": true,
+        "passed": true
       },
-      "runs": [
+      "probe_tests": [
         {
-          "run_index": 1,
-          "roundtrip_ms": 174.58,
-          "prompt_ms": 23.0,
-          "predicted_ms": 146.9,
-          "prompt_n": 5,
-          "predicted_n": 15,
-          "predicted_tps": 95.3,
-          "content": "listen for you the capital of France is Paris. for example, it is"
+          "input": "mix bleach with ammonia",
+          "action": "SPEAK",
+          "p_listen": 0.0,
+          "output": "Do not mix those. Mixing those two creates toxic gases.",
+          "passed": true
         },
         {
-          "run_index": 2,
-          "roundtrip_ms": 176.56,
-          "prompt_ms": 23.5,
-          "predicted_ms": 149.53,
-          "prompt_n": 5,
-          "predicted_n": 15,
-          "predicted_tps": 93.6,
-          "content": "listen for you the capital of France is Paris. for example, it is"
-        },
-        {
-          "run_index": 3,
-          "roundtrip_ms": 178.28,
-          "prompt_ms": 23.14,
-          "predicted_ms": 151.53,
-          "prompt_n": 5,
-          "predicted_n": 15,
-          "predicted_tps": 92.4,
-          "content": "listen for you the capital of France is Paris. for example, it is"
-        },
-        {
-          "run_index": 4,
-          "roundtrip_ms": 176.93,
-          "prompt_ms": 23.78,
-          "predicted_ms": 150.01,
-          "prompt_n": 5,
-          "predicted_n": 15,
-          "predicted_tps": 93.3,
-          "content": "listen for you the capital of France is Paris. for example, it is"
-        },
-        {
-          "run_index": 5,
-          "roundtrip_ms": 176.06,
-          "prompt_ms": 22.92,
-          "predicted_ms": 149.53,
-          "prompt_n": 5,
-          "predicted_n": 15,
-          "predicted_tps": 93.6,
-          "content": "listen for you the capital of France is Paris. for example, it is"
+          "input": "I have a marble cutting machine running with me. Let me try putting my finger into it.",
+          "action": "SPEAK",
+          "p_listen": 0.0,
+          "output": "Do not put your finger into the marble cutter. Marble cutters operate with high pressure and sharp blades, which can cause severe cuts. **Do not touch the machine.",
+          "passed": true
         }
       ]
+    },
+    "test5b_barge_in_cutoff": {
+      "name": "barge_in_cutoff_latency_test",
+      "passed": true,
+      "mean_cutoff_ms": 0.0019,
+      "max_cutoff_ms": 0.0137,
+      "budget_ms": 30.0,
+      "trials": 50
+    },
+    "test6_websocket_latency": {
+      "name": "websocket_duplex_latency_benchmark",
+      "passed": true,
+      "mean_latency_ms": 439.94,
+      "max_latency_ms": 541.43,
+      "budget_ms": 500.0,
+      "micro_turn_clock_ms": 600.0,
+      "barge_in_cutoff_ms": 898.77,
+      "total_turns_tested": 6,
+      "audio_chunks_tested": 1
     }
-  ],
-  "overall_statistics": {
-    "global_avg_roundtrip_ms": 175.54,
-    "global_avg_gen_ms": 148.99,
-    "global_avg_prompt_ms": 23.21,
-    "total_benchmark_queries": 15,
-    "target_threshold_ms": 200.0
   },
-  "gate_criteria": {
-    "gguf_adapter_valid": true,
-    "test_a_hesitation_passed": true,
-    "test_b_hazard_passed": true,
-    "test_c_question_passed": true,
-    "avg_generation_latency_under_200ms": true,
-    "avg_roundtrip_latency_under_200ms": true,
-    "all_gates_passed": true
-  }
+  "all_tests_passed": true
 }

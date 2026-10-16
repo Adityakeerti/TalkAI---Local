@@ -30,8 +30,10 @@ def query_duplex_model(user_text: str, max_tokens: int = 16) -> dict:
     payload = {
         "prompt": prompt,
         "n_predict": max_tokens,
-        "temperature": 0.0,
-        "stop": ["<turn|>", "<|turn>", "\n"],
+        "temperature": 0.1,
+        "presence_penalty": 0.2,
+        "frequency_penalty": 0.3,
+        "stop": ["<turn|>", "<|turn>", "<eos>", "<end_of_turn>", "\n\n"],
     }
     data = json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(

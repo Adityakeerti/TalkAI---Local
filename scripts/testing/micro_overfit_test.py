@@ -37,7 +37,7 @@ import torch.nn.functional as F
 from torch.optim import AdamW
 
 # Path Configuration
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MODEL_PATH = PROJECT_ROOT / "models" / "gemma-4-E2B-it"
 DEFAULT_DATASET_PATH = PROJECT_ROOT / "data" / "duplexcascade_synthetic" / "micro_turns_train.jsonl"
 LOGS_DIR = PROJECT_ROOT / "logs"

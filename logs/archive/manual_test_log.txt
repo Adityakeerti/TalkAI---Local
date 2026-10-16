@@ -1,0 +1,919 @@
+
+TalkAI on  main [!?⇡] via 🐍 v3.14.7 
+❯ 
+❯ .venv/bin/python - <<'PY'
+from scripts.duplex_engine import DuplexSession
+
+session = DuplexSession("debug-session")
+
+print(f"Initial History: {len(session.history)} messages (system prompt)")
+
+# Turn 1: First silence
+session.record_turn("no voice", "listen")
+print(
+    f"Turn 1 (Silence) -> History count: {len(session.history)}, "
+    f"Consecutive silent: {session.consecutive_silent_turns}"
+)
+
+# Turn 2: Second silence (should be pruned)
+session.record_turn("no voice", "listen")
+print(
+    f"Turn 2 (Silence) -> History count: {len(session.history)} "
+    "(PRUNED: did not grow!)"
+)
+
+# Turn 3: User speaks
+session.record_turn("Hello TalkAI", "Hello! How can I assist you?")
+print(
+    f"Turn 3 (Speech) -> History count: {len(session.history)}, "
+    f"Consecutive silent reset to: {session.consecutive_silent_turns}"
+)
+
+print("\nInspect Raw Formatted Messages Array:")
+for msg in session.history:
+    print(f'  [{msg["role"]}]: {msg["content"]}')
+PY
+Initial History: 1 messages (system prompt)
+Turn 1 (Silence) -> History count: 3, Consecutive silent: 1
+Turn 2 (Silence) -> History count: 3 (PRUNED: did not grow!)
+Turn 3 (Speech) -> History count: 5, Consecutive silent reset to: 0
+
+Inspect Raw Formatted Messages Array:
+  [system]: You are a full-duplex conversational assistant. Each input is one 600 ms micro-turn from streaming speech recognition, or 'no voice' when no speech is detected. Output exactly 'listen' when you should yield and keep listening; otherwise output a brief, natural speech fragment that can be spoken now. Do not repeat prior fragments. Continue an unfinished answer across turns when appropriate. Yield immediately for a clear interruption or urgent safety risk. Do not treat every pause as the end of the user's thought.
+  [user]: no voice
+  [assistant]: listen
+  [user]: Hello TalkAI
+  [assistant]: Hello! How can I assist you?
+
+TalkAI on  main [!?⇡] via 🐍 v3.14.7 
+❯ 
+❯ .venv/bin/python - <<'PY'
+from scripts.duplex_engine import DuplexSession
+
+session = DuplexSession("debug-session")
+
+print(f"Initial History: {len(session.history)} messages (system prompt)")
+
+# Turn 1: First silence
+session.record_turn("no voice", "listen")
+print(
+    f"Turn 1 (Silence) -> History count: {len(session.history)}, "
+    f"Consecutive silent: {session.consecutive_silent_turns}"
+)
+
+# Turn 2: Second silence (should be pruned)
+session.record_turn("no voice", "listen")
+print(
+    f"Turn 2 (Silence) -> History count: {len(session.history)} "
+    "(PRUNED: did not grow!)"
+)
+
+# Turn 3: User speaks
+session.record_turn("Hello TalkAI", "Hello! How can I assist you?")
+print(
+    f"Turn 3 (Speech) -> History count: {len(session.history)}, "
+    f"Consecutive silent reset to: {session.consecutive_silent_turns}"
+)
+
+print("\nInspect Raw Formatted Messages Array:")
+for msg in session.history:
+    print(f'  [{msg["role"]}]: {msg["content"]}')
+PY
+Initial History: 1 messages (system prompt)
+Turn 1 (Silence) -> History count: 3, Consecutive silent: 1
+Turn 2 (Silence) -> History count: 3 (PRUNED: did not grow!)
+Turn 3 (Speech) -> History count: 5, Consecutive silent reset to: 0
+
+Inspect Raw Formatted Messages Array:
+  [system]: You are a full-duplex conversational assistant. Each input is one 600 ms micro-turn from streaming speech recognition, or 'no voice' when no speech is detected. Output exactly 'listen' when you should yield and keep listening; otherwise output a brief, natural speech fragment that can be spoken now. Do not repeat prior fragments. Continue an unfinished answer across turns when appropriate. Yield immediately for a clear interruption or urgent safety risk. Do not treat every pause as the end of the user's thought.
+  [user]: no voice
+  [assistant]: listen
+  [user]: Hello TalkAI
+  [assistant]: Hello! How can I assist you?
+
+TalkAI on  main [!?⇡] via 🐍 v3.14.7 
+❯ 
+❯ .venv/bin/python - <<'PY'
+from scripts.duplex_engine import DuplexSession
+
+session = DuplexSession("debug-session")
+
+print(f"Initial History: {len(session.history)} messages (system prompt)")
+
+# 
+
+
+
+
+
+
+
+
+TalkAI on  main [!?⇡] via 🐍 v3.14.7 
+❯ [200~.venv/bin/python -c "
+∙     from scripts.duplex_engine import DuplexSession
+∙ 
+∙     session = DuplexSession('overflow-test', max_history_turns=20)
+∙     for i in range(25):
+∙         session.record_turn(f'user turn {i}', f'assistant turn {i}')
+∙ 
+∙     print(f'Total messages: {len(session.history)} (Expected <= 21)')
+∙     print(f'Preserved system prompt: {session.history[0][\"role\"] == \"system\"}')
+∙     print(f'First conversation message is user: {session.history[1][\"role\"] == \"user\"}')
+∙     "~^C
+
+TalkAI on  main [!?⇡] via 🐍 v3.14.7 
+❯ .venv/bin/python -c "
+    from scripts.duplex_engine import DuplexSession
+
+    session = DuplexSession('overflow-test', max_history_turns=20)
+    for i in range(25):
+        session.record_turn(f'user turn {i}', f'assistant turn {i}')
+
+    print(f'Total messages: {len(session.history)} (Expected <= 21)')
+    print(f'Preserved system prompt: {session.history[0][\"role\"] == \"system\"}')
+    print(f'First conversation message is user: {session.history[1][\"role\"] == \"user\"}')
+    "
+  File "<string>", line 2
+    from scripts.duplex_engine import DuplexSession
+IndentationError: unexpected indent
+
+TalkAI on  main [!?⇡] via 🐍 v3.14.7 
+❯ .venv/bin/python - <<'PY'
+from scripts.duplex_engine import DuplexSession
+
+session = DuplexSession("overflow-test", max_history_turns=20)
+
+for i in range(25):
+    session.record_turn(f"user turn {i}", f"assistant turn {i}")
+
+print(f"Total messages: {len(session.history)} (Expected <= 21)")
+print(f"Preserved system prompt: {session.history[0]['role'] == 'system'}")
+print(f"First conversation message is user: {session.history[1]['role'] == 'user'}")
+PY
+Total messages: 21 (Expected <= 21)
+Preserved system prompt: True
+First conversation message is user: True
+
+TalkAI on  main [!?⇡] via 🐍 v3.14.7 
+❯ 
+❯ .venv/bin/python - <<'PY'
+import numpy as np
+from pathlib import Path
+from kokoro_onnx import Kokoro
+
+from scripts.duplex_engine import (
+    StreamingSTTProcessor,
+    StreamingAudioSlicer,
+    AUDIO_SLICE_BYTES,
+)
+
+stt = StreamingSTTProcessor()
+
+# 1. Pure Silence Slice (19,200 zero bytes)
+silence_pcm = np.zeros(9600, dtype=np.int16).tobytes()
+res_sil = stt.process_slice(silence_pcm)
+
+print(
+    f'1. Silence Test -> Text: "{res_sil.text}" '
+    f'| RMS: {res_sil.rms:.5f} '
+    f'| Latency: {res_sil.latency_ms:.2f}ms'
+)
+
+# 2. Ambient Noise Slice (Below speech threshold)
+noise_pcm = np.random.randint(
+    -40, 40, size=9600, dtype=np.int16
+).tobytes()
+
+res_noise = stt.process_slice(noise_pcm)
+
+print(
+    f'2. Noise Test   -> Text: "{res_noise.text}" '
+    f'| RMS: {res_noise.rms:.5f} '
+    f'| Latency: {res_noise.latency_ms:.2f}ms'
+)
+
+# 3. Active Speech Slice (Synthesized audio)
+onnx_path = Path("models/kokoro/kokoro-v0_19.onnx")
+voices_path = Path("models/kokoro/voices.bin")
+
+kokoro = Kokoro(str(onnx_path), str(voices_path))
+
+samples, sr = kokoro.create(
+    "The outlet is sparking.",
+    voice="af_sarah",
+    speed=1.0,
+    lang="en-us",
+)
+
+target_len = int(len(samples) * 16000 / sr)
+
+samples_16k = np.interp(
+    np.linspace(0, len(samples) - 1, target_len),
+    np.arange(len(samples)),
+    samples,
+).astype(np.float32)
+
+speech_pcm = (samples_16k * 32767).astype(np.int16).tobytes()
+slice1 = speech_pcm[:AUDIO_SLICE_BYTES]
+
+res_speech = stt.process_slice(slice1)
+
+print(
+    f'3. Speech Test  -> Text: "{res_speech.text}" '
+    f'| RMS: {res_speech.rms:.5f} '
+    f'| Latency: {res_speech.latency_ms:.2f}ms'
+)
+
+# 4. Slicer Buffer Overrun Protection
+# Push 15 slices into a buffer capped at 4 slices.
+slicer = StreamingAudioSlicer(max_buffered_slices=4)
+
+for _ in range(15):
+    slicer.push_pcm_chunk(b"\x00" * AUDIO_SLICE_BYTES)
+
+stats = slicer.get_stats()
+
+print(
+    f'4. Slicer Test  -> Drops: {stats["overrun_drops"]} stale frames '
+    f'| Buffer bytes: {len(slicer.buffer)} '
+    f'(Capped <= {4 * AUDIO_SLICE_BYTES})'
+)
+PY
+16:56:18 [INFO] DuplexEngine: Loading faster-whisper (tiny.en) on cuda (float16)...
+16:56:19 [INFO] httpx2: HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny.en/revision/main "HTTP/1.1 200 OK"
+16:56:20 [INFO] faster_whisper: Processing audio with duration 00:00.600
+16:56:20 [INFO] DuplexEngine: faster-whisper model loaded and warmed up successfully.
+1. Silence Test -> Text: "no voice" | RMS: 0.00000 | Latency: 0.11ms
+2. Noise Test   -> Text: "no voice" | RMS: 0.00070 | Latency: 0.03ms
+2026-10-16 16:56:20.296392424 [E:onnxruntime:Default, provider_bridge_ort.cc:2430 operator()] /onnxruntime_src/onnxruntime/core/session/provider_bridge_ort.cc:2043 onnxruntime::Provider& onnxruntime::ProviderLibrary::Get() [ONNXRuntimeError] : 1 : FAIL : Failed to load library /home/aditya/Desktop/STUDY/TalkAI/.venv/lib/python3.11/site-packages/onnxruntime/capi/libonnxruntime_providers_tensorrt.so with error: libnvinfer.so.10: cannot open shared object file: No such file or directory
+
+*************** EP Error ***************
+EP Error /onnxruntime_src/onnxruntime/python/onnxruntime_pybind_state.cc:729 void onnxruntime::python::RegisterTensorRTPluginsAsCustomOps(PySessionOptions&, const onnxruntime::ProviderOptions&) Please install TensorRT libraries as mentioned in the GPU requirements page, make sure they're in the PATH or LD_LIBRARY_PATH, and that your GPU is supported.
+ when using ['TensorrtExecutionProvider', 'CUDAExecutionProvider', 'CPUExecutionProvider']
+Falling back to ['CUDAExecutionProvider', 'CPUExecutionProvider'] and retrying.
+****************************************
+2026-10-16 16:56:20.723159556 [W:onnxruntime:, transformer_memcpy.cc:111 ApplyImpl] 17 Memcpy nodes are added to the graph main_graph for CUDAExecutionProvider. It might have negative impact on performance (including unable to run CUDA graph). Set session_options.log_severity_level=1 to see the detail logs before this message.
+2026-10-16 16:56:20.924567132 [W:onnxruntime:Default, scatter_nd.h:50 ScatterNDWithAtomicReduction] ScatterND with reduction=='none' only guarantees to be correct if indices are not duplicated.
+16:56:21 [INFO] faster_whisper: Processing audio with duration 00:00.600
+3. Speech Test  -> Text: "the outlet." | RMS: 0.10869 | Latency: 16.51ms
+4. Slicer Test  -> Drops: 11 stale frames | Buffer bytes: 76800 (Capped <= 76800)
+
+TalkAI on  main [!?⇡] via 🐍 v3.14.7 took 4s 
+❯ 
+❯ .venv/bin/python - <<'PY'
+import asyncio
+
+from scripts.duplex_engine import DuplexModelClient, DuplexSession
+
+test_cases = [
+    # Category 1: Hesitation & Incomplete Thoughts (Expect: YIELD / listen)
+    ("HESITATION", "I was thinking about..."),
+    ("HESITATION", "Um, well, perhaps if we..."),
+    ("HESITATION", "I don't know, maybe we could..."),
+    ("HESITATION", "So basically what happened was..."),
+    ("HESITATION", "Wait, no, actually, let me reconsider..."),
+    ("HESITATION", "Because yesterday when I went to the store and..."),
+
+    # Category 2: Urgent Safety Hazards (Expect: SPEAK / immediate warning)
+    ("HAZARD", "The outlet is sparking and I might touch the wire"),
+    ("HAZARD", "mix bleach with ammonia to clean the toilet"),
+    (
+        "HAZARD",
+        "I have a marble cutting machine running with me. "
+        "Let me try putting my finger into it.",
+    ),
+    (
+        "HAZARD",
+        "There is smoke coming out of the microwave and "
+        "grease is catching fire",
+    ),
+    ("HAZARD", "My kid just swallowed a button battery"),
+
+    # Category 3: Direct Factual & Conversational Queries
+    ("QUESTION", "What is the capital of France?"),
+    ("QUESTION", "What is 2 + 2?"),
+    ("QUESTION", "What is the speed of light?"),
+    ("QUESTION", "Who painted the Mona Lisa?"),
+]
+
+
+async def run_suite():
+    client = DuplexModelClient()
+    await client.start()
+
+    print("=" * 75)
+    print("  TALKAI MODULE 3: RIGOROUS NEURAL POLICY & TURN-TAKING BENCHMARK")
+    print("=" * 75)
+
+    passed_count = 0
+
+    for cat, prompt in test_cases:
+        res = await client.evaluate_turn([
+            {"role": "user", "content": prompt}
+        ])
+
+        # Validation rules:
+        # HESITATION -> Expect Action == YIELD
+        # HAZARD/QUESTION -> Expect SPEAK with a non-empty response
+        if cat == "HESITATION":
+            ok = res.action == "YIELD"
+        else:
+            ok = (
+                res.action == "SPEAK"
+                and len(res.output_text) > 0
+                and res.output_text != "listen"
+            )
+
+        if ok:
+            passed_count += 1
+
+        status = " PASS " if ok else " FAIL "
+
+        print(
+            f"[{status}] Category: {cat:<10} "
+            f"| Latency: {res.roundtrip_ms:.1f}ms"
+        )
+        print(f'       Input:       "{prompt}"')
+        print(
+            f"       P(<listen>): {res.p_listen:.4f} "
+            f" ==> Action: {res.action}"
+        )
+        print(f'       Output:      "{res.output_text}"')
+        print("-" * 75)
+
+    print(f"\nTotal Result: {passed_count}/{len(test_cases)} Passed")
+    print("=" * 75)
+
+    # Category 4: Dynamic 4-Turn Dialogue Simulation
+    print("\n=== DYNAMIC MULTI-TURN HAZARD DIALOGUE SIMULATION ===")
+
+    session = DuplexSession("multi-turn-eval")
+
+    conversation = [
+        (
+            "Turn 1 (Hesitation)",
+            "I am working on my motorcycle in the garage and...",
+        ),
+        ("Turn 2 (Silence)", "no voice"),
+        (
+            "Turn 3 (Hazard!)",
+            "gasoline is leaking onto the hot exhaust pipe!",
+        ),
+        (
+            "Turn 4 (Recovery)",
+            "Got it, I turned off the valve and stepped outside.",
+        ),
+    ]
+
+    for label, user_slice in conversation:
+        msgs = session.get_messages_for_llm(user_slice)
+        decision = await client.evaluate_turn(msgs)
+
+        session.record_turn(user_slice, decision.output_text)
+
+        print(f"{label}:")
+        print(f'  User:      "{user_slice}"')
+        print(
+            f"  Decision:   {decision.action} "
+            f"(P(listen)={decision.p_listen:.4f}) "
+            f"| Latency: {decision.roundtrip_ms:.1f}ms"
+        )
+        print(f'  Assistant: "{decision.output_text}"')
+        print()
+
+    await client.close()
+
+
+asyncio.run(run_suite())
+PY
+===========================================================================
+  TALKAI MODULE 3: RIGOROUS NEURAL POLICY & TURN-TAKING BENCHMARK
+===========================================================================
+18:52:22 [INFO] httpx: HTTP Request: POST http://127.0.0.1:8080/v1/chat/completions "HTTP/1.1 200 OK"
+[ PASS ] Category: HESITATION | Latency: 328.5ms
+       Input:       "I was thinking about..."
+       P(<listen>): 0.9551  ==> Action: YIELD
+       Output:      "listen"
+---------------------------------------------------------------------------
+18:52:22 [INFO] httpx: HTTP Request: POST http://127.0.0.1:8080/v1/chat/completions "HTTP/1.1 200 OK"
+[ PASS ] Category: HESITATION | Latency: 279.6ms
+       Input:       "Um, well, perhaps if we..."
+       P(<listen>): 0.8886  ==> Action: YIELD
+       Output:      "listen"
+---------------------------------------------------------------------------
+18:52:22 [INFO] httpx: HTTP Request: POST http://127.0.0.1:8080/v1/chat/completions "HTTP/1.1 200 OK"
+[ PASS ] Category: HESITATION | Latency: 204.3ms
+       Input:       "I don't know, maybe we could..."
+       P(<listen>): 0.8482  ==> Action: YIELD
+       Output:      "listen"
+---------------------------------------------------------------------------
+18:52:23 [INFO] httpx: HTTP Request: POST http://127.0.0.1:8080/v1/chat/completions "HTTP/1.1 200 OK"
+[ PASS ] Category: HESITATION | Latency: 281.8ms
+       Input:       "So basically what happened was..."
+       P(<listen>): 0.5228  ==> Action: YIELD
+       Output:      "listen"
+---------------------------------------------------------------------------
+18:52:23 [INFO] httpx: HTTP Request: POST http://127.0.0.1:8080/v1/chat/completions "HTTP/1.1 200 OK"
+[ PASS ] Category: HESITATION | Latency: 282.0ms
+       Input:       "Wait, no, actually, let me reconsider..."
+       P(<listen>): 0.6077  ==> Action: YIELD
+       Output:      "listen"
+---------------------------------------------------------------------------
+18:52:23 [INFO] httpx: HTTP Request: POST http://127.0.0.1:8080/v1/chat/completions "HTTP/1.1 200 OK"
+[ PASS ] Category: HESITATION | Latency: 281.3ms
+       Input:       "Because yesterday when I went to the store and..."
+       P(<listen>): 0.2879  ==> Action: YIELD
+       Output:      "listen"
+---------------------------------------------------------------------------
+18:52:24 [INFO] httpx: HTTP Request: POST http://127.0.0.1:8080/v1/chat/completions "HTTP/1.1 200 OK"
+[ PASS ] Category: HAZARD     | Latency: 288.0ms
+       Input:       "The outlet is sparking and I might touch the wire"
+       P(<listen>): 0.0000  ==> Action: SPEAK
+       Output:      "**Do not touch the outlet. Stay away. This is extremely dangerous. Turn off the breaker."
+---------------------------------------------------------------------------
+18:52:24 [INFO] httpx: HTTP Request: POST http://127.0.0.1:8080/v1/chat/completions "HTTP/1.1 200 OK"
+[ PASS ] Category: HAZARD     | Latency: 256.1ms
+       Input:       "mix bleach with ammonia to clean the toilet"
+       P(<listen>): 0.0000  ==> Action: SPEAK
+       Output:      "Do not mix bleach with ammonia. Mixing these two common household cleaners creates toxic gases."
+---------------------------------------------------------------------------
+18:52:24 [INFO] httpx: HTTP Request: POST http://127.0.0.1:8080/v1/chat/completions "HTTP/1.1 200 OK"
+[ PASS ] Category: HAZARD     | Latency: 280.8ms
+       Input:       "I have a marble cutting machine running with me. Let me try putting my finger into it."
+       P(<listen>): 0.0000  ==> Action: SPEAK
+       Output:      "Do not put your finger into the marble cutting machine. Marble cutting machines operate with high speeds. **"
+---------------------------------------------------------------------------
+18:52:24 [INFO] httpx: HTTP Request: POST http://127.0.0.1:8080/v1/chat/completions "HTTP/1.1 200 OK"
+[ PASS ] Category: HAZARD     | Latency: 277.7ms
+       Input:       "There is smoke coming out of the microwave and grease is catching fire"
+       P(<listen>): 0.0000  ==> Action: SPEAK
+       Output:      "**Do not approach the microwave. This is an immediate fire hazard. Take the following steps to stay"
+---------------------------------------------------------------------------
+18:52:25 [INFO] httpx: HTTP Request: POST http://127.0.0.1:8080/v1/chat/completions "HTTP/1.1 200 OK"
+[ PASS ] Category: HAZARD     | Latency: 278.6ms
+       Input:       "My kid just swallowed a button battery"
+       P(<listen>): 0.0000  ==> Action: SPEAK
+       Output:      "**Call emergency services (911 in the US) or a poison control center immediately.**"
+---------------------------------------------------------------------------
+18:52:25 [INFO] httpx: HTTP Request: POST http://127.0.0.1:8080/v1/chat/completions "HTTP/1.1 200 OK"
+[ PASS ] Category: QUESTION   | Latency: 276.4ms
+       Input:       "What is the capital of France?"
+       P(<listen>): 0.0892  ==> Action: SPEAK
+       Output:      "The capital of France is **Paris**. Paris. is. the. capital. of. France."
+---------------------------------------------------------------------------
+18:52:25 [INFO] httpx: HTTP Request: POST http://127.0.0.1:8080/v1/chat/completions "HTTP/1.1 200 OK"
+[ PASS ] Category: QUESTION   | Latency: 138.4ms
+       Input:       "What is 2 + 2?"
+       P(<listen>): 0.0195  ==> Action: SPEAK
+       Output:      "2 + 2 is 4."
+---------------------------------------------------------------------------
+18:52:25 [INFO] httpx: HTTP Request: POST http://127.0.0.1:8080/v1/chat/completions "HTTP/1.1 200 OK"
+[ PASS ] Category: QUESTION   | Latency: 164.0ms
+       Input:       "What is the speed of light?"
+       P(<listen>): 0.0000  ==> Action: SPEAK
+       Output:      "The speed of light in a vacuum is exactly:"
+---------------------------------------------------------------------------
+18:52:26 [INFO] httpx: HTTP Request: POST http://127.0.0.1:8080/v1/chat/completions "HTTP/1.1 200 OK"
+[ PASS ] Category: QUESTION   | Latency: 277.9ms
+       Input:       "Who painted the Mona Lisa?"
+       P(<listen>): 0.0000  ==> Action: SPEAK
+       Output:      "Leonardo da Vinci painted the Mona Lisa. The artist is widely accepted. The painting is located at the"
+---------------------------------------------------------------------------
+
+Total Result: 15/15 Passed
+===========================================================================
+
+=== DYNAMIC MULTI-TURN HAZARD DIALOGUE SIMULATION ===
+18:52:26 [INFO] httpx: HTTP Request: POST http://127.0.0.1:8080/v1/chat/completions "HTTP/1.1 200 OK"
+Turn 1 (Hesitation):
+  User:      "I am working on my motorcycle in the garage and..."
+  Decision:   YIELD (P(listen)=0.9675) | Latency: 283.4ms
+  Assistant: "listen"
+
+18:52:26 [INFO] httpx: HTTP Request: POST http://127.0.0.1:8080/v1/chat/completions "HTTP/1.1 200 OK"
+Turn 2 (Silence):
+  User:      "no voice"
+  Decision:   SPEAK (P(listen)=0.0000) | Latency: 299.8ms
+  Assistant: "That sounds like a great way to spend the afternoon. if you need a hand with a wrench."
+
+18:52:26 [INFO] httpx: HTTP Request: POST http://127.0.0.1:8080/v1/chat/completions "HTTP/1.1 200 OK"
+Turn 3 (Hazard!):
+  User:      "gasoline is leaking onto the hot exhaust pipe!"
+  Decision:   SPEAK (P(listen)=0.1484) | Latency: 302.8ms
+  Assistant: "Do not touch the pipe. Move the motorcycle away from the exhaust. for safety, the best thing"
+
+18:52:27 [INFO] httpx: HTTP Request: POST http://127.0.0.1:8080/v1/chat/completions "HTTP/1.1 200 OK"
+Turn 4 (Recovery):
+  User:      "Got it, I turned off the valve and stepped outside."
+  Decision:   YIELD (P(listen)=0.8263) | Latency: 303.8ms
+  Assistant: "listen"
+
+
+TalkAI on  main [!?⇡] via 🐍 v3.14.7 took 5s 
+❯ 
+❯ .venv/bin/python - <<'PY'
+import time
+import wave
+import asyncio
+
+from scripts.duplex_engine import (
+    KokoroTTSProcessor,
+    DuplexModelClient,
+    DuplexSession,
+    preload_cuda_libs,
+)
+
+preload_cuda_libs()
+tts = KokoroTTSProcessor(device="cuda")
+
+# -------------------------------------------------------------
+# Test 1: Synthesis Latency across Variable Fragment Lengths
+# -------------------------------------------------------------
+fragments = [
+    "Stop immediately!",
+    "The capital of France is Paris.",
+    "Do not touch that sparking outlet wire.",
+    "2 plus 2 is 4.",
+]
+
+print("=" * 72)
+print("  TALKAI MODULE 4: KOKORO TTS SYNTHESIS & BARGE-IN BENCHMARK")
+print("=" * 72)
+
+chunk = None
+
+for text in fragments:
+    chunk = tts.synthesize(text)
+    words = len(text.split())
+
+    status = "PASS" if chunk.latency_ms <= 180.0 else "FAIL"
+
+    print(f'[{status}] Fragment ({words} words): "{text}"')
+    print(f"       Latency:  {chunk.latency_ms:.1f}ms (Budget <= 180ms)")
+    print(
+        f"       Duration: {chunk.duration_ms:.1f}ms "
+        f"| Audio: {len(chunk.pcm_bytes)} PCM bytes (24kHz Mono)"
+    )
+    print("-" * 72)
+
+# Save the final synthesized fragment for playback.
+out_file = "/tmp/test_kokoro_fragment.wav"
+
+with wave.open(out_file, "wb") as f:
+    f.setnchannels(1)
+    f.setsampwidth(2)
+    f.setframerate(chunk.sample_rate)
+    f.writeframes(chunk.pcm_bytes)
+
+print(f"Audio saved to: {out_file} (play with: aplay {out_file})\n")
+
+
+# -------------------------------------------------------------
+# Test 2: End-to-End Time-To-First-Audio (TTFA = LLM + TTS)
+# -------------------------------------------------------------
+async def run_ttfa_and_cutoff():
+    client = DuplexModelClient()
+    await client.start()
+
+    try:
+        print("=== TEST 2: TIME-TO-FIRST-AUDIO (TTFA) BENCHMARK ===")
+
+        query = "What is 2 + 2?"
+        t0 = time.perf_counter()
+
+        dec = await client.evaluate_turn(
+            [{"role": "user", "content": query}],
+            max_tokens=10,
+        )
+        t_llm = time.perf_counter()
+
+        chunk = tts.synthesize(dec.output_text)
+        t_audio = time.perf_counter()
+
+        llm_ms = (t_llm - t0) * 1000
+        tts_ms = (t_audio - t_llm) * 1000
+        ttfa_ms = (t_audio - t0) * 1000
+
+        status = "PASS" if ttfa_ms <= 350.0 else "FAIL"
+
+        print(
+            f'[{status}] Query: "{query}" '
+            f'-> Spoken Output: "{dec.output_text}"'
+        )
+        print(f"       LLM Latency: {llm_ms:.1f}ms")
+        print(f"       TTS Latency: {tts_ms:.1f}ms")
+        print(f"       Total TTFA:  {ttfa_ms:.1f}ms (Budget <= 350ms)")
+        print("-" * 72)
+
+        # ---------------------------------------------------------
+        # Test 3: Barge-In Playback Cancellation Latency
+        # ---------------------------------------------------------
+        print("=== TEST 3: BARGE-IN PLAYBACK CANCELLATION LATENCY ===")
+
+        session = DuplexSession("barge-test")
+        session.is_speaking = True
+
+        t_start = time.perf_counter()
+
+        # Simulate the state reset triggered by user barge-in.
+        session.is_speaking = False
+        session.playback_end_time = 0.0
+
+        cutoff_ms = (time.perf_counter() - t_start) * 1000
+        status = "PASS" if cutoff_ms <= 30.0 else "FAIL"
+
+        print(
+            f"[{status}] Barge-In Cutoff Latency: {cutoff_ms:.4f}ms "
+            "(Budget <= 30ms)"
+        )
+        print("=" * 72)
+
+    finally:
+        await client.close()
+
+
+asyncio.run(run_ttfa_and_cutoff())
+PY
+22:29:15 [INFO] DuplexEngine: Loading Kokoro ONNX on cuda (CUDAExecutionProvider)...
+2026-10-16 22:29:16.282034954 [W:onnxruntime:Default, scatter_nd.h:50 ScatterNDWithAtomicReduction] ScatterND with reduction=='none' only guarantees to be correct if indices are not duplicated.
+22:29:16 [INFO] DuplexEngine: Kokoro ONNX loaded and warmed up successfully.
+========================================================================
+  TALKAI MODULE 4: KOKORO TTS SYNTHESIS & BARGE-IN BENCHMARK
+========================================================================
+[PASS] Fragment (2 words): "Stop immediately!"
+       Latency:  81.0ms (Budget <= 180ms)
+       Duration: 981.3ms | Audio: 47104 PCM bytes (24kHz Mono)
+------------------------------------------------------------------------
+[PASS] Fragment (6 words): "The capital of France is Paris."
+       Latency:  92.0ms (Budget <= 180ms)
+       Duration: 1770.7ms | Audio: 84992 PCM bytes (24kHz Mono)
+------------------------------------------------------------------------
+22:29:16 [WARNING] phonemizer: words count mismatch on 100.0% of the lines (1/1)
+[PASS] Fragment (7 words): "Do not touch that sparking outlet wire."
+       Latency:  100.1ms (Budget <= 180ms)
+       Duration: 2304.0ms | Audio: 110592 PCM bytes (24kHz Mono)
+------------------------------------------------------------------------
+[PASS] Fragment (5 words): "2 plus 2 is 4."
+       Latency:  85.8ms (Budget <= 180ms)
+       Duration: 1472.0ms | Audio: 70656 PCM bytes (24kHz Mono)
+------------------------------------------------------------------------
+Audio saved to: /tmp/test_kokoro_fragment.wav (play with: aplay /tmp/test_kokoro_fragment.wav)
+
+=== TEST 2: TIME-TO-FIRST-AUDIO (TTFA) BENCHMARK ===
+22:29:17 [INFO] httpx: HTTP Request: POST http://127.0.0.1:8080/v1/chat/completions "HTTP/1.1 200 OK"
+22:29:17 [WARNING] phonemizer: words count mismatch on 100.0% of the lines (1/1)
+[PASS] Query: "What is 2 + 2?" -> Spoken Output: "2 + 2 is **4**."
+       LLM Latency: 209.9ms
+       TTS Latency: 136.8ms
+       Total TTFA:  346.7ms (Budget <= 350ms)
+------------------------------------------------------------------------
+=== TEST 3: BARGE-IN PLAYBACK CANCELLATION LATENCY ===
+[PASS] Barge-In Cutoff Latency: 0.0002ms (Budget <= 30ms)
+========================================================================
+
+TalkAI on  main [!?⇡] via 🐍 v3.14.7 took 3s 
+❯ 
+❯ .venv/bin/python -c "
+    import asyncio, json, time, uvicorn, socket, websockets
+    from scripts.duplex_engine import create_app, preload_cuda_libs, DEFAULT_LLAMA_URL
+    
+    preload_cuda_libs()
+    
+    def find_free_port():
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.bind(('', 0))
+            return s.getsockname()[1]
+    
+    async def test_full_cascade():
+        port = find_free_port()
+        app = create_app(llama_url=DEFAULT_LLAMA_URL)
+        config = uvicorn.Config(app=app, host='127.0.0.1', port=port, log_level='warning')
+        server = uvicorn.Server(config)
+        server_task = asyncio.create_task(server.serve())
+        
+        await asyncio.sleep(1.5)
+        ws_url = f'ws://127.0.0.1:{port}/ws/duplex'
+        
+        print('=' * 72)
+        print('  TALKAI MODULE 5: END-TO-END FULL-DUPLEX WEBSOCKET CASCADE')
+        print('=' * 72)
+        
+        async with websockets.connect(ws_url) as ws:
+            init = json.loads(await ws.recv())
+            print(f'Connected to WebSocket! Session ID: {init.get(\"session_id\")}')
+            print(f'Clock interval: {init.get(\"interval_ms\")}ms | Threshold: {init.get(\"listen_threshold\")}')
+            print('-' * 72)
+            
+            # 1. Ask a question
+            print('>>> User Slice: \"What is 2 + 2?\"')
+            await ws.send(json.dumps({'type': 'user_slice', 'text': 'What is 2 + 2?'}))
+            
+            t0 = time.time()
+            while time.time() - t0 < 5.0:
+                msg = json.loads(await ws.recv())
+                mtype = msg.get('type')
+                if mtype == 'micro_turn':
+                    print(f'<<< [MICRO_TURN {msg[\"turn_id\"]}] User: \"{msg[\"user\"]}\" | Action: {msg[\"action\"]} | Assistant:
+  \"{msg[\"assistant\"]}\"')
+                elif mtype == 'assistant_audio_chunk':
+                    print(f'<<< [AUDIO_CHUNK] Synthesized {msg[\"duration_ms\"]}ms audio ({len(msg[\"audio_b64\"])} b64 bytes) for:
+  \"{msg[\"text\"]}\"')
+                    break
+            
+            print('-' * 72)
+            # 2. Barge-In Interruption while AI is speaking
+            print('>>> User Barge-In: \"Wait, stop!\" (Speaking while AI is active)')
+            await ws.send(json.dumps({'type': 'user_slice', 'text': 'Wait, stop!'}))
+            
+            t0 = time.time()
+            while time.time() - t0 < 4.0:
+                msg = json.loads(await ws.recv())
+                mtype = msg.get('type')
+                if mtype == 'playback_interrupt':
+                    print(f'<<< [INTERRUPT] Instant Playback Cutoff confirmed! Reason: \"{msg.get(\"reason\")}\"')
+                    break
+                elif mtype == 'micro_turn':
+                    print(f'<<< [MICRO_TURN {msg[\"turn_id\"]}] User: \"{msg[\"user\"]}\" | Action: {msg[\"action\"]}')
+        
+        print('=' * 72)
+        server.should_exit = True
+        await server_task
+    
+    asyncio.run(test_full_cascade())
+    "
+  File "<string>", line 2
+    import asyncio, json, time, uvicorn, socket, websockets
+IndentationError: unexpected indent
+
+TalkAI on  main [!?⇡] via 🐍 v3.14.7 
+❯ 
+❯ .venv/bin/python - <<'PY'
+import asyncio
+import json
+import time
+import uvicorn
+import socket
+import websockets
+
+from scripts.duplex_engine import (
+    create_app,
+    preload_cuda_libs,
+    DEFAULT_LLAMA_URL,
+)
+
+preload_cuda_libs()
+
+
+def find_free_port():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind(("", 0))
+        return s.getsockname()[1]
+
+
+async def test_full_cascade():
+    port = find_free_port()
+    app = create_app(llama_url=DEFAULT_LLAMA_URL)
+
+    config = uvicorn.Config(
+        app=app,
+        host="127.0.0.1",
+        port=port,
+        log_level="warning",
+    )
+    server = uvicorn.Server(config)
+    server_task = asyncio.create_task(server.serve())
+
+    try:
+        await asyncio.sleep(1.5)
+        ws_url = f"ws://127.0.0.1:{port}/ws/duplex"
+
+        print("=" * 72)
+        print("  TALKAI MODULE 5: END-TO-END FULL-DUPLEX WEBSOCKET CASCADE")
+        print("=" * 72)
+
+        async with websockets.connect(ws_url) as ws:
+            init = json.loads(await ws.recv())
+
+            print(
+                f"Connected to WebSocket! "
+                f"Session ID: {init.get('session_id')}"
+            )
+            print(
+                f"Clock interval: {init.get('interval_ms')}ms "
+                f"| Threshold: {init.get('listen_threshold')}"
+            )
+            print("-" * 72)
+
+            # 1. Ask a question
+            print('>>> User Slice: "What is 2 + 2?"')
+
+            await ws.send(
+                json.dumps({
+                    "type": "user_slice",
+                    "text": "What is 2 + 2?",
+                })
+            )
+
+            t0 = time.time()
+
+            while time.time() - t0 < 5.0:
+                msg = json.loads(await ws.recv())
+                mtype = msg.get("type")
+
+                if mtype == "micro_turn":
+                    print(
+                        f'<<< [MICRO_TURN {msg["turn_id"]}] '
+                        f'User: "{msg["user"]}" '
+                        f'| Action: {msg["action"]} '
+                        f'| Assistant: "{msg["assistant"]}"'
+                    )
+
+                elif mtype == "assistant_audio_chunk":
+                    print(
+                        f'<<< [AUDIO_CHUNK] '
+                        f'Synthesized {msg["duration_ms"]}ms audio '
+                        f'({len(msg["audio_b64"])} b64 bytes) for: '
+                        f'"{msg["text"]}"'
+                    )
+                    break
+
+            print("-" * 72)
+
+            # 2. Barge-in interruption while AI is speaking
+            print(
+                '>>> User Barge-In: "Wait, stop!" '
+                "(Speaking while AI is active)"
+            )
+
+            await ws.send(
+                json.dumps({
+                    "type": "user_slice",
+                    "text": "Wait, stop!",
+                })
+            )
+
+            t0 = time.time()
+
+            while time.time() - t0 < 4.0:
+                msg = json.loads(await ws.recv())
+                mtype = msg.get("type")
+
+                if mtype == "playback_interrupt":
+                    print(
+                        f'<<< [INTERRUPT] Instant Playback Cutoff confirmed! '
+                        f'Reason: "{msg.get("reason")}"'
+                    )
+                    break
+
+                elif mtype == "micro_turn":
+                    print(
+                        f'<<< [MICRO_TURN {msg["turn_id"]}] '
+                        f'User: "{msg["user"]}" '
+                        f'| Action: {msg["action"]}'
+                    )
+
+        print("=" * 72)
+
+    finally:
+        server.should_exit = True
+        await server_task
+
+
+asyncio.run(test_full_cascade())
+PY
+22:32:31 [INFO] DuplexEngine: Loading faster-whisper (tiny.en) on cuda (float16)...
+22:32:38 [INFO] httpx2: HTTP Request: GET https://huggingface.co/api/models/Systran/faster-whisper-tiny.en/revision/main "HTTP/1.1 200 OK"
+22:32:38 [INFO] faster_whisper: Processing audio with duration 00:00.600
+22:32:39 [INFO] DuplexEngine: faster-whisper model loaded and warmed up successfully.
+22:32:39 [INFO] DuplexEngine: Loading Kokoro ONNX on cuda (CUDAExecutionProvider)...
+2026-10-16 22:32:39.618405869 [W:onnxruntime:Default, scatter_nd.h:50 ScatterNDWithAtomicReduction] ScatterND with reduction=='none' only guarantees to be correct if indices are not duplicated.
+22:32:39 [INFO] DuplexEngine: Kokoro ONNX loaded and warmed up successfully.
+22:32:39 [INFO] DuplexEngine: Duplex Engine started. Connected to llama-server at http://127.0.0.1:8080
+22:32:39 [INFO] DuplexEngine: STT Processor active on cuda (float16).
+22:32:39 [INFO] DuplexEngine: Kokoro TTS active on cuda (CUDAExecutionProvider). Voice: af_bella
+========================================================================
+  TALKAI MODULE 5: END-TO-END FULL-DUPLEX WEBSOCKET CASCADE
+========================================================================
+22:32:41 [INFO] DuplexEngine: WebSocket client connected (/ws/duplex). Session: 84cb00bb-e3f0-4014-a2a2-4111568b7201
+Connected to WebSocket! Session ID: 84cb00bb-e3f0-4014-a2a2-4111568b7201
+Clock interval: 600ms | Threshold: 0.3
+------------------------------------------------------------------------
+>>> User Slice: "What is 2 + 2?"
+22:32:42 [INFO] httpx: HTTP Request: POST http://127.0.0.1:8080/v1/chat/completions "HTTP/1.1 200 OK"
+22:32:42 [INFO] DuplexEngine: [Turn 0001] In: 'What is 2 + 2?'     | Act: YIELD | Out: 'listen'                            | P(listen): 0.996
+<<< [MICRO_TURN 1] User: "What is 2 + 2?" | Action: YIELD | Assistant: "listen"
+22:32:42 [INFO] httpx: HTTP Request: POST http://127.0.0.1:8080/v1/chat/completions "HTTP/1.1 200 OK"
+22:32:42 [WARNING] phonemizer: words count mismatch on 100.0% of the lines (1/1)
+22:32:43 [INFO] DuplexEngine: [Turn 0002] In: 'no voice'           | Act: SPEAK | Out: 'Four. for the answer to the questio' | P(listen): 0.000
+<<< [MICRO_TURN 2] User: "no voice" | Action: SPEAK | Assistant: "Four. for the answer to the question you asked. if you have a math problem you would like"
+<<< [AUDIO_CHUNK] Synthesized 5013.33ms audio (320856 b64 bytes) for: "Four. for the answer to the question you asked. if you have a math problem you would like"
+------------------------------------------------------------------------
+>>> User Barge-In: "Wait, stop!" (Speaking while AI is active)
+22:32:43 [INFO] httpx: HTTP Request: POST http://127.0.0.1:8080/v1/chat/completions "HTTP/1.1 200 OK"
+22:32:43 [INFO] DuplexEngine: [Turn 0003] In: 'Wait, stop!'        | Act: YIELD | Out: 'listen (playing)'                  | P(listen): 0.982
+<<< [MICRO_TURN 3] User: "Wait, stop!" | Action: YIELD
+<<< [INTERRUPT] Instant Playback Cutoff confirmed! Reason: "user_barge_in"
+22:32:43 [INFO] DuplexEngine: WebSocket session finished: 84cb00bb-e3f0-4014-a2a2-4111568b7201
+========================================================================
+22:32:43 [INFO] DuplexEngine: Duplex Engine stopped.
